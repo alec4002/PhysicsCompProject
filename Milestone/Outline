@@ -1,0 +1,13 @@
+In order to complete the integrals, i need to first define the space. The space will be two dimensional, specifically in x and t. I beleive i can do this by making a rather large array, at least for the milestone project which doesnt need as much code and can be a bit more brute force.
+
+So my current idea is the following. 1) We are given the scenario, the harmonic potential well which we know well. We have the hamiltonian. 2) From hamiltonian, find the propogator, G. This requires numerical solution of the integral. 3) Once we have the integral, we can run it over the many incidents of travel along the different paths. 4) Plot the probability vs the position x, this should match with the Wavefunction solution (NB-It will be a bit rough as we will not have that many paths)
+
+From above, the tasks required are 
+1) Code to numerically solve the integral for G
+2) Code to define the the 2D space (x,t) 
+3) Code which can run different paths-This will most likely involve four loops in the milestone, but should be replaced down the line with a better algorithm 
+4) Code to plot the probability distribution (Comes from G) 
+
+I sould also be vary aware that this is a research project, and as such i need to be reading relavent literature. Most important for the time being are the Feynmann and Hilbert Textbook and the Landau textbook. I would aslo like to read a little more into the form of the integral, in this case Dr Zambon mentioned Lebec integrals as a good eay to interpret the normalizing factor Z, which itself is analogous to the partiction function in thermodyanmics. 
+
+Let the fun begin!
