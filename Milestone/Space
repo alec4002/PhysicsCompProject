@@ -13,8 +13,17 @@ TwoD=np.array([[0,1,2,3,4,5,6,7],[0,1,2,3,4,5,6,7],[0,1,2,3,4,5,6,7],[0,1,2,3,4,
 
 def map(p) as 
     plt.figure() 
+    X=np.array[]    
+    Y=np.array[] 
     for i in range(0,len(p)-1)  
-        x=p[]
+        x=p[0,i]
+        y=p[]
+        np.append(x)X
+#Trying to split the matrix into x and y comps to then plot a grid 
+
+
+    
+    
 
     
     
