@@ -16,5 +16,5 @@ its value at x=1."
 
 Note-we have N=7 spatial points, T=4 temporal points and we define the time step as T/N
 
-I sould also be vary aware that this is a research project, and as such i need to be reading relavent literature. Most important for the time being are the Feynmann and Hilbert Textbook and the Landau textbook. I would aslo like to read a little more into the form of the integral, in this case Dr Zambon mentioned Lebec integrals as a good eay to interpret the normalizing factor Z, which itself is analogous to the partiction function in thermodyanmics. 
+I sould also be vary aware that this is a research project, and as such i need to be reading relavent literature. Most important for the time being are the Feynmann and Hilbert Textbook and the Landau textbook. I would aslo like to read a little more into the form of the integral, in this case Dr Zambon mentioned Lebec integrals as a good way to interpret the normalizing factor Z, which itself is analogous to the partiction function in thermodyanmics. 
 
