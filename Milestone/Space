@@ -3,8 +3,18 @@ import matplotlib.pyplot as plt
 import scipy
 
 #defining the 2D space 
-TwoD=np.array([[0,1,2,3,4,5,6,7],[0,1,2,3,4,5,6,7],[0,1,2,3,4,5,6,7],[0,1,2,3,4,5,6,7]])
+TwoD=np.array([[0,1,2,3,4,5,6,7],[0,1,2,3,4,5,6,7],[0,1,2,3,4,5,6,7],[0,1,2,3,4,5,6,7],[0,1,2,3,4,5,6,7]])
 
-#This makes a simple 4x8 array. I think paths could be done by doinga series of for loops ie start with a sart 
+#This makes a simple array. I think paths could be done by doinga series of for loops ie start with a sart 
 #and end, then run a for loop each time for different values of x. NB- Row is position, coloumn is time. 
-#Q; How do i make sure it ends up at the endpoint 
+
+#Having a go at making a path 
+#I think it could be good to plot the paths to ensure i have the right thing 
+
+def map(p) as 
+    plt.figure() 
+    for i in range(0,len(p)-1)  
+        x=p[]
+
+    
+    
