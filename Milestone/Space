@@ -11,16 +11,18 @@ TwoD=np.array([[0,1,2,3,4,5,6,7],[0,1,2,3,4,5,6,7],[0,1,2,3,4,5,6,7],[0,1,2,3,4,
 #Having a go at making a path 
 #I think it could be good to plot the paths to ensure i have the right thing 
 
-def map(p) as 
+def grid(p):
     plt.figure() 
-    X=np.array[]    
-    Y=np.array[] 
-    for i in range(0,len(p)-1)  
-        x=p[0,i]
-        y=p[]
-        np.append(x)X
-#Trying to split the matrix into x and y comps to then plot a grid 
+    for i in range(0,len(p)):
+        y=i 
+        for j in range(0,8):
+            x=j 
+            plt.scatter(x,y, color='b')
+    plt.xlabel("Position")
+    plt.ylabel("Time")
+    plt.show()
 
+grid(TwoD)
 
     
     
