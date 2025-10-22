@@ -5,10 +5,10 @@ import scipy
 #defining the 2D space 
 TwoD=np.array([[0,1,2,3,4,5,6,7],[0,1,2,3,4,5,6,7],[0,1,2,3,4,5,6,7],[0,1,2,3,4,5,6,7],[0,1,2,3,4,5,6,7]])
 
-#This makes a simple array. I think paths could be done by doinga series of for loops ie start with a sart 
+#This makes a simple array. I think paths could be done by doing a series of for loops ie start with a start 
 #and end, then run a for loop each time for different values of x. NB- Row is position, coloumn is time. 
 
-#Having a go at making a path 
+#Having a go at making a grid 
 #I think it could be good to plot the paths to ensure i have the right thing 
 
 def grid(p):
@@ -22,8 +22,9 @@ def grid(p):
     plt.ylabel("Time")
     plt.show()
 
-grid(TwoD)
-
+#This code makes a simple 2D co-ordinate system for our particles to live in. 
+#Next, i need to code a) how the particle proceeds through the grid, however this also involves the integral 
+#so i will park this for now. 
     
     
 
