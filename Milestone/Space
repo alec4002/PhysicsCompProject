@@ -22,7 +22,6 @@ def grid(p): #x,y define the x and y axis dimensions
     plt.ylabel("Time")
     plt.show()
 
-#rid(TwoD)
 
 #I could even make this even more streamlined, so the function takes two arguements for the dimensions of the grid, 
 #generates the array within it and the produces the grid. Could then modify it to change spacing etc

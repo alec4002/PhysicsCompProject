@@ -1,0 +1,6 @@
+#The integral must be done over each step of the path, for each path. I could use vegas to evaluate the integral at each of the steps for me in 
+#one go instead of myself looping it. I get a weight for each path from the integral, and this distribution should give me the ground state.
+#G comes from the action, which comes from the hamiltonian of the system, which we know 
+
+
+
