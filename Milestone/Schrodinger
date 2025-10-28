@@ -1,42 +1,22 @@
+#In this file i will cplot the analytic soln that comes from the 1D schrodinger equation. This is solved analytically and hence don't really
+#need to code but i may if it becomes apparent it would be useful
+
 import numpy as np                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
 import matplotlib.pyplot as plt
 import scipy
 
-#defining the 2D space 
-TwoD=np.array([[0,1,2,3,4,5,6,7],[0,1,2,3,4,5,6,7],[0,1,2,3,4,5,6,7],[0,1,2,3,4,5,6,7],[0,1,2,3,4,5,6,7]])
+#NB-Units such that h bar=1, m=1
 
-#This makes a simple array. I think paths could be done by doing a series of for loops ie start with a start 
-#and end, then run a for loop each time for different values of x. NB- Row is position, coloumn is time. 
+def Ground_state_dist(x):
+    G=((np.exp((-(x-1)**2)/2))/(np.pi)**(1/4))**2
+    return G 
 
-#Having a go at making a grid 
-#I think it could be good to plot the paths to ensure i have the right thing 
+plt.figure()
+plt.xlabel("x")
+plt.ylabel("$|\psi_(x)|^{2}$")
+x_values=np.arange(-0.6,2.7,0.1)
+y_values=Ground_state_dist(x_values)
+plt.plot(x_values,y_values)
 
-def grid(p): #x,y define the x and y axis dimensions 
-    plt.figure() 
-    for i in range(0,len(p)):
-        y=i 
-        for j in range(0,8):
-            x=j 
-            plt.scatter(x,y, color='black')
-    plt.xlabel("Position")
-    plt.ylabel("Time")
-    plt.show()
-
-#rid(TwoD)
-
-#I could even make this even more streamlined, so the function takes two arguements for the dimensions of the grid, 
-#generates the array within it and the produces the grid. Could then modify it to change spacing etc
-
-#This code makes a simple 2D co-ordinate system for our particles to live in. 
-#Next, i need to code a) how the particle proceeds through the grid, however this also involves the integral 
-#so i will park this for now. 
-
-def test(X,Y):
-    G=np.zeros(shape=(0,X))
-    X_vals=np.array([0,1,2,3])
-    Q=np.append(G,X_vals,axis=0)
-    return print(Q)
-
-test(4,4)
-    
-    
+plt.savefig('Schrodinger Dist.png')
+plt.show()
