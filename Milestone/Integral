@@ -17,29 +17,24 @@ def V(x):
 a= 4/7 #4 temporal points, 7 spatial 
 m=1    #Mass is set to 1 
 
-#action-Calcs the action for a path x(which is a set of values/the configuration of the path)
-
+#function to integrate 
 def f(x):
     E=0
-    y=0
-    x[0]=y
-    x[6]=x[0] 
     for i in range(1,7):
         E += (m/2)*(((x[i]-x[i-1])/a)**2)+V((x[i]+x[i-1]))
+
+
     return np.exp(-a*E)
-    
 
 
-#paths 
+#paths  
 Paths=np.array([[3,3,3,3,3],[3,2,3,3,3],[3,2,2,3,3],[3,2,1,2,3],[3,2,2,2,3],[3,4,3,3,3],[3,4,4,3,3],[3,4,4,4,3],[3,4,5,4,3]])
 
-#function to integrate 
 
+#then need to do for each path (do i use vegas?) #NB-This on right track but i my integral has too many dimensions
 
-#then need to do for each path (do i use vegas?)
+integ = vegas.Integrator([[-7,7],[-7,7],[-7,7],[-7,7],[-7,7],[-7,7],[-7,7]])
 
-integ = vegas.Integrator([[-5,5],[-5,5],[-5,5],[-5,5],[-5,5],[-5,5],[-5,5]])
-
-result=integ(f,nitn=10, neval=1000)
-#print(result.summary())
+result=integ(f,nitn=50, neval=1e4)
+print(result.summary())
 print('result = %s    Q = %.2f' % (result, result.Q))
