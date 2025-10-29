@@ -1,6 +1,36 @@
+import numpy as np                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+import matplotlib.pyplot as plt
+import scipy
 #The integral must be done over each step of the path, for each path. I could use vegas to evaluate the integral at each of the steps for me in 
 #one go instead of myself looping it. I get a weight for each path from the integral, and this distribution should give me the ground state.
 #G comes from the action, which comes from the hamiltonian of the system, which we know 
 
+#Tell me the potential NB-Unsure of the boundary of the potential when should it be zero?
+def V(x):
+    V=1/2*(x**2)
+    return V
 
+#Our configuration is a set of x values hence I will need to do a for loop 4
+#time step this should be defined from space file but ill just quickly define it here
+
+a= 4/7 #4 temporal points, 7 spatial 
+m=1 
+#action 
+
+def E(X):
+    E=np.zeros(shape=[1,5]) 
+    for i in range(1,len(x-1)):   
+        e=(m/2)*(((x[i]-x[i-1])/a)**2)+V((x[i]+x[i-1]))
+        E[0,i]=e
+    return E
+    
+x=np.array([4,3,2,3,4])
+
+print(E(x))
+
+
+
+#integral for a path 
+
+#then need to do for each path (do i use vegas?)
 

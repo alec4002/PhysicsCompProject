@@ -23,6 +23,7 @@ def grid(p): #x,y define the x and y axis dimensions
     plt.show()
 
 
+
 #I could even make this even more streamlined, so the function takes two arguements for the dimensions of the grid, 
 #generates the array within it and the produces the grid. Could then modify it to change spacing etc
 
@@ -30,12 +31,5 @@ def grid(p): #x,y define the x and y axis dimensions
 #Next, i need to code a) how the particle proceeds through the grid, however this also involves the integral 
 #so i will park this for now. 
 
-def test(X,Y):
-    G=np.zeros(shape=(0,X))
-    X_vals=np.array([0,1,2,3])
-    Q=np.append(G,X_vals,axis=0)
-    return print(Q)
 
-test(4,4)
-    
     
