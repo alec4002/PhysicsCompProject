@@ -14,23 +14,21 @@ def V(x):
 #time step this should be defined from space file but ill just quickly define it here
 
 a= 4/7 #4 temporal points, 7 spatial 
-m=1 
-#action 
+m=1    #Mass is set to 1 
+
+#action-Calcs the action for a path x(which is a set of values/the configuration of the path)
 
 def E(X):
-    E=np.zeros(shape=[1,5]) 
-    for i in range(1,len(x-1)):   
-        e=(m/2)*(((x[i]-x[i-1])/a)**2)+V((x[i]+x[i-1]))
+    E=np.zeros(shape=[1,4]) 
+    for i in range(0,len(x)-1):   
+        e=(m/2)*(((x[i+1]-x[i])/a)**2)+V((x[i+1]+x[i]))
         E[0,i]=e
     return E
     
-x=np.array([4,3,2,3,4])
-
-print(E(x))
-
 
 
 #integral for a path 
+
 
 #then need to do for each path (do i use vegas?)
 

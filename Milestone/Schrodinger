@@ -8,13 +8,13 @@ import scipy
 #NB-Units such that h bar=1, m=1
 
 def Ground_state_dist(x):
-    G=((np.exp((-(x-1)**2)/2))/(np.pi)**(1/4))**2
+    G=((np.exp((-(x)**2)/2))/(np.pi)**(1/4))**2
     return G 
 
 plt.figure()
 plt.xlabel("x")
 plt.ylabel("$|\psi_(x)|^{2}$")
-x_values=np.arange(-0.6,2.7,0.1)
+x_values=np.arange(0,2.1,0.1)
 y_values=Ground_state_dist(x_values)
 plt.plot(x_values,y_values)
 
