@@ -8,7 +8,7 @@ import scipy
 #NB-Units such that h bar=1, m=1
 
 def Ground_state_dist(x):
-    G=((np.exp((-(x)**2)/2))/(np.pi)**(1/4))**2
+    G=((np.exp((-(x)**2)/2))/(np.pi)**(1/4))
     return G 
 
 plt.figure()
@@ -17,6 +17,8 @@ plt.ylabel("$|\psi_(x)|^{2}$")
 x_values=np.arange(0,2.1,0.1)
 y_values=Ground_state_dist(x_values)
 plt.plot(x_values,y_values)
-
+X=[0,1,2]
+Y=[2.56,0.35,0.00083]
+plt.scatter(X,Y)
 plt.savefig('Schrodinger Dist.png')
 plt.show()

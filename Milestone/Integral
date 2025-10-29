@@ -1,6 +1,7 @@
 import numpy as np                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
 import matplotlib.pyplot as plt
 import scipy
+import vegas 
 #The integral must be done over each step of the path, for each path. I could use vegas to evaluate the integral at each of the steps for me in 
 #one go instead of myself looping it. I get a weight for each path from the integral, and this distribution should give me the ground state.
 #G comes from the action, which comes from the hamiltonian of the system, which we know 
@@ -18,17 +19,27 @@ m=1    #Mass is set to 1
 
 #action-Calcs the action for a path x(which is a set of values/the configuration of the path)
 
-def E(X):
-    E=np.zeros(shape=[1,4]) 
-    for i in range(0,len(x)-1):   
-        e=(m/2)*(((x[i+1]-x[i])/a)**2)+V((x[i+1]+x[i]))
-        E[0,i]=e
-    return E
+def f(x):
+    E=0
+    y=0
+    x[0]=y
+    x[6]=x[0] 
+    for i in range(1,7):
+        E += (m/2)*(((x[i]-x[i-1])/a)**2)+V((x[i]+x[i-1]))
+    return np.exp(-a*E)
     
 
 
-#integral for a path 
+#paths 
+Paths=np.array([[3,3,3,3,3],[3,2,3,3,3],[3,2,2,3,3],[3,2,1,2,3],[3,2,2,2,3],[3,4,3,3,3],[3,4,4,3,3],[3,4,4,4,3],[3,4,5,4,3]])
+
+#function to integrate 
 
 
 #then need to do for each path (do i use vegas?)
 
+integ = vegas.Integrator([[-5,5],[-5,5],[-5,5],[-5,5],[-5,5],[-5,5],[-5,5]])
+
+result=integ(f,nitn=10, neval=1000)
+#print(result.summary())
+print('result = %s    Q = %.2f' % (result, result.Q))
