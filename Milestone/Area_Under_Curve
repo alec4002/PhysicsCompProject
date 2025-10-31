@@ -3,41 +3,32 @@ import matplotlib.pyplot as plt
 import scipy
 import vegas 
 from scipy.optimize import curve_fit
-#The integral must be done over each step of the path, for each path. I could use vegas to evaluate the integral at each of the steps for me in 
-#one go instead of myself looping it. I get a weight for each path from the integral, and this distribution should give me the ground state.
-#G comes from the action, which comes from the hamiltonian of the system, which we know 
+import scipy.integrate as integrate
+import scipy.special as special
 
-#Tell me the potential NB-Unsure of the boundary of the potential when should it be zero?
-def V(x):
-    V=1/2*(x**2)
-    return V
+#Vals from Integral 
 
-#Our configuration is a set of x values hence I will need to do a for loop 4
-#time step this should be defined from space file but ill just quickly define it here
+X=np.array([-2.0,-1.5,-1.0,-0.5,0,0.5,1,1.5,2])
+Y=np.array([0.0018,0.061,0.742,3.32,5.48,3.32,0.741,0.061,0.0018])
 
-a= 4/7 #4 temporal points, 7 spatial 
-m=1    #Mass is set to 1 
+#Gauss to fit
+def Gauss(x, A, B):
+    y = A*np.exp(-1*B*x**2)
+    return y
 
-#function to integrate 
-def f(x):
-    E=0
-    x[0]=x[6]=-2.0
-    for i in range(1,7):
-        E += (m/2)*(((x[i]-x[i-1])/a)**2)+V((x[i]+x[i-1]))
-    return np.exp(-a*E)
+parameters, covariance = curve_fit(Gauss, X, Y)
 
+fit_A = parameters[0]
+fit_B = parameters[1]
 
-#paths  
-Paths=np.array([[3,3,3,3,3],[3,2,3,3,3],[3,2,2,3,3],[3,2,1,2,3],[3,2,2,2,3],[3,4,3,3,3],[3,4,4,3,3],[3,4,4,4,3],[3,4,5,4,3]])
+fit_y = Gauss(X, fit_A, fit_B)
+
+plt.plot(X, Y, 'o', label='data')
+plt.plot(X, fit_y, '-', label='fit')
+plt.legend()
+plt.show()
 
 
-#then need to do for each path (do i use vegas?) #NB-This on right track but i my integral has too many dimensions
-integ = vegas.Integrator([[-7,7],[-7,7],[-7,7],[-7,7],[-7,7],[-7,7],[-7,7]])
-
-#result=integ(f,nitn=50, neval=1e4)
-#print(result.summary())
-#print('result = %s    Q = %.2f' % (result, result.Q))
-
-#These arent normalised. So plot function, and then get area, and then divide values. 
-#Use scipy, set a loop to collect points instead of the clumsy by hand way I do 
-
+    
+Area=integrate.quad(fit_y,-2,2)
+print(Area)

@@ -14,11 +14,11 @@ def Ground_state_dist(x):
 plt.figure()
 plt.xlabel("x")
 plt.ylabel("$|\psi_(x)|^{2}$")
-x_values=np.arange(0,2.1,0.1)
+x_values=np.arange(-2.0,2.1,0.1)
 y_values=Ground_state_dist(x_values)
 plt.plot(x_values,y_values)
-X=[0,0.5,1,1.5,2]
-Y=[5.48,3.32,0.741,0.061,0.0018]
+X=[-2.0,-1.5,-1.0,-0.5,0,0.5,1,1.5,2]
+Y=[0.0018,0.061,0.742,3.32,5.48,3.32,0.741,0.061,0.0018]
 plt.scatter(X,Y)#Vals from G
 plt.savefig('Schrodinger Dist.png')
 plt.show()
