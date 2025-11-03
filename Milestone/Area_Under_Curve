@@ -9,7 +9,7 @@ import scipy.special as special
 #Vals from Integral 
 
 X=np.array([-2.0,-1.5,-1.0,-0.5,0,0.5,1,1.5,2])
-Y=np.array([0.0018,0.061,0.742,3.32,5.48,3.32,0.741,0.061,0.0018])
+Y=np.array([0.16216,5.3588,65.099,291.55,480.82,291.31,65.140,5.3635,0.16214])
 
 #Gauss to fit
 def Gauss(x, A, B):
@@ -28,7 +28,12 @@ plt.plot(X, fit_y, '-', label='fit')
 plt.legend()
 plt.show()
 
-
+def integrand(x):
+    F=Gauss(x,fit_A,fit_B)
+    return F
     
-Area=integrate.quad(fit_y,-2,2)
-print(Area)
+Area=integrate.quad(integrand,-2,2)
+
+norm_Y=Y/Area[0]
+
+
