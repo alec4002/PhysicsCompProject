@@ -36,4 +36,13 @@ Area=integrate.quad(integrand,-2,2)
 
 norm_Y=Y/Area[0]
 
+Yerr=np.array([0.0000074,0.000046,0.00049,0.0021,0.0037,0.0021,0.00048,0.000039,0.0000012])
+Aerr=Area[1] #Error in area under curve 
+
+norm_Yerr=np.zeros(shape=(1,9)) # Empty array for the for loop 
+
+for i in range(0,9):
+    norm_Yerr[0,i]=abs(norm_Y[i])*(((Aerr/Area[0])**2)+(Yerr[i]/Y[i])**2)**(1/2)
+
+
 
