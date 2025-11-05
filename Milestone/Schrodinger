@@ -16,7 +16,7 @@ plt.xlabel("x")
 plt.ylabel("$|\psi_(x)|^{2}$")
 x_values=np.arange(-5.0,5.1,0.1)
 y_values=Ground_state_dist(x_values)
-plt.plot(x_values,y_values)
+plt.plot(x_values,y_values,linestyle='dashed',label='Schrodinger Solution')
 X=[-2.0,-1.5,-1.0,-0.5,0,0.5,1,1.5,2]
 Y=[2.69205577e-04, 8.89626815e-03, 1.08072360e-01, 4.84008916e-01,
  7.98220432e-01, 4.83610487e-01, 1.08140425e-01, 8.90407073e-03,
@@ -24,6 +24,7 @@ Y=[2.69205577e-04, 8.89626815e-03, 1.08072360e-01, 4.84008916e-01,
 Yerr=[1.22849116e-08, 7.63656667e-08, 8.13460363e-07, 3.48625870e-06,
   6.14245580e-06, 3.48625870e-06, 7.96859131e-07, 6.47448044e-08,
   1.99214783e-09]
-plt.errorbar(X,Y,yerr=[Yerr],fmt='o')#Vals from G
+plt.errorbar(X,Y,yerr=[Yerr],fmt='o',color='b',label='Feynman Solution')#Vals from G
+plt.legend() 
 plt.savefig('Schrodinger Dist.png')
 plt.show()

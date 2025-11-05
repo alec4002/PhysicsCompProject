@@ -2,9 +2,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scipy
 import vegas 
-#The integral must be done over each step of the path, for each path. I could use vegas to evaluate the integral at each of the steps for me in 
-#one go instead of myself looping it. I get a weight for each path from the integral, and this distribution should give me the ground state.
-#G comes from the action, which comes from the hamiltonian of the system, which we know 
+from scipy.optimize import curve_fit
+import scipy.integrate as integrate
+import scipy.special as special
 
 #Tell me the potential NB-Unsure of the boundary of the potential when should it be zero?
 def V(x):
@@ -20,19 +20,25 @@ m=1    #Mass is set to 1
 #function to integrate 
 def f(x):
     E=0
-    for i in range(1,7):
+    for i in range(1,len(x)):
         E += (m/2)*(((x[i]-x[i-1])/a)**2)+V((x[i]+x[i-1]))
     return np.exp(-a*E)
 
+def f_prime(x):
+    E=0
+    for i in (1,len(x)):
+         E += (m/2)*(((x[i]-x[i-1])/a)**2)+V((x[i]+x[i-1]))
+    return np.exp(-a*E)
 
 
-#then need to do for each path (do i use vegas?) #NB-This on right track but i my integral has too many dimensions
-integ = vegas.Integrator([[-7,7],[-7,7],[-7,7],[-7,7],[-7,7],[-7,7],[-7,7]]) 
+def G(y): 
+    integ=vegas.Integrator([[0,y],[-7,7],[-7,7],[-7,7],[-7,7],[-7,7],[0,y]]) 
+    result=integ(f,nitn=50, neval=1e4)
 
-result=integ(f,nitn=50, neval=1e4)
-print(result.summary())
-print('result = %s    Q = %.2f' % (result, result.Q))
+    return('result = %s    Q = %.2f' % (result, result.Q))
+
+integ=vegas.Integrator([])
+z=integ(f,nitn=50, neval=1e4)
 
 #These arent normalised. So plot function, and then get area, and then divide values. 
 #Use scipy, set a loop to collect points instead of the clumsy by hand way I do 
-
