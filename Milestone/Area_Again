@@ -5,63 +5,42 @@ import vegas
 from scipy.optimize import curve_fit
 import scipy.integrate as integrate
 import scipy.special as special
-import scipy.stats
 
-#Tell me the potential NB-Unsure of the boundary of the potential when should it be zero?
-def V(x):
-    V=1/2*(x**2)
-    return V
 
-#Our configuration is a set of x values hence I will need to do a for loop 4
-#time step this should be defined from space file but ill just quickly define it here
+X=np.array([-2.0,-1.5,-1.0,-0.5,0])
+Y=np.array([1.9064012,  1.79491836, 1.35892756, 0.52121789, 1e-10])
 
-a= 4/7 #4 temporal points, 7 spatial 
-m=1    #Mass is set to 1 
+#Gauss to fit
+def Gauss(x, A, B):
+    y = A*np.exp(-1*B*(x+2)**2)
+    return y
 
-#function to integrate 
-def f(x):
-    E=0
-    for i in range(1,len(x)):
-        E += (m/2)*(((x[i]-x[i-1])/a)**2)+V((x[i]+x[i-1]))
-    return np.exp(-a*E)
+parameters, covariance = curve_fit(Gauss, X, Y)
 
-def G(y): 
-    integ=vegas.Integrator([[0,y],[-7,7],[-7,7],[-7,7],[-7,7],[-7,7],[0,y]]) 
-    result=integ(f,nitn=50, neval=1e4)
-    z=(result.sdev)
-    return(z) 
+fit_A = parameters[0]
+fit_B = parameters[1]
 
-plt.figure()
-X=np.array([0.0,0.5,1.0,1.5,2.0])
-Y=np.zeros(shape=(1,9))
+fit_y = Gauss(X, fit_A, fit_B)
 
-#for i in range(0,len(X)):
-    #Y[0,i]=G(X[i])
-#print(Y)
-
-def Ground_state_dist(x):
-    Q=((np.exp((-(x)**2)/2))/((np.pi)**(1/4)))
-    return Q 
-
-x_values=np.arange(0,2.6,0.1)
-W=Ground_state_dist(x_values)
-
-Z=[1.9064012,  1.79491836, 1.35892756, 0.52121789, 0.0]
-norm_Z=[0.82507422, 0.77682539, 0.58813228, 0.22557867, 0.        ]
-norm_Zerr=[9.16016393e-15, 1.74928829e-04, 1.90136912e-04, 6.91734336e-04,5.34045648e-04]
-#Normalising 
-
-plt.errorbar(X,norm_Z,yerr=norm_Zerr,fmt='o',color='b')
-plt.plot(x_values,W)
-plt.xlabel("x")
-plt.ylabel("$\psi_(x)$")
-plt.savefig('GroundDist.png')
-
+plt.plot(X, Y, 'o', label='data')
+plt.plot(X, fit_y, '-', label='fit')
+plt.legend()
 plt.show()
-W_Chi=[0.75112554, 0.66286597, 0.45558067, 0.24385476, 0.10165379]
 
+def integrand(x):
+    F=Gauss(x,fit_A,fit_B)
+    return F
+    
+Area=integrate.quad(integrand,-2,0)
 
-chisquared=scipy.stats.chisquare([0.82507422, 0.77682539, 0.58813228, 0.22557867, 0.0],f_exp=[0.75112554, 0.66286597, 0.45558067, 0.24385476, 0.10165379]) 
-print(chisquared)
-#These arent normalised. So plot function, and then get area, and then divide values. 
-#Use scipy, set a loop to collect points instead of the clumsy by hand way I do 
+norm_Y=Y/Area[0]
+print(norm_Y)
+Yerr=np.array([4.47213595e-130, 4.04187312e-004, 4.39326826e-004, 1.59830854e-003,1.23395598e-003])
+Aerr=Area[1] #Error in area under curve 
+
+norm_Yerr=np.zeros(shape=(1,5)) # Empty array for the for loop 
+
+for i in range(0,5):
+    norm_Yerr[0,i]=abs(norm_Y[i])*(((Aerr/Area[0])**2)+(Yerr[i]/Y[i])**2)**(1/2) 
+
+print(norm_Yerr)
