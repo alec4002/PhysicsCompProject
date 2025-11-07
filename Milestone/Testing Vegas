@@ -51,12 +51,12 @@ norm_Z=[0.82507422, 0.77682539, 0.58813228, 0.22557867, 0.        ]
 norm_Zerr=[9.16016393e-15, 1.74928829e-04, 1.90136912e-04, 6.91734336e-04,5.34045648e-04]
 #Normalising 
 
-plt.errorbar(X,norm_Z,yerr=norm_Zerr,fmt='o',color='b')
-plt.plot(x_values,W)
+plt.errorbar(X,norm_Z,yerr=norm_Zerr,fmt='o',color='b',label='Feynman Solution')
+plt.plot(x_values,W,label='Schrodinger Solution')
 plt.xlabel("x")
 plt.ylabel("$\psi_(x)$")
+plt.legend()
 plt.savefig('GroundDist.png')
-
 plt.show()
 W_Chi=[0.75112554, 0.66286597, 0.45558067, 0.24385476, 0.10165379]
 
