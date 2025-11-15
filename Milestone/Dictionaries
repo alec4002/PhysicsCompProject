@@ -1,0 +1,10 @@
+import numpy as np 
+d={} 
+#x is some list
+x=np.arange(0,8,1)
+
+for i in range (0,len(x)):
+    d["x_{0}".format(i)]=x[i]
+
+#for i in d:
+    #print(d[i])

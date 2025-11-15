@@ -1,0 +1,12 @@
+import numpy as np
+import vegas
+
+def f(xd):
+    #r = xd['r']
+    theta = xd['theta']
+    phi = xd['phi']
+    return np.sin(theta)
+
+integ = vegas.Integrator(dict(theta=(0, np.pi), phi=(0, 2 * np.pi)))
+volume = integ(f, neval=1000, nitn=10)
+print(volume)

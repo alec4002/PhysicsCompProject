@@ -2,15 +2,20 @@ NB-Material presented based of section 12.3 Metropolis Algotrithm in Landau et a
 
 The bulk contribution to the probable path is given by the low energy paths. Hence, it makes no sense to generate all random paths as the 
 probability will be dominated by the small enegry paths. The Metropolis algorithm acts as an improvement to the Monte-Carlo apparoach to
-integration. It is presented in a thermodynamic context in Landua howevwer due to the direct analogy between Feynman path intergarls and Thermodynamic Statistical mechanics we can easily "move things across" to Feynman. 
+integration. It is presented in a thermodynamic context in Landua howevwer due to the direct analogy between Feynman path intergarls 
+and Thermodynamic Statistical mechanics we can easily "move things across" to Feynman. 
 
 I'll now start refrencing stuff from Lepage 2005. 
 
 Metropolis algortithem allows for efficient random path geneneration. The algorithem is defined as follows. 
 
 •generate a random number ζ, with probability uniformly distributed between −ǫ and ǫ for some constant ǫ; 
-• replace xj → xj+ζ and compute the change ∆S in the action caused by this replacement (generally only a few terms in the lattice action involve xj, since lagrangians are local; only these need be examined); 
+• replace xj → xj+ζ and compute the change ∆S in the action caused by this replacement (generally 
+only a few terms in the lattice action involve xj, since lagrangians are local; only these need be examined); 
 • if ∆S <0(theaction is reduced) retain the new value for xj, and proceed to the next site; 
-• if ∆S >0 generate a random number η unformly distributed between 0 and 1; retain the new value for xj if exp(−∆S) > η, otherwise restore the old value; proceed to the next site.
+• if ∆S >0 generate a random number η unformly distributed between 0 and 1; retain the new value for xj if exp(−∆S) > η, 
+otherwise restore the old value; proceed to the next site.
 
-An imporatant concept to consider is the thermalisation of the system. This comes from thermodyanamics, an essesntially measn the system is in thermal equilibrium and hence there are no fluctuations in the energy of the system. In order to thermalise the system we run the algorithem for a large number of times before any computation. 
+An imporatant concept to consider is the thermalisation of the system. This comes from thermodyanamics, an essesntially means 
+the system is in thermal equilibrium and hence there are no fluctuations in the energy of the system. 
+In order to thermalise the system we run the algorithem for a large number of times before any computation. 

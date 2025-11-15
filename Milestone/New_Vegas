@@ -7,61 +7,55 @@ import scipy.integrate as integrate
 import scipy.special as special
 import scipy.stats
 
-#Tell me the potential NB-Unsure of the boundary of the potential when should it be zero?
+#This is defining the harmonic potential 
 def V(x):
     V=1/2*(x**2)
     return V
 
-#Our configuration is a set of x values hence I will need to do a for loop 4
-#time step this should be defined from space file but ill just quickly define it here
-
+#Defining constants of the lattice 
 a= 4/7 #4 temporal points, 7 spatial 
 m=1    #Mass is set to 1 
 
-#function to integrate 
+#This is defining the sum of the enrgies along the path 
 def f(x):
     E=0
+    d={} 
+    Y=x[0]
+    Y=x[len(x)]
+    for i in range (1,len(x)-1):
+        d["x_{0}".format(i)]=x[i]
+
     for i in range(1,len(x)):
         E += (m/2)*(((x[i]-x[i-1])/a)**2)+V((x[i]+x[i-1]))
     return np.exp(-a*E)
 
-def G(y): 
-    integ=vegas.Integrator([[0,y],[-7,7],[-7,7],[-7,7],[-7,7],[-7,7],[0,y]]) 
-    result=integ(f,nitn=50, neval=1e4)
-    z=(result.sdev)
-    return(z) 
+#Issue-Vegas cannot tell that i do not want to integrate wrt x_0 and x_N. I will define a varriable y, an array containing x_0, x_N.
+#I will then try ot see if i can get vegas to only integrate over the x's and leave y as a free variable. 
 
-plt.figure()
-X=np.array([0.0,0.5,1.0,1.5,2.0])
-Y=np.zeros(shape=(1,9))
+#y=0
 
-#for i in range(0,len(X)):
-    #Y[0,i]=G(X[i])
-#print(Y)
+ 
+def f(x):
+    x=np.array(x)
+    E=0
+    d={} 
 
-def Ground_state_dist(x):
-    Q=((np.exp((-(x)**2)/2))/((np.pi)**(1/4)))
-    return Q 
+    for i in range (0,len(x)):
+        d["x_{0}".format(i)]=x[i]
 
-x_values=np.arange(0,2.6,0.1)
-W=Ground_state_dist(x_values)
+    for i in d:
+        E += (m/2)*(((d[i]-d[i-1])/a)**2)+V((d[i]+d[(i-1)])) #ISSUE-Does not like the -1's. Does not like taking string from string. Force to be Int.
 
-Z=[1.9064012,  1.79491836, 1.35892756, 0.52121789, 0.0]
-norm_Z=[0.82507422, 0.77682539, 0.58813228, 0.22557867, 0.        ]
-norm_Zerr=[9.16016393e-15, 1.74928829e-04, 1.90136912e-04, 6.91734336e-04,5.34045648e-04]
-#Normalising 
+    #x[0]=y 
+    #x[len(x)]=y
+    return np.exp(-a*E)
 
-plt.errorbar(X,norm_Z,yerr=norm_Zerr,fmt='o',color='b',label='Feynman Solution')
-plt.plot(x_values,W,label='Schrodinger Solution')
-plt.xlabel("x")
-plt.ylabel("$\psi_(x)$")
-plt.legend()
-plt.savefig('GroundDist.png')
-plt.show()
-W_Chi=[0.75112554, 0.66286597, 0.45558067, 0.24385476, 0.10165379]
+integ=vegas.Integrator(dict(x_0=(-7,7),x_1=(-7,7),x_2=(-7,7),x_3=(-7,7),x_4=(-7,7),x_5=(-7,7),x_6=(-7,7))) 
+result=integ(f,nitn=50, neval=1e4)
+z=(result.sdev)
+print(z) 
 
 
-chisquared=scipy.stats.chisquare([0.82507422, 0.77682539, 0.58813228, 0.22557867, 0.0],f_exp=[0.75112554, 0.66286597, 0.45558067, 0.24385476, 0.10165379]) 
-print(chisquared)
-#These arent normalised. So plot function, and then get area, and then divide values. 
-#Use scipy, set a loop to collect points instead of the clumsy by hand way I do 
+
+
+

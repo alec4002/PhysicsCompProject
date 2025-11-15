@@ -28,3 +28,5 @@ plt.errorbar(X,Y,yerr=[Yerr],fmt='o',color='b',label='Feynman Solution')#Vals fr
 plt.legend() 
 plt.savefig('Schrodinger Dist.png')
 plt.show()
+
+#I NEED TO CHANGE SCHRODINGER TO NATURAL UNITS 
