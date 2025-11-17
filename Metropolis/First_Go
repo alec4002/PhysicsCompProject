@@ -4,58 +4,93 @@ import scipy
 import vegas 
 from scipy.optimize import curve_fit
 import scipy.integrate as integrate
-import scipy.special as special
+import scipy.special as special 
 import scipy.stats
 
-#This is defining the harmonic potential 
+#defining constants 
+m=1
+N=20        #Spatial Points
+a=4/N       #a is the time step, 4 temporal points, N spatial
+eps=2   #Range from which we will pick a random number. This is tuned so as to cause a 40%-60% acceptance rate. 
+
+#Defining the Harmonic potential 
 def V(x):
     V=1/2*(x**2)
     return V
 
-#Defining constants of the lattice 
-a= 4/7 #4 temporal points, 7 spatial 
-m=1    #Mass is set to 1 
+#Defining the action -NB-For my Metropolis, it is more useful to define the action per segment, and the count for the summation in the update step. 
+def S(x,j):   
+    S = (m/2)*(((x[j]-x[j-1])/a)**2)+V((x[j]+x[j-1]))
+    return S
 
-#This is defining the sum of the enrgies along the path 
-def f(x):
+#Defining the updating algorithm. 
+def update(x):
+    A=0                                            #Variable to track how many times a path is accepted 
+    for j in range(0,N):
+        x_old=x[j] 
+        Sj_old=S(x,j)
+        x[j]=x[j]+(np.random.uniform(-eps, eps))            #This function form numpy generates random no between -eps and eps
+        dS= S(x,j)-Sj_old
+        if dS > 0 and np.exp(-dS) < np.random.uniform(0, 1):
+            A= A + 1
+            x[j]=x_old
+    return (N-A)
+
+#NB this comes from Lepage, and he goes on to use this to find G for excited state. Going to try and get G for the Harmonic potential 
+#Quick Issue-How do i ensure x_0 and x_N are the same. I could rely on probabilty, and say if x_0 not equal x_N then reject? Seems like a rather messy way to solve. 
+
+#I am going to see if G simply is the sum of the weighted paths. 
+def G(x):
+    g=0
+    for i in len(1,len(x)):
+        g += g+np.exp(-a*S(x[i]))
+    return g 
+
+#Before defining my algorithem for getting G, i am going to test the thermalisation of the system 
+
+#Energy of the path is just sum of S along the path 
+#Plot path vs enegry. Do Ns until it levels 
+
+def E_tot(x):
     E=0
-    d={} 
-    Y=x[0]
-    Y=x[len(x)]
-    for i in range (1,len(x)-1):
-        d["x_{0}".format(i)]=x[i]
-
     for i in range(1,len(x)):
-        E += (m/2)*(((x[i]-x[i-1])/a)**2)+V((x[i]+x[i-1]))
-    return np.exp(-a*E)
+        E += E + S(x,i)
+    return E 
 
-#Issue-Vegas cannot tell that i do not want to integrate wrt x_0 and x_N. I will define a varriable y, an array containing x_0, x_N.
-#I will then try ot see if i can get vegas to only integrate over the x's and leave y as a free variable. 
+#Making a func to plot E vs no of paths
+def Graph(N_cor):
+    x=np.arange(0,N,1)                  #Empty path to begin 
+    E=np.arange(0,N_cor)                #Empty energy vals to replace
+    for i in range(0,N_cor):
+        update(x)                       #sweeping the lattice
+        E[i]=E_tot(x)                   #Calculating total energy 
+        Steps=np.arange(0,N_cor)        #Keeping track of corresponding sweep number
+    plt.figure()
+    plt.xlabel('N_cor')
+    plt.ylabel('Energy')
+    plt.plot(Steps,E)
+    plt.show()
 
-#y=0
+#NB-i must check for Epsilon before inspecting N_cor!
 
- 
-def f(y):
-    x=np.array(y)
-    E=0
-    d={} 
+#Added an A value which counts the ammount of paths accepted
+#Going to make a little bit of code which tests some vals of epsilon for the best tuned 
 
-    for i in range (0,len(x)):
-        d["x_{0}".format(i)]=x[i]
+Test_path=np.arange(0,20)
 
-    for i in range (1,len(x)):
-        E += (m/2)*(((x[i]-x[i-1])/a)**2)+V((x[i]+x[(i-1)])) #ISSUE-Does not like the -1's. Does not like taking string from string. Force to be Int.
+def TestEps(x):
+    array=np.arange(0,101)                                      #Array to store Acceptances 
+    for i in range(0,100):                                      #Number of we tested epsilon 
+        array[i]=update(x)
+    return (np.average(array), np.std(array)/(np.sqrt(N)))
 
-    #x[0]=y 
-    #x[len(x)]=y
-    return np.exp(-a*E)
+#Using this test function we determined eps=2 to be the best. This was only for N=100. Should run for more later in project.See excel for the exact stats  
 
-integ=vegas.Integrator(dict(d[1]=(-7,7),x[2]=(-7,7),x[3]=(-7,7),x[4]=(-7,7),x[5]=(-7,7),x[6]=(-7,7),x[7]=(-7,7))) 
-result=integ(f,nitn=50, neval=1e4)
-z=(result.sdev)
-print(z) 
+#With good eps, now finding our N_cor 
 
+Graph(100)
 
+#100 we get thermalisation However N_cor is defined as the Nth path we choose from our sweep for our system. Thermalisation occurs at 5*N_cor-10*N_cor so we will say 
+#N_cor=20 or N_cor=10 
 
-
-
+#Next parameter to diagnose is N_cf, which is the nymber of paths we need to ensure that the probabilities are behaving nicely.
