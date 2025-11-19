@@ -4,59 +4,14 @@ import scipy
 import vegas 
 from scipy.optimize import curve_fit
 import scipy.integrate as integrate
-import scipy.special as special
+import scipy.special as special 
 import scipy.stats
 
-#This is defining the harmonic potential 
-def V(x):
-    V=1/2*(x**2)
-    return V
 
-#Defining constants of the lattice 
-a= 4/7 #4 temporal points, 7 spatial 
-m=1    #Mass is set to 1 
+def TestEps(x):
+    array=np.arange(0,101)                                      #Array to store Acceptances 
+    for i in range(0,100):                                      #Number of we tested epsilon 
+        array[i]=update(x)
+    return (np.average(array), np.std(array)/(np.sqrt(N)))
 
-#This is defining the sum of the enrgies along the path 
-def f(x):
-    E=0
-    d={} 
-    Y=x[0]
-    Y=x[len(x)]
-    for i in range (1,len(x)-1):
-        d["x_{0}".format(i)]=x[i]
-
-    for i in range(1,len(x)):
-        E += (m/2)*(((x[i]-x[i-1])/a)**2)+V((x[i]+x[i-1]))
-    return np.exp(-a*E)
-
-#Issue-Vegas cannot tell that i do not want to integrate wrt x_0 and x_N. I will define a varriable y, an array containing x_0, x_N.
-#I will then try ot see if i can get vegas to only integrate over the x's and leave y as a free variable. 
-
-#y=0
-
- 
-def f(y):
-    x=np.array(y)
-    E=0
-    d={} 
-
-    for i in range (0,len(x)):
-        d["x_{0}".format(i)]=x[i]
-
-    for i in range (1,len(x)):
-        E += (m/2)*(((x[i]-x[i-1])/a)**2)+V((x[i]+x[(i-1)])) #ISSUE-Does not like the -1's. Does not like taking string from string. Force to be Int.
-
-    #x[0]=y 
-    #x[len(x)]=y
-    return np.exp(-a*E)
-
-integ=vegas.Integrator(dict(d[1]=(-7,7),x[2]=(-7,7),x[3]=(-7,7),x[4]=(-7,7),x[5]=(-7,7),x[6]=(-7,7),x[7]=(-7,7))) 
-result=integ(f,nitn=50, neval=1e4)
-z=(result.sdev)
-print(z) 
-
-#Do integral yourself
-
-
-
-
+x=np.zeros(shape=(1,20))

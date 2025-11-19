@@ -9,6 +9,8 @@ import scipy.stats
 
 #defining constants 
 m=1
+N_cor=20  
+N_cf=100    #Number that needs to big enough to ensure probabilities behave  
 N=20        #Spatial Points
 a=4/N       #a is the time step, 4 temporal points, N spatial
 eps=2   #Range from which we will pick a random number. This is tuned so as to cause a 40%-60% acceptance rate. 
@@ -25,7 +27,7 @@ def S(x,j):
 
 #Defining the updating algorithm. 
 def update(x):
-    A=0                                            #Variable to track how many times a path is accepted 
+    A=0                                                     #Variable to track how many times a path is accepted 
     for j in range(0,N):
         x_old=x[j] 
         Sj_old=S(x,j)
@@ -34,7 +36,7 @@ def update(x):
         if dS > 0 and np.exp(-dS) < np.random.uniform(0, 1):
             A= A + 1
             x[j]=x_old
-    return (N-A)
+    return x 
 
 #NB this comes from Lepage, and he goes on to use this to find G for excited state. Going to try and get G for the Harmonic potential 
 #Quick Issue-How do i ensure x_0 and x_N are the same. I could rely on probabilty, and say if x_0 not equal x_N then reject? Seems like a rather messy way to solve. 
@@ -78,19 +80,51 @@ def Graph(N_cor):
 
 Test_path=np.arange(0,20)
 
-def TestEps(x):
-    array=np.arange(0,101)                                      #Array to store Acceptances 
-    for i in range(0,100):                                      #Number of we tested epsilon 
-        array[i]=update(x)
-    return (np.average(array), np.std(array)/(np.sqrt(N)))
 
 #Using this test function we determined eps=2 to be the best. This was only for N=100. Should run for more later in project.See excel for the exact stats  
 
 #With good eps, now finding our N_cor 
 
-Graph(100)
-
 #100 we get thermalisation However N_cor is defined as the Nth path we choose from our sweep for our system. Thermalisation occurs at 5*N_cor-10*N_cor so we will say 
 #N_cor=20 or N_cor=10 
 
 #Next parameter to diagnose is N_cf, which is the nymber of paths we need to ensure that the probabilities are behaving nicely.
+
+#NB-Project booklet says we don't need to weight the paths when we average due to the way the paths are generated.
+
+#Trying to define G
+def G_comp(x,n):
+    g=0
+    for i in range(1,n):
+        g += g + x[i]*x[i-1]
+    return g/N
+
+#I want to genergate paths, take one very N_cf, get a G val, and then repeat n times to then get an average distribution 
+
+def MetroplisAv(n): 
+    plt.figure()
+    Gs=np.arange(0,n)                                           #Empty array to store vals of G  
+    x=np.array([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])       #Inital path of zeros       
+                      
+    for f in range (0,n):                                   
+        for i in range(0,5*N_cor):          #Thermalising path 
+            update(x)   
+    
+        for j in range(0,N_cf):             #Looping over random paths, keeping N_cf 
+            for k in range(0,N_cor):        #Am i taking the N_cf value correctly? 
+                update(x)
+        for l in range(0,N):
+            G=G_comp(x,l)                   #Ask Q-Basically i am not storing my G vals. I need a matrix/array to store them. Right now i just Get the Nth val and the rest are zero
+    
+        for z in range(0,N):
+            av_G=0 
+            for c in range(0,N_cf):         #This makes no sense 
+                av_G += av_G + G
+            av_G=av_G/N_cf
+
+        Gs[f]=av_G
+    #plt.hist(Gs,20)
+    #plt.show()
+    return Gs 
+
+print(MetroplisAv(50)) #Currently i am getting zeros! Suspicion that after thermalisation code cant find a way to decrease the action 
