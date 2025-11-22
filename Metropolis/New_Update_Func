@@ -8,13 +8,59 @@ import scipy.special as special
 import scipy.stats
 
 
-def TestEps(x):
-    array=np.arange(0,101)                                      #Array to store Acceptances 
-    for i in range(0,100):                                      #Number of we tested epsilon 
-        array[i]=update(x)
-    return (np.average(array), np.std(array)/(np.sqrt(N)))
+#defining constants 
+m=1
+N_cor=20  
+N_cf=100    #Number that needs to big enough to ensure probabilities behave  
+N=20        #Spatial Points
+a=1         #a is the time step, 4 temporal points, N spatial
+eps=2.9     #Range from which we will pick a random number. This is tuned so as to cause a 40%-60% acceptance rate. 
 
-x=np.zeros(shape=(1,20))
+#Defining the Harmonic potential 
+def V(x):
+    V=1/2*(x**2)
+    return V
 
-Test_path=np.array([0,1,2,3,4,5,6,7,8,9,9,8,7,6,5,4,3,2,1,0])
+#Defining the action -NB-For my Metropolis, it is more useful to define the action per segment, and the count for the summation in the update step. 
+def S(x,j):   
+    S = (m/2)*(((x[j]-x[j-1])/a)**2)+V((x[j]+x[j-1]))
+    return S
 
+#Defining the updating algorithm. 
+def update(x):
+
+    n=N-1                                   #n is the index of the path 
+    p=np.zeros(shape=(1,N))
+    p=p[0,:]
+    p[0]=p[n]=x
+                                                      
+    for j in range(0,N):
+        p_old=p[j] 
+        
+        if 0<j<N-2: 
+            Sj_old=S(p,j)
+            p[j]=p[j]+(np.random.uniform(-eps, eps))                     #This function form numpy generates random no between -eps and eps
+            dS1=S(p,j)-Sj_old
+            dS2=S(p,j+1)-Sj_old
+            if dS1 > 0 and dS2 > 0 and np.exp(-dS1) < np.random.uniform(0, 1) and np.exp(-dS2) < np.random.uniform(0, 1):
+                
+                p[j]=p_old
+    
+    return p                             
+
+#This obeys BCS BUT the intemidary paths make no sense!
+
+#I tried suing a while loop to set the Circular BC required however this just caused the code to ignore the step size for the last link. 
+
+#Some test funcs 
+for i in range(0,50):
+    q=update(3)
+
+print(q)
+T=np.arange(0,20,1)
+
+plt.figure()
+plt.plot(q,T)
+plt.show() 
+
+#I think this could actually be working.... 

@@ -4,17 +4,19 @@ import scipy
 import vegas 
 from scipy.optimize import curve_fit
 import scipy.integrate as integrate
-import scipy.special as special 
-import scipy.stats
+import scipy.special as special
+import scipy
+
+N=7 #Spatial Dim 
+
+def path(x):                                #x is the intial and final point (BC)  
+    n=N-1                                   #n is the index of the path 
+    int_path=np.zeros(shape=(1,N))
+    int_path=int_path[0,:]
+    int_path[0]=int_path[n]=x
+
+  
+#THIS IS THE POINT OF METROPLIS WHICH I SHOULDNT BE DOING!!!
 
 
-def TestEps(x):
-    array=np.arange(0,101)                                      #Array to store Acceptances 
-    for i in range(0,100):                                      #Number of we tested epsilon 
-        array[i]=update(x)
-    return (np.average(array), np.std(array)/(np.sqrt(N)))
-
-x=np.zeros(shape=(1,20))
-
-Test_path=np.array([0,1,2,3,4,5,6,7,8,9,9,8,7,6,5,4,3,2,1,0])
 

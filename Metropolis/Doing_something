@@ -1,0 +1,15 @@
+ p_old=p[j] 
+        if j==0:
+            Sj_old=S(p,j+1)
+            p[j]=p[j]+(np.random.uniform(-eps, eps)) 
+            dS= S(p,j+1)-Sj_old 
+            if dS > 0 and np.exp(-dS) < np.random.uniform(0, 1):
+                    
+                p[j]=p_old
+        if j==N-1:
+            Sj_old=S(p,j)
+            p[j]=p[j]+(np.random.uniform(-eps, eps)) 
+            dS= S(p,j)-Sj_old 
+            if dS > 0 and np.exp(-dS) < np.random.uniform(0, 1):
+                
+                p[j]=p_old
