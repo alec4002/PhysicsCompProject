@@ -12,8 +12,8 @@ m=1
 N_cor=20  
 N_cf=100    #Number that needs to big enough to ensure probabilities behave  
 N=20        #Spatial Points
-a=4/N       #a is the time step, 4 temporal points, N spatial
-eps=2   #Range from which we will pick a random number. This is tuned so as to cause a 40%-60% acceptance rate. 
+a=10/N      #a is the time step, 4 temporal points, N spatial
+eps=2       #Range from which we will pick a random number. This is tuned so as to cause a 40%-60% acceptance rate. 
 
 #Defining the Harmonic potential 
 def V(x):
@@ -27,26 +27,19 @@ def S(x,j):
 
 #Defining the updating algorithm. 
 def update(x):
-    A=0                                                     #Variable to track how many times a path is accepted 
+    A=0                                                              #Variable to track how many times a path is accepted 
     for j in range(0,N):
         x_old=x[j] 
         Sj_old=S(x,j)
-        x[j]=x[j]+(np.random.uniform(-eps, eps))            #This function form numpy generates random no between -eps and eps
+        x[j]=x[j]+(np.random.uniform(-eps, eps))                     #This function form numpy generates random no between -eps and eps
         dS= S(x,j)-Sj_old
         if dS > 0 and np.exp(-dS) < np.random.uniform(0, 1):
             A= A + 1
             x[j]=x_old
-    return x 
+    return x                            
 
 #NB this comes from Lepage, and he goes on to use this to find G for excited state. Going to try and get G for the Harmonic potential 
 #Quick Issue-How do i ensure x_0 and x_N are the same. I could rely on probabilty, and say if x_0 not equal x_N then reject? Seems like a rather messy way to solve. 
-
-#I am going to see if G simply is the sum of the weighted paths. 
-def G(x):
-    g=0
-    for i in len(1,len(x)):
-        g += g+np.exp(-a*S(x[i]))
-    return g 
 
 #Before defining my algorithem for getting G, i am going to test the thermalisation of the system 
 
@@ -75,11 +68,16 @@ def Graph(N_cor):
 
 #NB-i must check for Epsilon before inspecting N_cor!
 
+def TestEps(x):
+    array=np.arange(0,101)                                      #Array to store Acceptances 
+    for i in range(0,100):                                      #Number of we tested epsilon 
+        array[i]=update(x)
+    return (np.average(array), np.std(array)/(np.sqrt(N)))
+
 #Added an A value which counts the ammount of paths accepted
 #Going to make a little bit of code which tests some vals of epsilon for the best tuned 
 
-Test_path=np.arange(0,20)
-
+Test_path=np.array([0,1,2,3,4,5,6,7,8,9,9,8,7,6,5,4,3,2,1,0])
 
 #Using this test function we determined eps=2 to be the best. This was only for N=100. Should run for more later in project.See excel for the exact stats  
 
@@ -97,34 +95,34 @@ def G_comp(x,n):
     g=0
     for i in range(1,n):
         g += g + x[i]*x[i-1]
-    return g/N
+    return g                            #Haven't avearged will do in the metropolis code 
 
 #I want to genergate paths, take one very N_cf, get a G val, and then repeat n times to then get an average distribution 
 
-def MetroplisAv(n): 
+def MetroplisAv(x,n): 
     plt.figure()
-    Gs=np.arange(0,n)                                           #Empty array to store vals of G  
-    x=np.array([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])       #Inital path of zeros       
-                      
-    for f in range (0,n):                                   
-        for i in range(0,5*N_cor):          #Thermalising path 
-            update(x)   
-    
-        for j in range(0,N_cf):             #Looping over random paths, keeping N_cf 
-            for k in range(0,N_cor):        #Am i taking the N_cf value correctly? 
-                update(x)
-        for l in range(0,N):
-            G=G_comp(x,l)                   #Ask Q-Basically i am not storing my G vals. I need a matrix/array to store them. Right now i just Get the Nth val and the rest are zero
-    
-        for z in range(0,N):
-            av_G=0 
-            for c in range(0,N_cf):         #This makes no sense 
-                av_G += av_G + G
-            av_G=av_G/N_cf
+    G_store=np.arange(0,N_cf)  
+    Gs=np.arange(0,n+1) 
+    paths=np.zeros(shape=(N_cf,N))                                  #This creates a N_cf x N matrix to store the paths created
 
-        Gs[f]=av_G
-    #plt.hist(Gs,20)
-    #plt.show()
-    return Gs 
+    for f in range (0,n):                                           #Empty array to store vals of G        
 
-print(MetroplisAv(50)) #Currently i am getting zeros! Suspicion that after thermalisation code cant find a way to decrease the action 
+        for i in range(0,5*N_cor):                                  #Thermalising seems to just make all the points go to zero              
+            update(x)  
+        for j in range(0,N_cf):
+            for k in range(0,N_cor):
+                update(x)                                           #This still just gives me a bunch of zeros! Yay!
+            paths[k,:]=x                                            #This works nicely. I have a matrix of all my paths, which i can then operate on if i like!
+        
+    return paths
+
+#Goal:From my array of paths, Compute values of G (which are the mod squared of the wavefuntion) of each of the links. Then average the value for each link. Then plot.
+#Issue:after thermalisation, I seem to be unable to update my path, i.e. it just stays as a zero array. I calculate G as a running sum. So for array [1,2,3,4] running
+#sum would be [1,3,6,10]. I then would obvs need to normalise!
+
+Graph(150)                          #Bit spiky as i changed T to be half of N as in Landau it says N should roughly equal T. I did adjust Eps aaccordingly 
+#print(MetroplisAv(Test_path,1))
+#Epsilon isnt big enough 
+#Energy isnt defined well enough 
+#Check all the energy
+#Worry about epsilon not T

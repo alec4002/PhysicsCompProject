@@ -1,0 +1,9 @@
+import numpy as np 
+p=np.zeros(shape=(3,5))
+print(p)
+
+x=np.array([1,2,3,4,5])
+
+p[0,:]=x
+
+print(len(p))
