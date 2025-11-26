@@ -14,7 +14,7 @@ N_cor=20
 N_cf=100    #Number that needs to big enough to ensure probabilities behave  
 N=20        #Spatial Points
 a=1         #a is the time step, 4 temporal points, N spatial
-eps=2.9     #Range from which we will pick a random number. This is tuned so as to cause a 40%-60% acceptance rate. 
+eps=4     #Range from which we will pick a random number. This is tuned so as to cause a 40%-60% acceptance rate. 
 
 #Defining the Harmonic potential 
 def V(x):
@@ -29,7 +29,8 @@ def S(x,j):
 #Defining the updating algorithm. 
 def update(x):
 
-    n=N-1                                   #n is the index of the path 
+    A=0
+    n=N-1                                                                #n is the index of the path 
     p=np.zeros(shape=(1,N))
     p=p[0,:]
     p[0]=p[n]=x
@@ -43,24 +44,24 @@ def update(x):
             dS1=S(p,j)-Sj_old
             dS2=S(p,j+1)-Sj_old
             if dS1 > 0 and dS2 > 0 and np.exp(-dS1) < np.random.uniform(0, 1) and np.exp(-dS2) < np.random.uniform(0, 1):
-                
+                A=A+1
                 p[j]=p_old
     
-    return p                             
+    return p                #Change to N-A to test                      
 
 #This obeys BCS BUT the intemidary paths make no sense!
 
 #I tried suing a while loop to set the Circular BC required however this just caused the code to ignore the step size for the last link. 
 
 #Some test funcs 
-for i in range(0,50):
-    q=update(3)
+def test(x):
+    array=np.arange(0,101)
+    for i in range (0,100):
+        array[i]=update(x)
+    return np.average(array), np.std(array)/10 
+        
+for i in range(0,100):
+    n=update(2)
 
-print(q)
-T=np.arange(0,20,1)
+print(n) 
 
-plt.figure()
-plt.plot(q,T)
-plt.show() 
-
-#I think this could actually be working.... 

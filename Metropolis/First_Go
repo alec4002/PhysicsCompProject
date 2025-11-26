@@ -27,37 +27,26 @@ def S(x,j):
 
 #Defining the updating algorithm. 
 def update(x):
-    A=0  
 
-    
-                                                              
+    A=0
+    n=N-1                                                                #n is the index of the path 
+    p=np.zeros(shape=(1,N))
+    p=p[0,:]
+    p[0]=p[n]=x
+                                                      
     for j in range(0,N):
-        x_old=x[j] 
-        if j==0:
-            Sj_old=S(x,j+1)
-            x[j]=x[j]+(np.random.uniform(-eps, eps)) 
-            dS= S(x,j+1)-Sj_old 
-            if dS > 0 and np.exp(-dS) < np.random.uniform(0, 1):
-                    
-                x[j]=x_old
-        if j==N-1:
-            Sj_old=S(x,j)
-            x[j]=x[j]+(np.random.uniform(-eps, eps)) 
-            dS= S(x,j)-Sj_old 
-            if dS > 0 and np.exp(-dS) < np.random.uniform(0, 1):
-                
-                x[j]=x_old
-
+        p_old=p[j] 
+        
         if 0<j<N-2: 
-            Sj_old=S(x,j)
-            x[j]=x[j]+(np.random.uniform(-eps, eps))                     #This function form numpy generates random no between -eps and eps
-            dS1=S(x,j)-Sj_old
-            dS2=S(x,j+1)-Sj_old
+            Sj_old=S(p,j)
+            p[j]=p[j]+(np.random.uniform(-eps, eps))                     #This function form numpy generates random no between -eps and eps
+            dS1=S(p,j)-Sj_old
+            dS2=S(p,j+1)-Sj_old
             if dS1 > 0 and dS2 > 0 and np.exp(-dS1) < np.random.uniform(0, 1) and np.exp(-dS2) < np.random.uniform(0, 1):
-                
-                x[j]=x_old
+                A=A+1
+                p[j]=p_old
     
-    return x                                                            #Change to A when you want to test vals of eps                             
+    return p                    #Change to A when you want to test vals of eps                             
 
 #NB this comes from Lepage, and he goes on to use this to find G for excited state. Going to try and get G for the Harmonic potential 
 #Quick Issue-How do i ensure x_0 and x_N are the same. I could rely on probabilty, and say if x_0 not equal x_N then reject? Seems like a rather messy way to solve. 
@@ -120,28 +109,34 @@ def G_comp(x,n):
 
 #I want to genergate paths, take one very N_cf, get a G val, and then repeat n times to then get an average distribution 
 
-def MetroplisAv(x,n): 
-    plt.figure()
-    G_store=np.arange(0,N_cf)  
-    Gs=np.arange(0,n+1) 
-    paths=np.zeros(shape=(N_cf,N))                                  #This creates a N_cf x N matrix to store the paths created
+def MetroplisAv(x,n):               #x determines range of initial and final x points, n is number of times to average
+    G_av=np.arange(0,2*x)             
+    for j in (-x,x-1):                
+         G_store=np.arange(0,N_cf)
+         for i in (0,5*N_cor):
+            p=update(j)
+         for l in (0,N_cf-1):
+            for k in (0, N_cor):
+                p=update(j)
+            G=G_comp(p,len(p))
+            G_store[l]=G
+         G_av[j]=np.average(G_store)
+    plt.figure() 
+    x_vals=np.arange(-x,x)
+    plt.plot(x_vals,G_av)
+    plt.show() 
 
-    for f in range (0,n):                                           #Empty array to store vals of G        
-
-        for i in range(0,5*N_cor):                                  #Thermalising seems to just make all the points go to zero              
-            update(x)  
-        for j in range(0,N_cf):
-            for k in range(0,N_cor):
-                update(x)                                           #This still just gives me a bunch of zeros! Yay!
-            paths[k,:]=x                                            #This works nicely. I have a matrix of all my paths, which i can then operate on if i like!
+MetroplisAv(5,1)  
+    
         
-    return paths
+
+        
 
 #Goal:From my array of paths, Compute values of G (which are the mod squared of the wavefuntion) of each of the links. Then average the value for each link. Then plot.
 #Issue:after thermalisation, I seem to be unable to update my path, i.e. it just stays as a zero array. I calculate G as a running sum. So for array [1,2,3,4] running
 #sum would be [1,3,6,10]. I then would obvs need to normalise!
 
-print(update(np.arange(0,20,1)))
+
 
 #Below is pointers from ten min chat with zambon 
 #print(MetroplisAv(Test_path,1))
