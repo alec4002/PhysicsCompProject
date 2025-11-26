@@ -14,6 +14,7 @@ N_cf=100    #Number that needs to big enough to ensure probabilities behave
 N=20        #Spatial Points
 a=1         #a is the time step, 4 temporal points, N spatial
 eps=3.6     #Range from which we will pick a random number. This is tuned so as to cause a 40%-60% acceptance rate. 
+Q=(1/(2*np.pi*a))**(N/2)            #Normalising from Lepage
 
 #Defining the Harmonic potential 
 def V(x):
@@ -22,7 +23,7 @@ def V(x):
 
 #Defining the action -NB-For my Metropolis, it is more useful to define the action per segment, and the count for the summation in the update step. 
 def S(x,j):   
-    S = (m/2)*(((x[j]-x[j-1])/a)**2)+V((x[j]+x[j-1]))
+    S = (m/2*a)*(((x[j]-x[j-1]))**2)+a*V((x[j-1]))   # +x[j-1]))
     return S
 
 #Defining the updating algorithm. 
@@ -64,7 +65,7 @@ def E_tot(x):
 
 #Making a func to plot E vs no of paths
 def Graph(N_cor):
-    x=np.arange(0,N,1)                  #Empty path to begin 
+    x=np.arange(0,N)                  #Empty path to begin 
     E=np.arange(0,N_cor)                #Empty energy vals to replace
     for i in range(0,N_cor):
         update(x)                       #sweeping the lattice
@@ -105,31 +106,39 @@ def G_comp(x,n):
     g=0
     for i in range(1,n):
         g += g + x[i]*x[i-1]
-    return g                            #Haven't avearged will do in the metropolis code 
+    return g/N                           #Haven't avearged will do in the metropolis code 
 
 #I want to genergate paths, take one very N_cf, get a G val, and then repeat n times to then get an average distribution 
 
-def MetroplisAv(x,n):               #x determines range of initial and final x points, n is number of times to average
-    G_av=np.arange(0,2*x)             
-    for j in (-x,x-1):                
+def f(x):                                       #Anlytioc solution from Schrodinger 
+    return np.exp((-x**2)/2)/((np.pi)**(1/4))
+
+Analytic_x_vals=np.arange(-2,2.1,0.001)
+
+def MetroplisAv(x,n):                                       #x determines range of initial and final x points, n is number of times to average
+    G_av=np.array([])     
+    int_vals=np.arange(-x,x+0.5,0.5)                                  #Array to save G_av vals
+    for j in range(0,len(int_vals)):                             #Range of X vals for G to test-ISSUE-for loop only takes integers use linspace
          G_store=np.arange(0,N_cf)
-         for i in (0,5*N_cor):
-            p=update(j)
-         for l in (0,N_cf-1):
-            for k in (0, N_cor):
-                p=update(j)
-            G=G_comp(p,len(p))
+         for i in range(0,5*N_cor):
+            p=update(int_vals[j])                                     #Thermalising 
+         for l in range(0,N_cf-1):
+            for k in range(0, N_cor):
+                p=update(int_vals[j])
+            G=G_comp(p,len(p))                              #calc G for that val, then save it to an array
             G_store[l]=G
-         G_av[j]=np.average(G_store)
+         G_av=np.append(G_av,np.average(G_store))
+              
     plt.figure() 
-    x_vals=np.arange(-x,x)
-    plt.plot(x_vals,G_av)
+    plt.ylabel('$|\psi(x)|^{2}$')
+    plt.xlabel('$x$')
+    plt.scatter(int_vals,G_av*(Q)**(0))
     plt.show() 
 
-MetroplisAv(5,1)  
+MetroplisAv(2,1)  
     
         
-
+#I am very confused by my plot 
         
 
 #Goal:From my array of paths, Compute values of G (which are the mod squared of the wavefuntion) of each of the links. Then average the value for each link. Then plot.
