@@ -52,106 +52,37 @@ def update(x):
 #NB this comes from Lepage, and he goes on to use this to find G for excited state. Going to try and get G for the Harmonic potential 
 #Quick Issue-How do i ensure x_0 and x_N are the same. I could rely on probabilty, and say if x_0 not equal x_N then reject? Seems like a rather messy way to solve. 
 
-#Before defining my algorithem for getting G, i am going to test the thermalisation of the system 
-
-#Energy of the path is just sum of S along the path 
-#Plot path vs enegry. Do Ns until it levels 
-
-def E_tot(x):
-    E=0
-    for i in range(1,len(x)):
-        E += E + S(x,i)
-    return E 
-
-#Making a func to plot E vs no of paths
-def Graph(N_cor):
-    x=np.arange(0,N)                  #Empty path to begin 
-    E=np.arange(0,N_cor)                #Empty energy vals to replace
-    for i in range(0,N_cor):
-        update(x)                       #sweeping the lattice
-        E[i]=E_tot(x)                   #Calculating total energy 
-        Steps=np.arange(0,N_cor)        #Keeping track of corresponding sweep number
-    plt.figure()
-    plt.xlabel('N_cor')
-    plt.ylabel('Energy')
-    plt.plot(Steps,E)
-    plt.show()
-
-#NB-i must check for Epsilon before inspecting N_cor!
-
-def TestEps(x):
-    array=np.arange(0,101)                                      #Array to store Acceptances 
-    for i in range(0,100):                                      #Number of we tested epsilon 
-        array[i]=update(x)
-    return (np.average(array), np.std(array)/(np.sqrt(N)))
-
-#Added an A value which counts the ammount of paths accepted
-#Going to make a little bit of code which tests some vals of epsilon for the best tuned 
-
-Test_path=np.array([0,1,2,3,4,5,6,7,8,9,9,8,7,6,5,4,3,2,1,0])
-
-#Using this test function we determined eps=2 to be the best. This was only for N=100. Should run for more later in project.See excel for the exact stats  
-
-#With good eps, now finding our N_cor 
-
-#100 we get thermalisation However N_cor is defined as the Nth path we choose from our sweep for our system. Thermalisation occurs at 5*N_cor-10*N_cor so we will say 
-#N_cor=20 or N_cor=10 
-
-#Next parameter to diagnose is N_cf, which is the nymber of paths we need to ensure that the probabilities are behaving nicely.
-
-#NB-Project booklet says we don't need to weight the paths when we average due to the way the paths are generated.
-
-#Trying to define G
-def G_comp(x,n):
-    g=0
-    for i in range(1,n):
-        g += g + x[i]*x[i-1]
-    return g/N                           #Haven't avearged will do in the metropolis code 
-
+#Define G
+def G(x):   
+    g=x.sum(axis=0)
+    return g/N_cf
+                 
 #I want to genergate paths, take one very N_cf, get a G val, and then repeat n times to then get an average distribution 
 
-def f(x):                                       #Anlytioc solution from Schrodinger 
+def f(x):                                       #Anlytic solution from Schrodinger 
     return np.exp((-x**2)/2)/((np.pi)**(1/4))
 
 Analytic_x_vals=np.arange(-2,2.1,0.001)
 
 def MetroplisAv(x,n):                                       #x determines range of initial and final x points, n is number of times to average
-    G_av=np.array([])     
+    #G_av=np.array([])     
     int_vals=np.arange(-x,x+0.5,0.5)                                  #Array to save G_av vals
-    for j in range(0,len(int_vals)):                             #Range of X vals for G to test-ISSUE-for loop only takes integers use linspace
-         G_store=np.arange(0,N_cf)
-         for i in range(0,5*N_cor):
+    paths=np.zeros(shape=(N_cf,N))
+    int_vals=np.arange(-x,x+0.5,0.5)                                  #Array to save G_av vals
+   
+    for j in range(0,len(int_vals)):
+        for i in range(0,5*N_cor):
             p=update(int_vals[j])                                     #Thermalising 
-         for l in range(0,N_cf-1):
+       
+        for l in range(0,N_cf-1):
             for k in range(0, N_cor):
                 p=update(int_vals[j])
-            G=G_comp(p,len(p))                              #calc G for that val, then save it to an array
-            G_store[l]=G
-         G_av=np.append(G_av,np.average(G_store))
-              
-    plt.figure() 
-    plt.ylabel('$|\psi(x)|^{2}$')
-    plt.xlabel('$x$')
-    plt.scatter(int_vals,G_av*(Q)**(1))
-    plt.show() 
-
-MetroplisAv(2,1)  
-
-#I think i am missing a trick. I am not getting probabilities, just the results if the sum. I need to some how count the the total paths, and then calc probabilities
-    
+            paths[l,:]=p
+            G_av=G(paths)
         
-#I am very confused by my plot 
-        
+    return(G_av)    
 
-#Goal:From my array of paths, Compute values of G (which are the mod squared of the wavefuntion) of each of the links. Then average the value for each link. Then plot.
-#Issue:after thermalisation, I seem to be unable to update my path, i.e. it just stays as a zero array. I calculate G as a running sum. So for array [1,2,3,4] running
-#sum would be [1,3,6,10]. I then would obvs need to normalise!
+#I need to do some writing but on the right track. Need to change update function so BCs behave. Unsure what to do for different starting and end points. Maybe
+#update function accounts for this? Try and see what happens. 
 
-
-
-#Below is pointers from ten min chat with zambon 
-#print(MetroplisAv(Test_path,1))
-#Epsilon isnt big enough 
-#Energy isnt defined well enough 
-#Check all the energy
-#Worry about epsilon not T
+print((MetroplisAv(2,1)))
