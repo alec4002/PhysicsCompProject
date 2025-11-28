@@ -7,68 +7,10 @@ import scipy.integrate as integrate
 import scipy.special as special 
 import scipy.stats
 
-#defining constants 
-m=1
-N_cor=20  
-N_cf=100    #Number that needs to big enough to ensure probabilities behave  
-N=20        #Spatial Points
-a=1         #a is the time step, 4 temporal points, N spatial
-eps=4.0     #Range from which we will pick a random number. This is tuned so as to cause a 40%-60% acceptance rate. 
-Q=(1/(2*np.pi*a))**(N/2)            #Normalising from Lepage
+paths=np.array([1.1,2,4,5,7,4,2,5.7])
 
-#Defining the Harmonic potential 
-def V(x):
-    V=1/2*(x**2)
-    return V
+a=np.max(paths)
+b=np.min(paths)
+low, high = np.floor(b), np.ceil(a)
+bins = np.linspace(low, high, high - low + 1)
 
-#Defining the action -NB-For my Metropolis, it is more useful to define the action per segment, and the count for the summation in the update step. 
-def S(x,j):   
-    S = (m/2*a)*(((x[j]-x[j-1]))**2)+a*V((x[j-1]))   # +x[j-1]))
-    return S
-
-#Defining the updating algorithm. 
-def update(n):                      #n is dimension of the path                                                          
-    A=0
-    p=np.zeros(shape=(1,N))                                              
-    p=p[0,:]
-    p[0]=p[n-1]
-                                                      
-    for j in range(0,N-1):
-        p_old=p[j] 
-        
-        if j==0:
-            Sj_old=S(p,j)
-            p[j]=p[j]+(np.random.uniform(-eps, eps))                     #This function form numpy generates random no between -eps and eps
-            dS1=S(p,j)-Sj_old
-            p[0]=p[n-1]
-            if dS1 > 0  and np.exp(-dS1) < np.random.uniform(0, 1):
-                A=A+1
-                p[j]=p_old
-            
-        if 0<j<N-2: 
-            Sj_old=S(p,j)
-            p[j]=p[j]+(np.random.uniform(-eps, eps))                     #This function form numpy generates random no between -eps and eps
-            dS1=S(p,j)-Sj_old
-            dS2=S(p,j+1)-Sj_old
-            if dS1 > 0 and dS2 > 0 and np.exp(-dS1) < np.random.uniform(0, 1) and np.exp(-dS2) < np.random.uniform(0, 1):
-                A=A+1
-                p[j]=p_old
-        
-        if j== N-1: 
-            Sj_old=S(p,j)
-            p[j]=p[j]+(np.random.uniform(-eps, eps))                     #This function form numpy generates random no between -eps and eps
-            dS2=S(p,j+1)-Sj_old
-            p[n-1]=p[0]
-            if dS2 > 0 and np.exp(-dS2) < np.random.uniform(0, 1):
-                A=A+1
-                p[j]=p_old
-    
-    return N-1-A
-
-def TestEps(n):
-    array=np.arange(0,101)                                      #Array to store Acceptances 
-    for i in range(0,100):                                      #Number of we tested epsilon 
-        array[i]=update(n)
-    return (np.average(array), np.std(array)/(np.sqrt(len(array))))  
-
-print(TestEps(N))

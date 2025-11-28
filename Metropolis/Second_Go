@@ -13,7 +13,7 @@ N_cor=20
 N_cf=100    #Number that needs to big enough to ensure probabilities behave  
 N=20        #Spatial Points
 a=1         #a is the time step, 4 temporal points, N spatial
-eps=3.6     #Range from which we will pick a random number. This is tuned so as to cause a 40%-60% acceptance rate. 
+eps=4       #Range from which we will pick a random number. This is tuned so as to cause a 40%-60% acceptance rate. 
 Q=(1/(2*np.pi*a))**(N/2)            #Normalising from Lepage
 
 #Defining the Harmonic potential 
@@ -27,23 +27,39 @@ def S(x,j):
     return S
 
 #Defining the updating algorithm. 
-def update(x):
-
+def update(n):                      #n is dimension of the path                                                          
     A=0
-    n=N-1                                                                #n is the index of the path 
-    p=np.zeros(shape=(1,N))
+    p=np.zeros(shape=(1,N))+0.2                                             
     p=p[0,:]
-    p[0]=p[n]=x
+    p[0]=p[n-1]
                                                       
-    for j in range(0,N):
+    for j in range(0,N-1):
         p_old=p[j] 
         
+        if j==0:
+            Sj_old=S(p,j)
+            p[j]=p[j]+(np.random.uniform(-eps, eps))                     #This function form numpy generates random no between -eps and eps
+            dS1=S(p,j)-Sj_old
+            p[0]=p[n-1]
+            if dS1 > 0  and np.exp(-dS1) < np.random.uniform(0, 1):
+                A=A+1
+                p[j]=p_old
+            
         if 0<j<N-2: 
             Sj_old=S(p,j)
             p[j]=p[j]+(np.random.uniform(-eps, eps))                     #This function form numpy generates random no between -eps and eps
             dS1=S(p,j)-Sj_old
             dS2=S(p,j+1)-Sj_old
             if dS1 > 0 and dS2 > 0 and np.exp(-dS1) < np.random.uniform(0, 1) and np.exp(-dS2) < np.random.uniform(0, 1):
+                A=A+1
+                p[j]=p_old
+        
+        if j== N-1: 
+            Sj_old=S(p,j)
+            p[j]=p[j]+(np.random.uniform(-eps, eps))                     #This function form numpy generates random no between -eps and eps
+            dS2=S(p,j+1)-Sj_old
+            p[n-1]=p[0]
+            if dS2 > 0 and np.exp(-dS2) < np.random.uniform(0, 1):
                 A=A+1
                 p[j]=p_old
     
@@ -60,29 +76,33 @@ def G(x):
 #I want to genergate paths, take one very N_cf, get a G val, and then repeat n times to then get an average distribution 
 
 def f(x):                                       #Anlytic solution from Schrodinger 
-    return np.exp((-x**2)/2)/((np.pi)**(1/4))
+    return (np.exp((-x**2)/2)/((np.pi)**(1/4)))**2
 
-Analytic_x_vals=np.arange(-2,2.1,0.001)
+Analytic_x_vals=np.arange(-5,5.1,0.001)
 
-def MetroplisAv(x,n):                                       #x determines range of initial and final x points, n is number of times to average
-    #G_av=np.array([])     
-    int_vals=np.arange(-x,x+0.5,0.5)                                  #Array to save G_av vals
+def MetroplisAv(n):                                      
     paths=np.zeros(shape=(N_cf,N))
-    int_vals=np.arange(-x,x+0.5,0.5)                                  #Array to save G_av vals
-   
-    for j in range(0,len(int_vals)):
-        for i in range(0,5*N_cor):
-            p=update(int_vals[j])                                     #Thermalising 
+                            
+    for i in range(0,5*N_cor):
+        p=update(n)                                     #Thermalising 
        
-        for l in range(0,N_cf-1):
-            for k in range(0, N_cor):
-                p=update(int_vals[j])
-            paths[l,:]=p
-            G_av=G(paths)
-        
-    return(G_av)    
+    for l in range(0,N_cf-1):
+        for k in range(0, N_cor):
+            p=update(n)
+        paths[l,:]=p
 
-#I need to do some writing but on the right track. Need to change update function so BCs behave. Unsure what to do for different starting and end points. Maybe
-#update function accounts for this? Try and see what happens. 
+    return(np.histogram(paths,bins=100,density=True))
 
-print((MetroplisAv(2,1)))
+ 
+counts, bins = MetroplisAv(N)
+counts= counts/(np.sum(counts))
+#print(np.sum(counts))
+
+plt.figure()  
+plt.ylabel('$|\psi(x)|^{2}$')
+plt.xlabel('x')
+plt.ylim([0,1])
+plt.stairs(counts,bins,fill=True)
+plt.plot(Analytic_x_vals,f(Analytic_x_vals))
+plt.savefig('Probability distribution.png')
+plt.show() 
