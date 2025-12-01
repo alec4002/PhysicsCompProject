@@ -7,6 +7,7 @@ import scipy.integrate as integrate
 import scipy.special as special 
 import scipy.stats
 
+
 #defining constants 
 m=1
 N_cor=20
@@ -76,8 +77,6 @@ def update(p,I):                      #n is dimension of the path , i is the num
     return p                                                              #Change to A/N when you want to test vals of eps                             
 
  
-
-
 def f(x):                                               #Anlytic solution from Schrodinger 
     return (np.exp((-x**2)/2)/((np.pi)**(1/4)))**2
 
@@ -98,22 +97,8 @@ q=q.ravel()                                                                     
 counts, bins= np.histogram(q.ravel(),bins=np.arange(-2,2,0.05),density=True)
 Widths= np.diff(bins)
 centre=bins[:-1]+Widths/2                                                           #This is the x co-ord of the centre of each bin
-                                                                                    #scip-py test this data vs my analytic soln 
-
-def fit_(x,A,B):
-    return A*np.exp(-B*x**2)
 
 
-#Plot code
-plt.figure()                                                                               
-plt.ylabel('$|\psi(x)|^{2}$')
-plt.xlabel('x')
-plt.xlim([-3,3.1])
-plt.stairs(counts, bins, fill=True)
-plt.hist(q.ravel(),bins=np.arange(-2,2,0.05),density=True,color='royalblue')
-plt.plot(Analytic_x_vals,f(Analytic_x_vals), linestyle='dashed',color='red')
-plt.savefig('Probability distribution.png')
-plt.show() 
 
 #used wolfram to integrate 
 
@@ -131,5 +116,3 @@ for i in range(0,len(E_i)):
     chi_squared = chi_squared + ((counts[i]-E_i[i])**2)/(E_i[i])
 
 print(chi_squared)
-
-#for the graph saved the Chi_squared=290.41911474735514
