@@ -7,13 +7,17 @@ import scipy.integrate as integrate
 import scipy.special as special 
 import scipy.stats
 
+#Goint to try to make it that when looping, we dont always start with the initial path again. Because rn when we loop the update function, we force the inital path 
+#to be the zero configuration instead of the new updated path 
+
+
 #defining constants 
 m=1
-N_cor=20  
+N_cor=500  
 N_cf=100    #Number that needs to big enough to ensure probabilities behave  
 N=20        #Spatial Points
 a=1         #a is the time step, 4 temporal points, N spatial
-eps=1.4       #Range from which we will pick a random number. This is tuned so as to cause a 40%-60% acceptance rate. 
+eps=1.6       #Range from which we will pick a random number. This is tuned so as to cause a 40%-60% acceptance rate. 
 Q=(1/(2*np.pi*a))**(N/2)            #Normalising from Lepage
 
 #Defining the Harmonic potential 
@@ -27,57 +31,65 @@ def S(x,j):
     return S
 
 #Defining the updating algorithm. 
-def update(n):                      #n is dimension of the path                                                          
+x=np.zeros(shape=(1,N))          #Take this out see if i can make it so p i saved                                    
+x=x[0,:]
+
+def update(p,I):                      #n is dimension of the path , i is the number of loops to complete                                                         
     A=0
-    p=np.zeros(shape=(1,N))                                             
-    p=p[0,:]
-    p[0]=p[n-1]
-    
-
-    for j in range(0,N):
-        p_old=p[j] 
+    n=len(p)
+    for i in range(0,I):
+        for j in range(0,N):
+            p_old=p[j] 
         
-        if j==0:
-            Sj_old=S(p,j+1)
-            p[j]=p[j]+(np.random.uniform(-eps, eps))                     #This function form numpy generates random no between -eps and eps
-            dS1=S(p,j+1)-Sj_old
-            p[0]=p[n-1]
-            A = A+1
-            if dS1 > 0  and np.exp(-dS1) < np.random.uniform(0, 1):
-                A = A-1
-                p[j]=p_old
+            if j==0:
+                Sj_old=S(p,j+1)
+                p[j]=p[j]+(np.random.uniform(-eps, eps))                     #This function form numpy generates random no between -eps and eps
+                dS1=S(p,j+1)-Sj_old
+                p[0]=p[n-1]
+                A = A+1
+                if dS1 > 0  and np.exp(-dS1) < np.random.uniform(0, 1):
+                    A = A-1
+                    p[j]=p_old
 
             
-        if 0<j<N-1: 
-            Sj_old1=S(p,j+1)
-            Sj_old2=S(p,j)
-            p[j]=p[j]+(np.random.uniform(-eps, eps))                     #This function form numpy generates random no between -eps and eps
-            dS1=S(p,j+1)
-            dS2=S(p,j)
-            dS=(dS1+dS2)-(Sj_old1+Sj_old2)
-            A = A+1 
-            if dS > 0 and np.exp(-dS) < np.random.uniform(0, 1):
-                A = A-1 
-                p[j]=p_old
+            if 0<j<n-1: 
+                Sj_old1=S(p,j+1)
+                Sj_old2=S(p,j)
+                p[j]=p[j]+(np.random.uniform(-eps, eps))                     #This function form numpy generates random no between -eps and eps
+                dS1=S(p,j+1)
+                dS2=S(p,j)
+                dS=(dS1+dS2)-(Sj_old1+Sj_old2)
+                A = A+1 
+                if dS > 0 and np.exp(-dS) < np.random.uniform(0, 1):
+                    A = A-1 
+                    p[j]=p_old
             
         
-        if j== N-1: 
-            Sj_old=S(p,j)
-            p[j]=p[j]+(np.random.uniform(-eps, eps))                     #This function form numpy generates random no between -eps and eps
-            dS2=S(p,j)-Sj_old
-            p[n-1]=p[0]
-            A = A+1
-            if dS2 > 0 and np.exp(-dS2) < np.random.uniform(0, 1):
-                A = A - 0
-                p[j]=p_old
+            if j== n-1: 
+                Sj_old=S(p,j)
+                p[j]=p[j]+(np.random.uniform(-eps, eps))                     #This function form numpy generates random no between -eps and eps
+                dS2=S(p,j)-Sj_old
+                p[n-1]=p[0]
+                A = A+1
+                if dS2 > 0 and np.exp(-dS2) < np.random.uniform(0, 1):
+                    A = A - 0
+                    p[j]=p_old
             
-    return A/N              
+    return A/N            
 
-U=0 
-for i in range(0,101):
-    U = U + update(N)
 
-print(U/100)
 
 #Goint to try to make it that when looping, we dont always start with the initial path again. Because rn when we loop the update function, we force the inital path 
 #to be the zero configuration instead of the new updated path 
+
+#So it loops I times. Now i want to loop N_cf Times, but store every N_cor value
+#make I=N_cor, then store, then repeat N_cf times? Bit better but now i clean the slate evry N_cor times
+#Dist is very very close correct. One solution: Run update funch N_cfxN_cor time and then choose the the N_cfth paths. Thats an insane amount (2000) of paths to store.
+#Is there a way to get N_cf in the func?
+
+U=0 
+for i in range(0,101):
+    U = U + update(x,1)
+
+print(U/100)
+ 

@@ -9,12 +9,12 @@ import scipy.stats
 
 #defining constants 
 m=1
-N_cor=20  
-N_cf=100    #Number that needs to big enough to ensure probabilities behave  
+N_cor=20
+N_cf=100*2    #Number that needs to big enough to ensure probabilities behave  
 N=20        #Spatial Points
-a=1         #a is the time step, 4 temporal points, N spatial
-eps=4       #Range from which we will pick a random number. This is tuned so as to cause a 40%-60% acceptance rate. 
-Q=(1/(2*np.pi*a))**(N/2)            #Normalising from Lepage
+a=1       #a is the time step, 4 temporal points, N spatial
+eps=1.6     #Range from which we will pick a random number. This is tuned so as to cause a 40%-60% acceptance rate. 
+
 
 #Defining the Harmonic potential 
 def V(x):
@@ -27,82 +27,92 @@ def S(x,j):
     return S
 
 #Defining the updating algorithm. 
-def update(n):                      #n is dimension of the path                                                          
+x=np.zeros(shape=(1,N))          #Take this out see if i can make it so p i saved                                    
+x=x[0,:]
+
+def update(p,I):                      #n is dimension of the path , i is the number of loops to complete , p is the inital path                                                       
     A=0
-    p=np.zeros(shape=(1,N))+0.2                                             
-    p=p[0,:]
-    p[0]=p[n-1]
-                                                      
-    for j in range(0,N-1):
-        p_old=p[j] 
+    n=len(p)
+    for i in range(0,I):
+        for j in range(0,N):
+            p_old=p[j] 
         
-        if j==0:
-            Sj_old=S(p,j)
-            p[j]=p[j]+(np.random.uniform(-eps, eps))                     #This function form numpy generates random no between -eps and eps
-            dS1=S(p,j)-Sj_old
-            p[0]=p[n-1]
-            if dS1 > 0  and np.exp(-dS1) < np.random.uniform(0, 1):
-                A=A+1
-                p[j]=p_old
+            if j==0:
+                Sj_old=S(p,j+1)
+                p[j]=p[j]+(np.random.uniform(-eps, eps))                     #This function form numpy generates random no between -eps and eps
+                dS1=S(p,j+1)-Sj_old
+                A = A+1
+                if dS1 > 0  and np.exp(-dS1) < np.random.uniform(0, 1):
+                    A = A-1
+                    p[j]=p_old
+
             
-        if 0<j<N-2: 
-            Sj_old=S(p,j)
-            p[j]=p[j]+(np.random.uniform(-eps, eps))                     #This function form numpy generates random no between -eps and eps
-            dS1=S(p,j)-Sj_old
-            dS2=S(p,j+1)-Sj_old
-            if dS1 > 0 and dS2 > 0 and np.exp(-dS1) < np.random.uniform(0, 1) and np.exp(-dS2) < np.random.uniform(0, 1):
-                A=A+1
-                p[j]=p_old
+            if 0<j<n-1: 
+                Sj_old1=S(p,j+1)
+                Sj_old2=S(p,j)
+                p[j]=p[j]+(np.random.uniform(-eps, eps))                     #This function form numpy generates random no between -eps and eps
+                dS1=S(p,j+1)
+                dS2=S(p,j)
+                dS=(dS1+dS2)-(Sj_old1+Sj_old2)
+                A = A+1 
+                if dS > 0 and np.exp(-dS) < np.random.uniform(0, 1):
+                    A = A-1 
+                    p[j]=p_old
+            
         
-        if j== N-1: 
-            Sj_old=S(p,j)
-            p[j]=p[j]+(np.random.uniform(-eps, eps))                     #This function form numpy generates random no between -eps and eps
-            dS2=S(p,j+1)-Sj_old
-            p[n-1]=p[0]
-            if dS2 > 0 and np.exp(-dS2) < np.random.uniform(0, 1):
-                A=A+1
-                p[j]=p_old
-    
-    return p                    #Change to A when you want to test vals of eps                             
+            if j== n-1: 
+                Sj_old=S(p,j)
+                p[j]=p[j]+(np.random.uniform(-eps, eps))                     #This function form numpy generates random no between -eps and eps
+                dS2=S(p,j)-Sj_old
+                A = A+1
+                if dS2 > 0 and np.exp(-dS2) < np.random.uniform(0, 1):
+                    A = A - 0
+                    p[j]=p_old
+                    
 
-#NB this comes from Lepage, and he goes on to use this to find G for excited state. Going to try and get G for the Harmonic potential 
-#Quick Issue-How do i ensure x_0 and x_N are the same. I could rely on probabilty, and say if x_0 not equal x_N then reject? Seems like a rather messy way to solve. 
+            if p[0] != p[n-1]:
+                p[0]= p[n-1]
+     
+    return p                                                              #Change to A/N when you want to test vals of eps                             
 
-#Define G
-def G(x):   
-    g=x.sum(axis=0)
-    return g/N_cf
-                 
-#I want to genergate paths, take one very N_cf, get a G val, and then repeat n times to then get an average distribution 
+ 
 
-def f(x):                                       #Anlytic solution from Schrodinger 
+
+def f(x):                                               #Anlytic solution from Schrodinger 
     return (np.exp((-x**2)/2)/((np.pi)**(1/4)))**2
 
 Analytic_x_vals=np.arange(-5,5.1,0.001)
 
-def MetroplisAv(n):                                      
-    paths=np.zeros(shape=(N_cf,N))
-                            
-    for i in range(0,5*N_cor):
-        p=update(n)                                     #Thermalising 
+def MetroplisAv(x):                                      
+    paths=np.zeros(shape=(N_cf,N))                            
+    p=update(x,10*N_cor)                                     #Thermalising 
        
     for l in range(0,N_cf-1):
-        for k in range(0, N_cor):
-            p=update(n)
+        p=update(p,N_cor)
         paths[l,:]=p
 
-    return(np.histogram(paths,bins=100,density=True))
+    return(paths)
 
- 
-counts, bins = MetroplisAv(N)
-counts= counts/(np.sum(counts))
-#print(np.sum(counts))
+q=MetroplisAv(x)
+q=q.ravel()                                                                         #This gives my vals as a flat list (i think)
+counts, bins= np.histogram(q.ravel(),bins=np.arange(-2,2,0.05),density=True)
+Widths= np.diff(bins)
+centre=bins[:-1]+Widths/2                                                           #This is the x co-ord of the centre of each bin
+                                                                                    #scip-py test this data vs my analytic soln 
 
-plt.figure()  
+def fit_(x,A,B):
+    return A*np.exp(-B*x**2)
+
+
+#Plot code
+plt.figure()                                                                               
 plt.ylabel('$|\psi(x)|^{2}$')
 plt.xlabel('x')
-plt.ylim([0,1])
-plt.stairs(counts,bins,fill=True)
+plt.xlim([-3,3.1])
+plt.stairs(counts, bins, fill=True)
+#plt.hist(q.ravel(),bins=np.arange(-2,2,0.05),density=True)
 plt.plot(Analytic_x_vals,f(Analytic_x_vals))
 plt.savefig('Probability distribution.png')
 plt.show() 
+
+
