@@ -105,15 +105,16 @@ def fit_(x,A,B):
 
 
 #Plot code
-plt.figure()                                                                               
-plt.ylabel('$|\psi(x)|^{2}$')
-plt.xlabel('x')
-plt.xlim([-3,3.1])
-plt.stairs(counts, bins, fill=True)
-plt.hist(q.ravel(),bins=np.arange(-2,2,0.05),density=True,color='royalblue')
-plt.plot(Analytic_x_vals,f(Analytic_x_vals), linestyle='dashed',color='red')
-plt.savefig('Probability distribution.png')
-plt.show() 
+#plt.figure()                                                                             
+#plt.ylabel('$|\psi(x)|^{2}$')
+#plt.xlabel('x')
+#plt.xlim([-3,3.1])
+#plt.stairs(counts, bins, fill=True)
+#plt.hist(q.ravel(),bins=np.arange(-2,2,0.05),density=True,color='royalblue', label='Numeric Solution')
+#plt.plot(Analytic_x_vals,f(Analytic_x_vals), linestyle='dashed',color='red',label='Analytic Solution')
+#plt.legend() 
+#plt.savefig('Probability distribution.png')
+#plt.show() 
 
 #used wolfram to integrate 
 
@@ -130,6 +131,12 @@ chi_squared=0
 for i in range(0,len(E_i)):
     chi_squared = chi_squared + ((counts[i]-E_i[i])**2)/(E_i[i])
 
-print(chi_squared)
 
-#for the graph saved the Chi_squared=290.41911474735514
+
+#for the graph saved the Chi_squared=293.865381230315,291.17199269089826,300.0306444240506,295.01523297265203,295.64026691716543,291.9895021844989,291.24035970332096,293.0856509199218,297.15252854772723,298.38875947250625
+
+chi_vals=np.array([293.865381230315,291.17199269089826,300.0306444240506,295.01523297265203,295.64026691716543,291.9895021844989,291.24035970332096,293.0856509199218,297.15252854772723,298.38875947250625])
+chi_av=np.average(chi_vals)
+chi_std_error=np.std(chi_vals)/(10)**1/2
+
+print(chi_av, chi_std_error)
