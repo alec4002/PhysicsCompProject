@@ -11,7 +11,7 @@ import scipy.stats
 #defining constants 
 m=1
 N_cor=20
-N_cf=100*2    #Number that needs to big enough to ensure probabilities behave  
+N_cf=5000    #Number that needs to big enough to ensure probabilities behave  
 N=20        #Spatial Points
 a=1       #a is the time step, 4 temporal points, N spatial
 eps=1.6     #Range from which we will pick a random number. This is tuned so as to cause a 40%-60% acceptance rate. 
@@ -115,4 +115,4 @@ chi_squared=0
 for i in range(0,len(E_i)):
     chi_squared = chi_squared + ((counts[i]-E_i[i])**2)/(E_i[i])
 
-print(chi_squared)
+print(np.sum(counts*5000))

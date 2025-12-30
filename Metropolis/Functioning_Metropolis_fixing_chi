@@ -95,7 +95,7 @@ def MetroplisAv(x):
 
 q=MetroplisAv(x)
 q=q.ravel()                                                                         #This gives my vals as a flat list (i think)
-counts, bins= np.histogram(q.ravel(),bins=np.arange(-2,2,0.05),density=True)
+counts, bins= np.histogram(q.ravel(),bins=np.arange(-2,2,0.05))#,density=True)
 Widths= np.diff(bins)
 centre=bins[:-1]+Widths/2                                                           #This is the x co-ord of the centre of each bin
                                                                                     #scip-py test this data vs my analytic soln 
@@ -103,6 +103,12 @@ centre=bins[:-1]+Widths/2                                                       
 def fit_(x,A,B):
     return A*np.exp(-B*x**2)
 
+def F(x):
+    f=np.array([])
+    for i in range(1,len(x)-1):
+        d=(scipy.special.erf((x[i]))-scipy.special.erf((x[i-1])))*(1/2)
+        f=np.append(f,d)
+    return f
 
 #Plot code
 plt.figure()                                                                             
@@ -111,29 +117,27 @@ plt.xlabel('x',fontsize=13)
 plt.xlim([-3,3.1])
 plt.stairs(counts, bins, fill=True)
 plt.hist(q.ravel(),bins=np.arange(-2,2,0.05),density=True,color='royalblue', label='Numeric Solution')
-plt.plot(Analytic_x_vals,f(Analytic_x_vals), linestyle='dashed',color='red',label='Analytic Solution')
+plt.plot(Analytic_x_vals,f(Analytic_x_vals)*5000, linestyle='dashed',color='red',label='Analytic Solution')
 plt.legend() 
 plt.savefig('Probability distribution.png')
 plt.show() 
 
 #used wolfram to integrate 
 
-def F(x_1,x_0):
-    return (scipy.special.erf((x_1)/(2)**(1/2))-scipy.special.erf((x_0)/(2)**(1/2)))/((2)**(1/2))
 
-E_i=np.array([])
 
-for i in range(1,len(bins)):
-    p=F(bins[i],bins[i-1])
-    E_i=np.append(E_i,p)
+
+
+E=F(bins)*5000*20
 
 chi_squared=0
-for i in range(0,len(E_i)):
-    chi_squared = chi_squared + ((counts[i]-E_i[i])**2)/(E_i[i])
+for i in range(0,len(E)):
+    chi_squared = chi_squared + ((counts[i]-E[i])**2)/(E[i])
 
+DoF=77 
 
+print(chi_squared)
 
 #for the graph saved the Chi_squared=293.865381230315,291.17199269089826,300.0306444240506,295.01523297265203,295.64026691716543,291.9895021844989,291.24035970332096,293.0856509199218,297.15252854772723,298.38875947250625
 
-
-print(counts,chi_squared)
+#reduced chi squared = 3.6
