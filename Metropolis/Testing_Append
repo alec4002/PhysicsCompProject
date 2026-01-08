@@ -1,8 +1,0 @@
-import numpy as np 
-
-array=np.array([])
-a1=5 
-
-x=np.arange(-5,5.5,0.5)
-print(x)
-

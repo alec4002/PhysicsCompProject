@@ -1,5 +1,0 @@
-#Bootstrapping
-#Bootstapping allows me to produce a much wider sample by taking an initial ensemble of paths, modifying it sufficiently so they are not correlated, to produce a new
-#ensemble. In lepage, bootstrapping is used by modifting an ensemble of G values. My code does not make G values, however itdistributes the paths according to G. 
-#Could i perhaps make it that it takes my ensemble of paths, and then make a duplicate which is then modified to produce a new set of data we can also plot? 
-#I will attempt to modify lepage's code to do such. 
