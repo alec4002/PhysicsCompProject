@@ -1,0 +1,29 @@
+import numpy as np                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+import matplotlib.pyplot as plt
+import scipy
+import vegas 
+from scipy.optimize import curve_fit
+import scipy.integrate as integrate
+import scipy.special as special 
+import scipy.stats 
+
+#from lepage we use a monte-carlo uncertainty, which is pretty normal to the usual standard deviation technique 
+
+def av_x(x):                                 #Average position of a path 
+    E=np.array([])
+    for i in range(0,len(x)-1):
+        E=np.append(E,np.average(x))
+    av= np.average(E)
+    return av
+
+def av_x_square(x):                                 #Average position squared of a path 
+    E=np.array([])
+    for i in range(0,len(x)-1):
+        E=np.append(E,np.average(x*x))
+    av_square=np.average(E)
+    return av_square
+
+def std_error(x):
+    sigma_squared= (av_x_square(x)-av_x(x)**2)/N_cf
+    std= sigma_squared
+    return std

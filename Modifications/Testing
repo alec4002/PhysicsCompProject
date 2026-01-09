@@ -1,0 +1,131 @@
+import numpy as np                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+import matplotlib.pyplot as plt
+import scipy
+import vegas 
+from scipy.optimize import curve_fit
+import scipy.integrate as integrate
+import scipy.special as special 
+import scipy.stats
+
+#defining constants 
+m=1
+N_cor=20
+N_cf=5000   #Number that needs to big enough to ensure probabilities behave  
+N=20        #Spatial Points
+a=1       #a is the time step, 4 temporal points, N spatial
+eps=1.6     #Range from which we will pick a random number. This is tuned so as to cause a 40%-60% acceptance rate. 
+
+
+#Defining the Harmonic potential 
+def V(x):
+    V=1/2*(x**2)
+    return V
+
+#Defining the action -NB-For my Metropolis, it is more useful to define the action per segment, and the count for the summation in the update step. 
+def S(x,j):   
+    S = (m/2*a)*(((x[j]-x[j-1]))**2)+a*V((x[j-1]))   # +x[j-1]))
+    return S
+
+#Defining the updating algorithm. 
+x=np.zeros(shape=(1,N))          #Take this out see if i can make it so p i saved                                    
+x=x[0,:]
+
+def update(p,I):                      #n is dimension of the path , i is the number of loops to complete , p is the inital path                                                       
+    A=0
+    n=len(p)
+    for i in range(0,I):
+        for j in range(0,N):
+            p_old=p[j] 
+        
+            if j==0:
+                Sj_old=S(p,j+1)
+                p[j]=p[j]+(np.random.uniform(-eps, eps))                     #This function form numpy generates random no between -eps and eps
+                dS1=S(p,j+1)-Sj_old
+                A = A+1
+                if dS1 > 0  and np.exp(-dS1) < np.random.uniform(0, 1):
+                    A = A-1
+                    p[j]=p_old
+
+            
+            if 0<j<n-1: 
+                Sj_old1=S(p,j+1)
+                Sj_old2=S(p,j)
+                p[j]=p[j]+(np.random.uniform(-eps, eps))                     #This function form numpy generates random no between -eps and eps
+                dS1=S(p,j+1)
+                dS2=S(p,j)
+                dS=(dS1+dS2)-(Sj_old1+Sj_old2)
+                A = A+1 
+                if dS > 0 and np.exp(-dS) < np.random.uniform(0, 1):
+                    A = A-1 
+                    p[j]=p_old
+            
+        
+            if j== n-1: 
+                Sj_old=S(p,j)
+                p[j]=p[j]+(np.random.uniform(-eps, eps))                     #This function form numpy generates random no between -eps and eps
+                dS2=S(p,j)-Sj_old
+                A = A+1
+                if dS2 > 0 and np.exp(-dS2) < np.random.uniform(0, 1):
+                    A = A - 0
+                    p[j]=p_old
+                    
+
+            if p[0] != p[n-1]:
+                p[0]= p[n-1]
+     
+    return p                                                              #Change to A/N when you want to test vals of eps                             
+
+ 
+
+
+def f(x):                                               #Anlytic solution from Schrodinger 
+    return (np.exp((-x**2)/2)/((np.pi)**(1/4)))**2
+
+Analytic_x_vals=np.arange(-5,5.1,0.001)
+
+def MetroplisAv(x):                                      
+    paths=np.zeros(shape=(N_cf,N))                            
+    p=update(x,10*N_cor)                                     #Thermalising 
+       
+    for l in range(0,N_cf-1):
+        p=update(p,N_cor)
+        paths[l,:]=p
+
+    return(paths)
+
+q=MetroplisAv(x)
+p=q.ravel()                                                                         #This gives my vals as a flat list (i think)
+counts, bins= np.histogram(p.ravel(),bins=np.arange(-2,2,0.05),density=True)
+Widths= np.diff(bins)
+centre=bins[:-1]+Widths/2                                                           #This is the x co-ord of the centre of each bin
+                                                                                    #scip-py test this data vs my analytic soln 
+
+def fit_(x,A,B):
+    return A*np.exp(-B*x**2)
+
+
+def av_x(x):                                        #Average position of a path 
+    E=np.array([])
+    for i in range(0,len(x)-1):
+        E=np.append(E,np.average(x[i]))         
+    return E                                        #Change to av when not testing bootstrapping 
+
+
+def bootstrap(x):
+    bst=np.array([])
+    for i in range(0,len(x)-1):
+        m=np.random.randint(0, len(x))
+        bst=np.append(bst,x[m])
+    return bst 
+
+#Code to get an aveage value of expected position
+
+average=np.array([])
+average=np.append(average,np.average(av_x(q)))
+
+for i in range(0,10):
+    u=bootstrap(av_x(q))
+    u=np.average(u)
+    average=np.append(average,u)
+
+print(np.average(average), np.std(average))
