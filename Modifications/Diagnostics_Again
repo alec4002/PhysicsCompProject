@@ -10,10 +10,10 @@ import scipy.stats
 #defining constants 
 m=1
 N_cor=20
-N_cf=5000   #Number that needs to big enough to ensure probabilities behave  
-N=20        #Spatial Points
-a=1         #a is the time step, 4 temporal points, N spatial
-eps=1.43     #Range from which we will pick a random number. This is tuned so as to cause a 40%-60% acceptance rate. 
+N_cf=5000    #Number that needs to big enough to ensure probabilities behave  
+N=20         #Spatial Points
+a=1          #a is the time step, 4 temporal points, N spatial
+eps=1.43      #Range from which we will pick a random number. This is tuned so as to cause a 40%-60% acceptance rate. 
 
 
 #Defining the Harmonic potential 
@@ -73,7 +73,7 @@ def update(p,I):                      #n is dimension of the path , i is the num
             if p[0] != p[n-1]:
                 p[0]= p[n-1]
      
-    return p                                                              #Change to A/N when you want to test vals of eps                             
+    return A                                                              #Change to A/N when you want to test vals of eps                             
 
  
 
@@ -83,61 +83,10 @@ def f(x):                                               #Anlytic solution from S
 
 Analytic_x_vals=np.arange(-5,5.1,0.001)
 
-def MetroplisAv(x):                                      
-    paths=np.zeros(shape=(N_cf,N))                            
-    p=update(x,10*N_cor)                                     #Thermalising 
-       
-    for l in range(0,N_cf-1):
-        p=update(p,N_cor)
-        paths[l,:]=p
 
-    return(paths)
+#Above is default code for metropolis algorithm, which is modified to investigate the acceptance of my paths. 
 
-q=MetroplisAv(x)
-q=q.ravel()                                                                         #This gives my vals as a flat list (i think)
-counts, bins= np.histogram(q.ravel(),bins=np.arange(-2,2,0.05))#,density=True)
-Widths= np.diff(bins)
-centre=bins[:-1]+Widths/2                                                           #This is the x co-ord of the centre of each bin
-                                                                                    #scip-py test this data vs my analytic soln 
-
-def fit_(x,A,B):
-    return A*np.exp(-B*x**2)
-
-def F(x):
-    f=np.array([])
-    for i in range(1,len(x)-1):
-        d=(scipy.special.erf((x[i]))-scipy.special.erf((x[i-1])))*(1/2)
-        f=np.append(f,d)
-    return f
-
-#Plot code
-plt.figure()                                                                             
-plt.ylabel('$|\psi(x)|^{2}$', fontsize=13)
-plt.xlabel('x',fontsize=13)
-plt.xlim([-3,3.1])
-plt.stairs(counts, bins, fill=True)
-plt.hist(q.ravel(),bins=np.arange(-2,2,0.05),density=True,color='royalblue', label='Numeric Solution')
-plt.plot(Analytic_x_vals,f(Analytic_x_vals)*5000, linestyle='dashed',color='red',label='Analytic Solution')
-plt.legend() 
-plt.savefig('Probability distribution.png')
-plt.show() 
-
-#used wolfram to integrate 
+#First thing is to change update function so it counts acceptance 
 
 
-
-
-
-E=F(bins)*5000*20
-
-chi_squared=0
-for i in range(0,len(E)):
-    chi_squared = chi_squared + ((counts[i]-E[i])**2)/(E[i])
-
-DoF=77 
-
-print(chi_squared/DoF)
-
-#for the graph saved the Chi_squared=293.865381230315,291.17199269089826,300.0306444240506,295.01523297265203,295.64026691716543,291.9895021844989,291.24035970332096,293.0856509199218,297.15252854772723,298.38875947250625
-
-#reduced chi squared = 3.6
+print(update(x,10*N_cor))
