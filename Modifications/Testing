@@ -95,7 +95,7 @@ def MetroplisAv(x):
 
 q=MetroplisAv(x)
 p=q.ravel()                                                                         #This gives my vals as a flat list (i think)
-counts, bins= np.histogram(p.ravel(),bins=np.arange(-2,2,0.05),density=True)
+counts, bins= np.histogram(p.ravel(),bins=np.arange(-2.5,2.5,0.05),density=True)
 Widths= np.diff(bins)
 centre=bins[:-1]+Widths/2                                                           #This is the x co-ord of the centre of each bin
                                                                                     #scip-py test this data vs my analytic soln 

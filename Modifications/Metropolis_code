@@ -10,10 +10,10 @@ import scipy.stats
 #defining constants 
 m=1
 N_cor=20
-N_cf=5000    #Number that needs to big enough to ensure probabilities behave  
-N=20        #Spatial Points
-a=1       #a is the time step, 4 temporal points, N spatial
-eps=1.6     #Range from which we will pick a random number. This is tuned so as to cause a 40%-60% acceptance rate. 
+N_cf=5000     #Number that needs to big enough to ensure probabilities behave  
+N=20          #Spatial Points
+a=1           #a is the time step, 4 temporal points, N spatial
+eps=1.43      #Range from which we will pick a random number. This is tuned so as to cause a 40%-60% acceptance rate. 
 
 
 #Defining the Harmonic potential 
@@ -23,18 +23,18 @@ def V(x):
 
 #Defining the action -NB-For my Metropolis, it is more useful to define the action per segment, and the count for the summation in the update step. 
 def S(x,j):   
-    S = (m/2*a)*(((x[j]-x[j-1]))**2)+a*V((x[j-1]))   # +x[j-1]))
+    S = (m/2*a)*(((x[j]-x[j-1]))**2)+a*V((x[j-1])) #
     return S
 
 #Defining the updating algorithm. 
-x=np.zeros(shape=(1,N))          #Take this out see if i can make it so p i saved                                    
+x=np.zeros(shape=(1,N))               #Take this out see if i can make it so p i saved                                    
 x=x[0,:]
 
 def update(p,I):                      #n is dimension of the path , i is the number of loops to complete , p is the inital path                                                       
     A=0
     n=len(p)
     for i in range(0,I):
-        for j in range(0,N):
+        for j in range(0,n):
             p_old=p[j] 
         
             if j==0:
@@ -95,29 +95,9 @@ def MetroplisAv(x):
 
 q=MetroplisAv(x)
 q=q.ravel()                                                                         #This gives my vals as a flat list (i think)
-counts, bins= np.histogram(q.ravel(),bins=np.arange(-2,2,0.05),density=True)
-Widths= np.diff(bins)
-centre=bins[:-1]+Widths/2                                                           #This is the x co-ord of the centre of each bin
-                                                                                    #scip-py test this data vs my analytic soln 
-
-def fit_(x,A,B):
-    return A*np.exp(-B*x**2)
-
-
-#Plot code
-plt.figure()                                                                             
-plt.ylabel('$|\psi(x)|^{2}$', fontsize=13)
-plt.xlabel('x',fontsize=13)
-plt.xlim([-3,3.1])
-plt.stairs(counts, bins, fill=True)
-plt.hist(q.ravel(),bins=np.arange(-2,2,0.05),density=True,color='royalblue', label='Numeric Solution')
-plt.plot(Analytic_x_vals,f(Analytic_x_vals), linestyle='dashed',color='red',label='Analytic Solution')
-plt.legend() 
-plt.savefig('Probability distribution.png')
-plt.show() 
-
-#used wolfram to integrate 
-
+counts, bins= np.histogram(q.ravel(),bins=np.arange(-2.5,2.5,0.05),density=True)
+                                                         
+     
 def F(x_1,x_0):
     return (scipy.special.erf((x_1)/(2)**(1/2))-scipy.special.erf((x_0)/(2)**(1/2)))/((2)**(1/2))
 
@@ -129,9 +109,23 @@ for i in range(1,len(bins)):
 
 chi_squared=0
 for i in range(0,len(E_i)):
-    chi_squared = chi_squared + ((counts[i]-E_i[i])**2)/(E_i[i])
+    chi_squared = chi_squared + (((counts[i]-E_i[i])**2)/(E_i[i]))
 
 
+DoF=77
+print(chi_squared/DoF)                                                                               
 
-#for the graph saved the Chi_squared=293.865381230315,291.17199269089826,300.0306444240506,295.01523297265203,295.64026691716543,291.9895021844989,291.24035970332096,293.0856509199218,297.15252854772723,298.38875947250625
 
+#Plot code
+plt.figure()                                                                             
+plt.ylabel('$|\psi(x)|^{2}$', fontsize=13)
+plt.xlabel('x',fontsize=13)
+plt.xlim([-3,3.1])
+plt.stairs(counts, bins, fill=True,color='royalblue', label='Numeric Solution')
+#plt.hist(q.ravel(),bins=np.arange(-2.5,2.5,0.05),density=True,color='royalblue', label='Numeric Solution')
+plt.plot(Analytic_x_vals,f(Analytic_x_vals), linestyle='dashed',color='red',label='Analytic Solution')
+plt.legend() 
+#plt.savefig('Probability distribution.png')
+plt.show()
+
+#Current issue-My code seems to be stuck with the one solution ie my chi squared isnt moving even when I have changed key params 
