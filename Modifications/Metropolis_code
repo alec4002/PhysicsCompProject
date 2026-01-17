@@ -78,7 +78,7 @@ def update(p,I):                      #n is dimension of the path , i is the num
  
 
 
-def f(x):                                               #Anlytic solution from Schrodinger 
+def f(x):                                                   #Anlytic solution from Schrodinger 
     return (np.exp((-x**2)/2)/((np.pi)**(1/4)))**2
 
 Analytic_x_vals=np.arange(-5,5.1,0.001)
@@ -94,8 +94,8 @@ def MetroplisAv(x):
     return(paths)
 
 q=MetroplisAv(x)
-q=q.ravel()                                                                         #This gives my vals as a flat list (i think)
-counts, bins= np.histogram(q.ravel(),bins=np.arange(-2.5,2.5,0.05),density=True)
+q=q.ravel()                                                                                         #This gives my vals as a flat list (i think)
+counts, bins= np.histogram(q.ravel(),bins=np.arange(-5,5,0.05),density=True)
                                                          
      
 def F(x_1,x_0):
@@ -112,8 +112,8 @@ for i in range(0,len(E_i)):
     chi_squared = chi_squared + (((counts[i]-E_i[i])**2)/(E_i[i]))
 
 
-DoF=77
-print(chi_squared/DoF)                                                                               
+DoF=len(counts)-2               #calculated as no of bins = len(counts) constrianed to have same mean and number of measurements hence we take 2
+print(chi_squared/DoF)                                                                              
 
 
 #Plot code
@@ -128,4 +128,4 @@ plt.legend()
 #plt.savefig('Probability distribution.png')
 plt.show()
 
-#Current issue-My code seems to be stuck with the one solution ie my chi squared isnt moving even when I have changed key params 
+#Reduced chi squared is good, i need to figure on the confidence limit tho!!
