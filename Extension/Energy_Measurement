@@ -113,14 +113,57 @@ for i in range(0,len(E_i)):
 
 
 DoF=len(counts)-2               #calculated as no of bins = len(counts) constrianed to have same mean and number of measurements hence we take 2
-print(chi_squared/DoF)                                                                              
+#print(chi_squared/DoF)                                                                              
 
 
 #Functional to compute 
 
-def K(x,n):                        #x is a path, n tells us which adjacent position to multiply by 
-    k=0
-    for i in range(0,N):
-        k=k + x[i]*x[(i+n)/N]
-    return k/N
+def K(x,n):                                 #x is a path, n tells us which adjacent position to multiply by 
+    k=np.array([])
+    l=np.array([])
+    for i in range(0,len(x)-1):
+        s=0
+        q=0
+        u=x[i]
+        for j in range(0,N-1):
+            if (n+j) < 20:
+                s= s + u[j]*u[(j+n)]  
+                q= q + (u[j]*u[(j+n)])**2 
+            if (n+j) > 20:
+                s= s + u[j]*u[(20-(j+n))] 
+                q= q + (u[j]*u[(20-(j+n))])**2 
+        
+        k=np.append(k,s/N)
+        l=np.append(l,q/N)
+    return np.average(k), ((np.average(l)-np.average(k)**2)/N_cf)**1/2
 
+#I want to sum over each row of my paths, then aveage, then do the next n, so I end up with 20 measurements. This will be computationally 
+#intensive
+
+vals_store=np.array([])
+for i in range(0,20):
+    vals_store=np.append(vals_store,K(q,i)[0])
+
+y_vals=np.array([])
+
+for i in range(0,len(vals_store)-2):
+    y_vals=np.append(y_vals,(np.log(vals_store[i]/vals_store[i+1])))
+
+errs_store=np.array([])
+for i in range(0,20):
+    errs_store=np.append(errs_store,K(q,i)[1])
+
+y_err=np.array([])     
+
+for i in range(0,len(errs_store)-2):
+    y_err=np.append(y_err,((np.log((vals_store[i]+errs_store[i])/vals_store[i]))**2+(np.log(vals_store[i+1]/(vals_store[i+1]+errs_store[i+1])))**2)**1/2)
+
+plt.figure()
+plt.errorbar(np.arange(0,18),y_vals,yerr=y_err,fmt='o')
+plt.axhline(y=1,linestyle='-')
+plt.show()
+
+print(y_vals, y_err)
+
+#I am getting very small errors and my code does not seem to oscillate as it should. It does not oscillate about the y=1 axis as in lepage. I 
+#should also have visivle errors. Looking at lepage, I think i have done something wrong in my code for the functional. Will fix tmr!!
