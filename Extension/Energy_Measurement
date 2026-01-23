@@ -12,7 +12,7 @@ m=1
 N_cor=20
 N_cf=5000     #Number that needs to big enough to ensure probabilities behave  
 N=20          #Spatial Points
-a=1           #a is the time step, 4 temporal points, N spatial
+a=1          #a is the time step, 4 temporal points, N spatial
 eps=1.43      #Range from which we will pick a random number. This is tuned so as to cause a 40%-60% acceptance rate. 
 
 
@@ -121,29 +121,29 @@ DoF=len(counts)-2               #calculated as no of bins = len(counts) constria
 def K(x,n): 
     Q=np.array([])
     L=np.array([])                               #x is a path, n tells us which adjacent position to multiply by 
-    k=np.array([])
-    l=np.array([])
+   
     for i in range(0,len(x)-1):
+        k=np.array([])
+        l=np.array([])
         s=0
         q=0
         u=x[i]
+        U=u**2
         for j in range(0,N-1):
             if (n+j) < N:
                 s= u[j]*u[(j+n)] 
-                q= (u[j]*u[(j+n)])**2
-                k=np.append(k,s/N)
-                l=np.append(l,q/N)
-            if (n+j) >= N:
+                q= (U[j]*U[(j+n)])
+                k=np.append(k,s)
+                l=np.append(l,q)
+            if (n+j) > N:
                 s= u[j]*u[(N-(j+n))] 
-                q= (u[j]*u[(N-(j+n))])**2
-                k=np.append(k,s/N)
-                l=np.append(l,q/N)
+                q= (U[j]*U[(N-(j+n))])
+                k=np.append(k,q)
+                l=np.append(l,q)
 
-        k=np.sum(k)
-        l=np.sum(l)
-    Q=np.append(Q,k/N)
-    L=np.append(L,l/N)
-    return  np.sum(Q)/N_cf, ((np.sum(L)/N_cf-(np.sum(Q)/N_cf)**2)/N_cf)**1/2  #np.average
+        Q=np.append(Q,np.average(k))
+        L=np.append(L,np.average(l))
+    return  np.average(Q), np.std(Q)/(len(Q))**1/2 #((np.average(L)-(np.average(Q))**2)/N_cf)#**1/2  #np.average
 
 #I want to sum over each row of my paths, then aveage, then do the next n, so I end up with 20 measurements. This will be computationally 
 #intensive
@@ -155,7 +155,7 @@ for i in range(0,N-1):
 y_vals=np.array([])
 
 for i in range(0,len(vals_store)-2):
-    y_vals=np.append(y_vals,(np.log(vals_store[i]/vals_store[i+1]))) 
+    y_vals=np.append(y_vals,a*(np.log(vals_store[i]/vals_store[i+1]))) 
 
 errs_store=np.array([])
 for i in range(0,N-1):
@@ -164,14 +164,16 @@ for i in range(0,N-1):
 y_err=np.array([])     
 
 for i in range(0,len(errs_store)-2):
-    y_err=np.append(y_err,(((np.log((vals_store[i]+errs_store[i])/vals_store[i]))**2+(np.log(vals_store[i+1]/(vals_store[i+1]+errs_store[i+1])))**2)**1/2))
+    y_err=np.append(y_err,a*((((np.log((vals_store[i]+errs_store[i])/vals_store[i]))**2)+((np.log(vals_store[i+1]/(vals_store[i+1]+errs_store[i+1])))**2))))#**1/2))
 
 plt.figure()
 plt.errorbar(np.arange(0,len(y_vals)),y_vals,yerr=y_err, fmt='o', color='Black')
 plt.axhline(y=1,linestyle='-',color='Black')
-
+plt.ylim(-5,5)
 plt.show()
 
+print(y_err)
 
-#I am getting very small errors and my code does not seem to oscillate as it should. It does not oscillate about the y=1 axis as in lepage. I 
-#should also have visivle errors. Looking at lepage, I think i have done something wrong in my code for the functional. Will fix tmr!!
+
+#My code is producing data with the right order of magnitude but with the following issues. 1) My errors are very small. 2) My first point is 
+#agreeing with lepage, but subsequent points then oscillate about 0, not 1. 3) Changing step size just shit
