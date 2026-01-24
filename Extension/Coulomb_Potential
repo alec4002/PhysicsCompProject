@@ -7,18 +7,19 @@ import scipy.integrate as integrate
 import scipy.special as special 
 import scipy.stats
 
+bohr_radius=1
 #defining constants 
 m=1
 N_cor=20
-N_cf=5000     #Number that needs to big enough to ensure probabilities behave  
+N_cf=200     #Number that needs to big enough to ensure probabilities behave  
 N=20          #Spatial Points
 a=1           #a is the time step, 4 temporal points, N spatial
-eps=1.43      #Range from which we will pick a random number. This is tuned so as to cause a 40%-60% acceptance rate. 
+eps=1     #Range from which we will pick a random number. This is tuned so as to cause a 40%-60% acceptance rate. 
 
 
 #Defining the Harmonic potential 
 def V(x):
-    V=1/2*(x**2)
+    V=1/(x)
     return V
 
 #Defining the action -NB-For my Metropolis, it is more useful to define the action per segment, and the count for the summation in the update step. 
@@ -76,10 +77,11 @@ def update(p,I):                      #n is dimension of the path , i is the num
     return p                                                              #Change to A/N when you want to test vals of eps                             
 
  
-def f(x):                                                   #Anlytic solution from Schrodinger 
-    return (np.exp((-x**2)/2)/((np.pi)**(1/4)))**2
+def Coulomb(x):
+    return ((1/(np.pi * bohr_radius**3))*(np.exp(-2*x/bohr_radius)))*1/7000
 
-Analytic_x_vals=np.arange(-5,5.1,0.001)
+Analytic_x_vals=np.arange(0,5,0.001)
+
 
 def MetroplisAv(x):                                      
     paths=np.zeros(shape=(N_cf,N))                            
@@ -91,13 +93,11 @@ def MetroplisAv(x):
 
     return(paths)
 
-q=MetroplisAv(x)
-q=q.ravel()                                                                                         #This gives my vals as a flat list (i think)
+q=MetroplisAv(x)                                                                         
 counts, bins= np.histogram(q.ravel(),bins=np.arange(-5,5,0.05),density=True)
                                                          
-     
-def F(x_1,x_0):
-    return (scipy.special.erf((x_1)/(2)**(1/2))-scipy.special.erf((x_0)/(2)**(1/2)))/((2)**(1/2))
+def F(x_1,x_0):                                                                                         
+    return (np.exp((-2*x_0)/bohr_radius)-np.exp((-2*x_1)/bohr_radius))/(2*np.pi*bohr_radius**2)
 
 E_i=np.array([])
 
@@ -118,12 +118,14 @@ print(chi_squared/DoF)
 plt.figure()                                                                             
 plt.ylabel('$|\psi(x)|^{2}$', fontsize=13)
 plt.xlabel('x',fontsize=13)
-plt.xlim([-3,3.1])
-plt.stairs(counts, bins, fill=True,color='royalblue', label='Numeric Solution')
+#plt.xlim([-3,3.1])
+#plt.stairs(counts, bins, fill=True,color='royalblue', label='Numeric Solution')
 #plt.hist(q.ravel(),bins=np.arange(-2.5,2.5,0.05),density=True,color='royalblue', label='Numeric Solution')
-plt.plot(Analytic_x_vals,f(Analytic_x_vals), linestyle='dashed',color='red',label='Analytic Solution')
+plt.plot(Analytic_x_vals,V(Analytic_x_vals), linestyle='dashed',color='red',label='Analytic Solution')
 plt.legend() 
 #plt.savefig('Probability distribution.png')
 plt.show()
 
 #Reduced chi squared is good, i need to figure on the confidence limit tho!!
+#Coulomb potential tends with 1/r  
+#issue- get 1/0 in my path calculations causing stuff to get skipped 
