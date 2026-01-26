@@ -114,7 +114,7 @@ for i in range(0,len(E_i)):
 
 DoF=len(counts)-2               #calculated as no of bins = len(counts) constrianed to have same mean and number of measurements hence we take 2
 print(chi_squared/DoF)                                                                              
-
+print(np.sum(counts))
 
 #Plot code
 plt.figure()                                                                             
