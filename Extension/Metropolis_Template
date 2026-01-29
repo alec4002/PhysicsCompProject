@@ -128,4 +128,3 @@ plt.legend()
 #plt.savefig('Probability distribution.png')
 plt.show()
 
-#Reduced chi squared is good, i need to figure on the confidence limit tho!!
