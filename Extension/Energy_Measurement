@@ -170,6 +170,7 @@ plt.figure()
 plt.errorbar(np.arange(0,len(y_vals)),y_vals,yerr=y_err, fmt='o', color='Black')
 plt.axhline(y=1,linestyle='-',color='Black')
 plt.ylim(-5,5)
+plt.savefig('Energy Measurement.png')
 plt.show()
 
 print(y_err)
@@ -177,3 +178,5 @@ print(y_err)
 
 #My code is producing data with the right order of magnitude but with the following issues. 1) My errors are very small. 2) My first point is 
 #agreeing with lepage, but subsequent points then oscillate about 0, not 1. 3) Changing step size just shit
+
+#Try code where instead of multiplying by two x's i multiply by x  (expect an answer of 0)

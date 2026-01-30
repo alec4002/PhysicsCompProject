@@ -134,7 +134,7 @@ plt.stairs(counts, bins, fill=True,color='royalblue', label='Numeric Solution')
 plt.plot(Analytic_x_vals,f(Analytic_x_vals), linestyle='dashed',color='red',label='Analytic Solution')
 plt.vlines(1,linestyles='dashed',ymin=0,ymax=0.54, colors='black')
 plt.legend() 
-#plt.savefig('Probability distribution.png')
+plt.savefig('Probability distribution Coulomb.png')
 plt.show()
 
 #Issue with this code a)i dont get reproducable results as my method of getting 1/0 means there statistical variance of how many paths are

@@ -99,7 +99,7 @@ def MetroplisAv(x):
 
 q=MetroplisAv(x)
                                                                                         
-counts, bins= np.histogram(q.ravel(),bins=np.arange(-5,12.1,0.05))#,density=True)
+counts, bins= np.histogram(q.ravel(),bins=np.arange(-5,12.1,0.05),density=True)
                                                               
 def F(x_1,x_0):
     return (np.exp(-2*x_0)*((2*x_0**2)+2*x_0+1)-np.exp(-2*x_1)*((-2*x_1**2)-2*x_0-1))
@@ -126,9 +126,9 @@ plt.xlabel('x',fontsize=13)
 #plt.xlim([-3,3.1])
 plt.stairs(counts, bins, fill=True,color='royalblue', label='Numeric Solution')
 #plt.hist(q.ravel(),bins=np.arange(-2.5,2.5,0.05),density=True,color='royalblue', label='Numeric Solution')
-plt.plot(Analytic_x_vals,f(Analytic_x_vals)*np.max(counts), linestyle='dashed',color='red',label='Analytic Solution')
+plt.plot(Analytic_x_vals,f(Analytic_x_vals), linestyle='dashed',color='red',label='Analytic Solution')
 plt.legend() 
-#plt.savefig('Probability distribution.png')
+plt.savefig('Probability distribution MSC.png')
 plt.show()
 
 #Nearly got working i just have a normalisation issue. 
