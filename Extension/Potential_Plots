@@ -14,14 +14,14 @@ N_cf=1000     #Number that needs to big enough to ensure probabilities behave
 N=20          #Spatial Points
 a=1           #a is the time step, 4 temporal points, N spatial
 eps=1.43      #Range from which we will pick a random number. This is tuned so as to cause a 40%-60% acceptance rate. 
-alpha=0.75
+alpha=0.25
 
 def V_coulomb(x):
-    V=1/x 
+    V=-1/x 
     return V
 
 def V_soft_Coulomb(x):
-    V=1/((x**2+alpha**2)**0.5)
+    V=-1/(x**2+alpha**2)**(0.5)
     return V
 
 def V_Morse(x):
@@ -30,23 +30,29 @@ def V_Morse(x):
 
 def V_MsC(x):
     if x>0:
-        V= -1/(x**2+alpha**2)
+        denominator=(x**2+alpha**2)
+        V= -(denominator)**(-0.5)
     if x <= 0:
-        V=(1/alpha)*(np.exp(-2*x/(alpha*2**(1/2)))-2*np.exp(-x/(alpha*(2**(1/2)))))
+        V=(1/alpha)*(np.exp(-2*x/(alpha*2**0.5))-2*np.exp(-x/(alpha*2**0.5)))
     return V
 
-x_values=np.arange(-12.1,12.1,0.01)
-x_values_Coulomb=np.arange(0,12.1,0.01)
+x_values=np.arange(-12.1,12.1,0.001)
+x_values_Coulomb=np.arange(0,12.1,0.001)
+
+y_values_MsC=np.array([])
+for i in range(0,len(x_values)):
+    y_values_MsC=np.append(y_values_MsC,V_MsC(x_values[i]))
 
 plt.figure(1)
-plt.plot(x_values_Coulomb,V_coulomb(x_values_Coulomb))
-plt.plot(x_values,V_soft_Coulomb(x_values))
-plt.plot(x_values,V_Morse(x_values))
-plt.plot(x_values,V_MsC(x_values))
-plt.vlines(0,linestyles='dashed',ymin=0,ymax=10, colors='black')
+plt.plot(x_values_Coulomb,V_coulomb(x_values_Coulomb),label='Coulomb')
+plt.plot(x_values,V_soft_Coulomb(x_values),label='Soft Coulomb')
+plt.plot(x_values,V_Morse(x_values),label='Morse')
+plt.plot(x_values,y_values_MsC,label='MsC')
+#plt.vlines(0,linestyles='dashed',ymin=-10,ymax=10, colors='black')
 plt.xlabel('x')
 plt.ylabel('V')
-plt.xlim(-5.1,5.1)
-plt.ylim(0,10)
+plt.xlim(-2,5.1)
+plt.ylim(-10,10)
+plt.legend()
 plt.show() 
 

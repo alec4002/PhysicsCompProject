@@ -14,14 +14,15 @@ N_cf=5000     #Number that needs to big enough to ensure probabilities behave
 N=20          #Spatial Points
 a=1           #a is the time step, 4 temporal points, N spatial
 eps=1.43      #Range from which we will pick a random number. This is tuned so as to cause a 40%-60% acceptance rate. 
-alpha=0.75
+alpha=0.5
 
 #Defining the Harmonic potential 
 def V(x):
     if x>0:
-        V= -1/(x**2+alpha**2)
+        denominator=(x**2+alpha**2)
+        V= -(denominator)**(-0.5)
     if x <= 0:
-        V=(1/alpha)*(np.exp(-2*x/(alpha*2**(1/2)))-2*np.exp(-x/(alpha*(2**(1/2)))))
+        V=(1/alpha)*(np.exp(-2*x/(alpha*2**0.5))-2*np.exp(-x/(alpha*2**0.5)))
     return V
 
 #Defining the action -NB-For my Metropolis, it is more useful to define the action per segment, and the count for the summation in the update step. 
