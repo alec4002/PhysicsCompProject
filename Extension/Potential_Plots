@@ -54,5 +54,6 @@ plt.ylabel('V')
 plt.xlim(-2,5.1)
 plt.ylim(-10,10)
 plt.legend()
+plt.savefig('Different Potential plots.png')
 plt.show() 
 
