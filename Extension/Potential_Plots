@@ -1,0 +1,52 @@
+import numpy as np                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+import matplotlib.pyplot as plt
+import scipy
+import vegas 
+from scipy.optimize import curve_fit
+import scipy.integrate as integrate
+import scipy.special as special 
+import scipy.stats
+
+#defining constants 
+m=1
+N_cor=20
+N_cf=1000     #Number that needs to big enough to ensure probabilities behave  
+N=20          #Spatial Points
+a=1           #a is the time step, 4 temporal points, N spatial
+eps=1.43      #Range from which we will pick a random number. This is tuned so as to cause a 40%-60% acceptance rate. 
+alpha=0.75
+
+def V_coulomb(x):
+    V=1/x 
+    return V
+
+def V_soft_Coulomb(x):
+    V=1/((x**2+alpha**2)**0.5)
+    return V
+
+def V_Morse(x):
+    V=(1/alpha)*(np.exp(-2*x/(alpha*2**(1/2)))-2*np.exp(-x/(alpha*(2**(1/2)))))
+    return V
+
+def V_MsC(x):
+    if x>0:
+        V= -1/(x**2+alpha**2)
+    if x <= 0:
+        V=(1/alpha)*(np.exp(-2*x/(alpha*2**(1/2)))-2*np.exp(-x/(alpha*(2**(1/2)))))
+    return V
+
+x_values=np.arange(-12.1,12.1,0.01)
+x_values_Coulomb=np.arange(0,12.1,0.01)
+
+plt.figure(1)
+plt.plot(x_values_Coulomb,V_coulomb(x_values_Coulomb))
+plt.plot(x_values,V_soft_Coulomb(x_values))
+plt.plot(x_values,V_Morse(x_values))
+plt.plot(x_values,V_MsC(x_values))
+plt.vlines(0,linestyles='dashed',ymin=0,ymax=10, colors='black')
+plt.xlabel('x')
+plt.ylabel('V')
+plt.xlim(-5.1,5.1)
+plt.ylim(0,10)
+plt.show() 
+
