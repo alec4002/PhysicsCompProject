@@ -77,8 +77,15 @@ def update(p,I):                      #n is dimension of the path , i is the num
      
     return p                                                              #Change to A/N when you want to test vals of eps                             
 
-def f(x):                                                   #Anlytic solution from Schrodinger 
-    return (np.exp((-(x)**2)/2)/((np.pi)**(1/4)))**2          #NB-this is for harmonic oscillator, which should roughly agree with morse
+#Using literature for the boundstate equation
+
+N_0=(((1/(2**0.5)*alpha)*((2/(alpha**2))-1))*1/scipy.special.gamma(4*(alpha**0.5)))**0.5
+E_0=(-1/alpha)-alpha*((1/2*alpha)**0.5)-(1/(16*alpha**2))
+b_0=2*alpha*(-E_0)**0.5
+
+def f(x):
+    z=4*(alpha**0.5)*np.exp(-x*(1/(2**0.5)*alpha))
+    return (N_0*np.exp(-z/2)*z**b_0)**2
 
 Analytic_x_vals=np.arange(-12,12.1,0.001)
 
