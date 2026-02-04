@@ -79,12 +79,15 @@ def update(p,I):                      #n is dimension of the path , i is the num
 
 #Using literature for the boundstate equation
 
-N_0=(((1/(2**0.5)*alpha)*((2/(alpha**2))-1))*1/scipy.special.gamma(4*(alpha**0.5)))**0.5
-E_0=(-1/alpha)-alpha*((1/2*alpha)**0.5)-(1/(16*alpha**2))
-b_0=2*alpha*(-E_0)**0.5
+w=2*(alpha)**0.5
+alpha_prime=1/((2**0.5)*alpha)
+N_0=(alpha_prime*(2*w-1)/special.gamma(2*w))
+N_0=N_0**0.5
+E_0=(-1/alpha)-alpha*((1/(2*alpha))**0.5)-(1/(16*alpha**2))
+b_0=(1/alpha_prime)*(2*(-E_0))**0.5
 
 def f(x):
-    z=4*(alpha**0.5)*np.exp(-x*(1/(2**0.5)*alpha))
+    z=2*w*np.exp(-x*(1/((2**0.5)*alpha)))
     return (N_0*np.exp(-z/2)*z**b_0)**2
 
 Analytic_x_vals=np.arange(-12,12.1,0.001)
