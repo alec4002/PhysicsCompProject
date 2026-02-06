@@ -14,7 +14,7 @@ N_cf=1000     #Number that needs to big enough to ensure probabilities behave
 N=20          #Spatial Points
 a=1           #a is the time step, 4 temporal points, N spatial
 eps=1.43      #Range from which we will pick a random number. This is tuned so as to cause a 40%-60% acceptance rate. 
-alpha=0.75
+alpha=2**0.5       #Says in lit this replicates ground state energy of H
 
 #Defining the Harmonic potential 
 def V(x):
@@ -30,7 +30,7 @@ def S(x,j):
 x=np.zeros(shape=(1,N))               #Take this out see if i can make it so p i saved                                    
 x=x[0,:]
 for i in range(0,N):
-    x[i]=0.9
+    x[i]=0.2
     
 def update(p,I):                      #n is dimension of the path , i is the number of loops to complete , p is the inital path                                                       
     A=0
@@ -78,17 +78,18 @@ def update(p,I):                      #n is dimension of the path , i is the num
     return p                                                              #Change to A/N when you want to test vals of eps                             
 
 #Using literature for the boundstate equation
-
-w=2*(alpha)**0.5
+D=1/(alpha)
 alpha_prime=1/((2**0.5)*alpha)
-N_0=(alpha_prime*(2*w-1)/special.gamma(2*w))
-N_0=N_0**0.5
-E_0=(-1/alpha)-alpha*((1/(2*alpha))**0.5)-(1/(16*alpha**2))
-b_0=(1/alpha_prime)*(2*(-E_0))**0.5
 
-def f(x):
-    z=2*w*np.exp(-x*(1/((2**0.5)*alpha)))
-    return (N_0*np.exp(-z/2)*z**b_0)**2
+w=(1/alpha_prime)*(2*D)**0.5
+E_0=-D-(alpha_prime*(D/2)**0.5)-(1/8)*(alpha_prime**2)
+b=(1/alpha_prime)*(-2*E_0)**0.5
+Norm=(alpha_prime*(2*w-1))/(scipy.special.gamma(2*w))
+Norm=Norm**0.5
+
+def f(y):
+    z=2*a*np.exp(-alpha_prime*y)
+    return ((np.exp(-z/2)*z**b)**2)
 
 Analytic_x_vals=np.arange(-12,12.1,0.001)
 
