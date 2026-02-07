@@ -89,7 +89,7 @@ Norm=Norm**0.5
 
 def f(y):
     z=2*a*np.exp(-alpha_prime*y)
-    return ((np.exp(-z/2)*z**b)**2)
+    return ((Norm*np.exp(-z/2)*z**b)**2)**2
 
 Analytic_x_vals=np.arange(-12,12.1,0.001)
 
@@ -132,7 +132,7 @@ plt.xlabel('x',fontsize=13)
 #plt.xlim([-3,3.1])
 plt.stairs(counts, bins, fill=True,color='royalblue', label='Numeric Solution')
 #plt.hist(q.ravel(),bins=np.arange(-2.5,2.5,0.05),density=True,color='royalblue', label='Numeric Solution')
-plt.plot(Analytic_x_vals,f(Analytic_x_vals), linestyle='dashed',color='red',label='Analytic Solution')
+#plt.plot(Analytic_x_vals,f(Analytic_x_vals), linestyle='dashed',color='red',label='Analytic Solution')
 plt.legend() 
 #plt.savefig('Probability distribution MSC.png')
 plt.show()

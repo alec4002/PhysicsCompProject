@@ -1,0 +1,47 @@
+import numpy as np                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+import matplotlib.pyplot as plt
+import scipy
+import vegas 
+from scipy.optimize import curve_fit
+import scipy.integrate as integrate
+import scipy.special as special 
+import scipy.stats
+
+#defining constants 
+m=1
+N_cor=20
+N_cf=1000     #Number that needs to big enough to ensure probabilities behave  
+N=20          #Spatial Points
+a=1           #a is the time step, 4 temporal points, N spatial
+eps=1.43      #Range from which we will pick a random number. This is tuned so as to cause a 40%-60% acceptance rate. 
+alpha=2**0.5       #Says in lit this replicates ground state energy of H
+
+D=1/(alpha)
+alpha_prime=1/((2**0.5)*alpha)
+
+w=(alpha_prime**(-1))*(2*D)**0.5
+E_0=-D-alpha_prime*((D/2)**0.5)-(1/8)*(alpha_prime**2)
+b_0=(1/alpha_prime)*(-2*E_0)**0.5
+N_0=(alpha_prime*(2*a-1))*(1/scipy.special.gamma(2*a))
+N_0=N_0**0.5
+
+E_1=-D-3*alpha_prime*((D/2)**0.5)-(9*alpha_prime**2)(1/8)
+
+
+def f(y):
+    z= 2*a*np.exp(-alpha_prime*y)
+    return (N_0*np.exp(-z/2)*z**b_0)
+
+Analytic_x_vals=np.arange(-12,12.1,0.001)
+
+#Plot code
+plt.figure()                                                                             
+plt.ylabel('$|\psi(x)|^{2}$', fontsize=13)
+plt.xlabel('x',fontsize=13)
+#plt.xlim([-3,3.1])
+#plt.stairs(counts, bins, fill=True,color='royalblue', label='Numeric Solution')
+#plt.hist(q.ravel(),bins=np.arange(-2.5,2.5,0.05),density=True,color='royalblue', label='Numeric Solution')
+plt.plot(Analytic_x_vals,f(Analytic_x_vals), linestyle='dashed',color='red',label='Analytic Solution')
+plt.legend() 
+#plt.savefig('Probability distribution MSC.png')
+plt.show()
