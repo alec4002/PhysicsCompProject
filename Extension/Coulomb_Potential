@@ -18,7 +18,7 @@ eps=0.425      #Range from which we will pick a random number. This is tuned so 
 
 #Defining the Harmonic potential. Please note we are in academic units. SHOULD COULOMB BE NEGATIVE??
 def V(x):
-    V=-1/(x) + (1/2)*(2/x**2)
+    V=-1/(x) #+ (1/2)*(2/x**2)
     return V
 
 #Defining the action -NB-For my Metropolis, it is more useful to define the action per segment, and the count for the summation in the update step. 
@@ -30,7 +30,7 @@ def S(x,j):
 x=np.zeros(shape=(1,N))               #Take this out see if i can make it so p i saved                                    
 x=x[0,:]
 for i in range(0,N):
-    x[i]=0.9
+    x[i]=0.1
 
 def update(p,I):                      #n is dimension of the path , i is the number of loops to complete , p is the inital path                                                       
     A=0

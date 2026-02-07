@@ -14,36 +14,45 @@ N_cf=1000     #Number that needs to big enough to ensure probabilities behave
 N=20          #Spatial Points
 a=1           #a is the time step, 4 temporal points, N spatial
 eps=1.43      #Range from which we will pick a random number. This is tuned so as to cause a 40%-60% acceptance rate. 
-alpha=2**0.5       #Says in lit this replicates ground state energy of H
+alpha=0.75   
 
-D=0.6643
-alpha_prime=0.417
+D=1/(alpha)
+alpha_prime=1/((2**0.5)*alpha)*1.25
 
-w=(alpha_prime**(-1))*(2*D)**0.5
-E_0=-D-alpha_prime*((D/2)**0.5)-(1/8)*(alpha_prime**2)
-b_0=(1/alpha_prime)*(-2*E_0)**0.5
-N_0=(alpha_prime*(2*w-1))/(17.0748)
-N_0=N_0**0.5
-
-E_1=-D-3*alpha_prime*((D/2)**0.5)-(9*alpha_prime**2)*(1/8)
-b_1=(1/alpha_prime)*(-2*E_1)**0.5
-N_1=(alpha_prime*(2*w-3))*(1/scipy.special.gamma(2*w-1))
-N_1=N_1**0.5
+w=(1/alpha_prime)*(2*D)**0.5
+E_0=-D-(alpha_prime*(D/2)**0.5)-(1/8)*(alpha_prime**2)
+b=(1/alpha_prime)*(-2*E_0)**0.5
+Norm=(alpha_prime*(2*w-1))/(scipy.special.gamma(2*w))
+Norm=Norm**0.5
 
 def f(y):
-    z= 2*a*np.exp(-alpha_prime*y)
-    return (np.exp(-z/2)*z)**2#**b_0)
+    z=2*a*np.exp(-alpha_prime*y)
+    return (np.exp(-z/2)*z)**2
 
 Analytic_x_vals=np.arange(-12,12.1,0.001)
+
+def fC(x):                                                   #Anlytic solution from Schrodinger 
+    return 4*np.exp(-2*x)*x**2                              #DOUBLE CHECK AS THIS IS RADIAL PROBABILIY 
+
+Analytic_x_valsC=np.arange(0,12.1,0.001) 
+
+def fcombo(x):
+    y=np.array([])
+    for i in range(0,len(x)):
+        if x[i]>0:
+            y=np.append(y,fC(x[i]))
+        if x[i] <=0:
+            y=np.append(y,f(x[i]))
+    return y 
 
 #Plot code
 plt.figure()                                                                             
 plt.ylabel('$|\psi(x)|^{2}$', fontsize=13)
 plt.xlabel('x',fontsize=13)
-#plt.xlim([-3,3.1])
-#plt.stairs(counts, bins, fill=True,color='royalblue', label='Numeric Solution')
-#plt.hist(q.ravel(),bins=np.arange(-2.5,2.5,0.05),density=True,color='royalblue', label='Numeric Solution')
-plt.plot(Analytic_x_vals,f(Analytic_x_vals), linestyle='dashed',color='red',label='Analytic Solution')
+#plt.plot(Analytic_x_valsC,fC(Analytic_x_valsC), linestyle='dashed',color='red',label='Analytic Solution')
+#plt.plot(Analytic_x_vals,f(Analytic_x_vals), linestyle='dashed',color='blue',label='Analytic Solution')
+plt.plot(Analytic_x_vals,fcombo(Analytic_x_vals), linestyle='dashed',color='green',label='Analytic Solution')
+
 plt.legend() 
-#plt.savefig('Probability distribution MSC.png')
+
 plt.show()
