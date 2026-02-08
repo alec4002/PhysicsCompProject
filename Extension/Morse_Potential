@@ -108,13 +108,15 @@ q=MetroplisAv(x)
 counts, bins= np.histogram(q.ravel(),bins=np.arange(-12.1,12.1,0.05),density=True)
                                                               
 def F(x_1,x_0):
-    return (np.exp(-2*x_0)*((2*x_0**2)+2*x_0+1)-np.exp(-2*x_1)*((-2*x_1**2)-2*x_0-1))
+    return (94670153000000/14527333427231)*(np.exp(-np.exp(-(1178511*x_1/1000000)))*(1+np.exp(-(1178511*x_1/1000000)))-np.exp(-np.exp(-(1178511*x_0/1000000)))*(1+np.exp(-(1178511*x_0/1000000))))
 
 E_i=np.array([])
 
 for i in range(1,len(bins)):
     p=F(bins[i],bins[i-1])
     E_i=np.append(E_i,p)
+
+print(counts,E_i)
 
 chi_squared=0
 for i in range(0,len(E_i)):

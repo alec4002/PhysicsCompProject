@@ -13,12 +13,12 @@ N_cor=20
 N_cf=5000     #Number that needs to big enough to ensure probabilities behave  
 N=20          #Spatial Points
 a=1           #a is the time step, 4 temporal points, N spatial
-eps=0.425      #Range from which we will pick a random number. This is tuned so as to cause a 40%-60% acceptance rate. 
+eps=0.65      #Range from which we will pick a random number. This is tuned so as to cause a 40%-60% acceptance rate. 
 
 
 #Defining the Harmonic potential. Please note we are in academic units. SHOULD COULOMB BE NEGATIVE??
 def V(x):
-    V=-1/(x) #+ (1/2)*(2/x**2)
+    V=-1/(x) + (1/2)*(2/x**2)
     return V
 
 #Defining the action -NB-For my Metropolis, it is more useful to define the action per segment, and the count for the summation in the update step. 
@@ -40,56 +40,47 @@ def update(p,I):                      #n is dimension of the path , i is the num
             p_old=p[j] 
         
             if j==0:
-                Sj_old=S(p,j+1)                                              
-                p[j]=p[j]+(np.random.uniform(-eps, eps))                     #This function from numpy generates random no between -eps and eps
-                if p[j] <= 0:
-                    p[j]==p_old
-                else:
-                    dS1=S(p,j+1)-Sj_old
-                    A = A+1
-                    if dS1 > 0  and np.exp(-dS1) < np.random.uniform(0, 1):
-                        A = A-1
-                        p[j]=p_old
+                Sj_old=S(p,j+1)
+                p[j]=p[j]+(np.random.uniform(-eps, eps))                     #This function form numpy generates random no between -eps and eps
+                dS1=S(p,j+1)-Sj_old
+                A = A+1
+                if dS1 > 0  and np.exp(-dS1) < np.random.uniform(0, 1):
+                    A = A-1
+                    p[j]=p_old
 
             
             if 0<j<n-1: 
                 Sj_old1=S(p,j+1)
                 Sj_old2=S(p,j)
-                p[j]=p[j]+(np.random.uniform(-eps, eps))  
-                if p[j] <= 0:
-                    p[j]==p_old
-                else:                   
-                    dS1=S(p,j+1)
-                    dS2=S(p,j)
-                    dS=(dS1+dS2)-(Sj_old1+Sj_old2)
-                    A = A+1 
-                    if dS > 0 and np.exp(-dS) < np.random.uniform(0, 1):
-                        A = A-1 
-                        p[j]=p_old
+                p[j]=p[j]+(np.random.uniform(-eps, eps))                     #This function form numpy generates random no between -eps and eps
+                dS1=S(p,j+1)
+                dS2=S(p,j)
+                dS=(dS1+dS2)-(Sj_old1+Sj_old2)
+                A = A+1 
+                if dS > 0 and np.exp(-dS) < np.random.uniform(0, 1):
+                    A = A-1 
+                    p[j]=p_old
             
         
             if j== n-1: 
                 Sj_old=S(p,j)
-                p[j]=p[j]+(np.random.uniform(-eps, eps)) 
-                if p[j] <= 0:
-                    p[j]==p_old
-                else:                    #This function form numpy generates random no between -eps and eps
-                    dS2=S(p,j)-Sj_old
-                    A = A+1
-                    if dS2 > 0 and np.exp(-dS2) < np.random.uniform(0, 1):
-                        A = A - 0
-                        p[j]=p_old
+                p[j]=p[j]+(np.random.uniform(-eps, eps))                     #This function form numpy generates random no between -eps and eps
+                dS2=S(p,j)-Sj_old
+                A = A+1
+                if dS2 > 0 and np.exp(-dS2) < np.random.uniform(0, 1):
+                    A = A - 0
+                    p[j]=p_old
                     
 
             if p[0] != p[n-1]:
                 p[0]= p[n-1]
      
-    return p                                                              #Change to A/N when you want to test vals of eps                             
+    return p                                                              #Change to A/N when you want to test vals of eps                                    
 
  
 
 def f(x):                                                   #Anlytic solution from Schrodinger 
-    return 4*np.exp(-2*x)*x**2                              #DOUBLE CHECK AS THIS IS RADIAL PROBABILIY 
+    return (4*np.exp(-2*x)*x**2)                         #DOUBLE CHECK AS THIS IS RADIAL PROBABILIY 
 
 Analytic_x_vals=np.arange(0,12.1,0.001)
 
@@ -108,7 +99,7 @@ counts, bins= np.histogram(q.ravel(),bins=np.arange(0,12.1,0.05),density=True)
                                                          
      
 def F(x_1,x_0):
-    return (np.exp(-2*x_0)*((2*x_0**2)+2*x_0+1)-np.exp(-2*x_1)*((-2*x_1**2)-2*x_0-1))
+    return (np.exp(-2*x_0)*((2*x_0**2)+2*x_0+1)+np.exp(-2*x_1)*((-2*x_1**2)-2*x_0-1))
 
 E_i=np.array([])
 
@@ -122,9 +113,8 @@ for i in range(0,len(E_i)):
 
 
 DoF=len(counts)-2               #calculated as no of bins = len(counts) constrianed to have same mean and number of measurements hence we take 2
-print(np.sum(counts))                                                                           
-
-
+print(chi_squared/DoF)                #calculated as no of bins = len(counts) constrianed to have same mean and number of measurements hence we take 2
+                                                                     
 #Plot code
 plt.figure()                                                                             
 plt.ylabel('$r^{2} |R(x)|^{2}$', fontsize=13)

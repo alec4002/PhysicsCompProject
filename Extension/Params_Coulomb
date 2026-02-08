@@ -13,7 +13,7 @@ N_cor=20
 N_cf=5000    #Number that needs to big enough to ensure probabilities behave  
 N=20          #Spatial Points
 a=1           #a is the time step, 4 temporal points, N spatial
-eps=0.70      #Range from which we will pick a random number. This is tuned so as to cause a 40%-60% acceptance rate. 
+eps=0.75      #Range from which we will pick a random number. This is tuned so as to cause a 40%-60% acceptance rate. 
 
 
 #Defining the Harmonic potential. Please note we are in academic units. SHOULD COULOMB BE NEGATIVE??

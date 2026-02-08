@@ -18,8 +18,7 @@ alpha=0.50
 
 #Defining the Harmonic potential 
 def V(x):
-    k=(x**2)+(alpha**2)
-    V=1/(k**0.5)
+    V=-1/(x**2+alpha**2)**(0.5)
     return V
 
 #Defining the action -NB-For my Metropolis, it is more useful to define the action per segment, and the count for the summation in the update step. 
@@ -126,7 +125,7 @@ plt.xlabel('x',fontsize=13)
 #plt.xlim([-3,3.1])
 plt.stairs(counts, bins, fill=True,color='royalblue', label='Numeric Solution')
 #plt.hist(q.ravel(),bins=np.arange(-2.5,2.5,0.05),density=True,color='royalblue', label='Numeric Solution')
-plt.plot(Analytic_x_vals,f(Analytic_x_vals), linestyle='dashed',color='red',label='Analytic Solution')
+#plt.plot(Analytic_x_vals,f(Analytic_x_vals), linestyle='dashed',color='red',label='Analytic Solution')
 plt.legend() 
 #plt.savefig('Probability distribution.png')
 plt.show()
