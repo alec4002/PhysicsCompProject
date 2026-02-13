@@ -136,7 +136,7 @@ plt.stairs(counts, bins, fill=True,color='royalblue', label='Numeric Solution')
 #plt.hist(q.ravel(),bins=np.arange(-2.5,2.5,0.05),density=True,color='royalblue', label='Numeric Solution')
 plt.plot(Analytic_x_vals,f(Analytic_x_vals), linestyle='dashed',color='red',label='Analytic Solution')
 plt.legend() 
-#plt.savefig('Probability distribution MSC.png')
+plt.savefig('Morse Probability distribution.png')
 plt.show()
 
 #Morse potential notes. Works well! Is in agreement with the harmonic oscialltor as expected, however there is a phase shift which I

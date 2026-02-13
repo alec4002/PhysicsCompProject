@@ -127,6 +127,6 @@ plt.stairs(counts, bins, fill=True,color='royalblue', label='Numeric Solution')
 #plt.hist(q.ravel(),bins=np.arange(-2.5,2.5,0.05),density=True,color='royalblue', label='Numeric Solution')
 #plt.plot(Analytic_x_vals,f(Analytic_x_vals), linestyle='dashed',color='red',label='Analytic Solution')
 plt.legend() 
-#plt.savefig('Probability distribution.png')
+plt.savefig('Soft Coulomb Probability distribution.png')
 plt.show()
 

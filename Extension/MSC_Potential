@@ -14,7 +14,7 @@ N_cf=5000     #Number that needs to big enough to ensure probabilities behave
 N=20          #Spatial Points
 a=1           #a is the time step, 4 temporal points, N spatial
 eps=1.43      #Range from which we will pick a random number. This is tuned so as to cause a 40%-60% acceptance rate. 
-alpha=0.5
+alpha=0.2
 
 #Defining the Harmonic potential 
 def V(x):
@@ -144,7 +144,7 @@ plt.xlabel('x',fontsize=13)
 #plt.xlim([-3,3.1])
 plt.stairs(counts, bins, fill=True,color='royalblue', label='Numeric Solution')
 #plt.hist(q.ravel(),bins=np.arange(-2.5,2.5,0.05),density=True,color='royalblue', label='Numeric Solution')
-plt.plot(Analytic_x_vals, y_vals, linestyle='dashed',color='red',label='Analytic Solution')
+#plt.plot(Analytic_x_vals, y_vals, linestyle='dashed',color='red',label='Analytic Solution')
 plt.legend() 
 plt.savefig('Probability distribution MSC.png')
 plt.show()
