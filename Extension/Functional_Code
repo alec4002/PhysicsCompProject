@@ -17,4 +17,25 @@ def Expected_position(q):
     
     return (1/N_cf)*(np.average(avs))
 
-#seems to work, need to look at errors tho. 
+
+def error_Expected_position(q):
+    sigma=(Expected_position(np.square(q))-Expected_position(q)**2)/N_cf
+    return sigma**(1/2)
+
+#This works, yay. 
+
+#Now having a look at energy
+ 
+def Expected_Energy(q):
+    avs=np.array([])
+    for i in range(0,len(q)):
+        e=np.array([])
+        for i in range(1,len(q[i,:])):
+            S = (m/2*a)*(((q[i]-q[i-1]))**2)+a*V((q[i-1]))
+            e=np.append(e,S)
+        avs=np.append(avs,np.average(e))
+    return (1/N_cf)*(np.average(avs))
+
+def error_Expected_Energy(q):
+    sigma=(Expected_Energy(np.square(q))-Expected_Energy(q)**2)/N_cf
+    return sigma**(1/2)

@@ -10,10 +10,10 @@ import scipy.stats
 #defining constants 
 m=1
 N_cor=20
-N_cf=100000     #Number that needs to big enough to ensure probabilities behave  
+N_cf=5000     #Number that needs to big enough to ensure probabilities behave  
 N=20          #Spatial Points
 a=1           #a is the time step, 4 temporal points, N spatial
-eps=0.452   #Range from which we will pick a random number. This is tuned so as to cause a 40%-60% acceptance rate. 
+eps=0.452     #Range from which we will pick a random number. This is tuned so as to cause a 40%-60% acceptance rate. 
 
 
 #Defining the Harmonic potential. Please note we are in academic units. SHOULD COULOMB BE NEGATIVE??
@@ -77,6 +77,19 @@ def update(p,I):                      #n is dimension of the path , i is the num
      
     return p                                                              #Change to A/N when you want to test vals of eps                                    
 
+
+def Expected_position(q):                                                   #Functional code for expectatiojn values
+    avs=np.array([])
+    for i in range(0,len(q)):
+        av=np.average(q[i,:])
+        avs=np.append(avs,av)
+    
+    return (1/N_cf)*(np.average(avs))
+
+
+def error_Expected_position(q):
+    sigma=(Expected_position(np.square(q))-Expected_position(q)**2)/N_cf
+    return sigma**(1/2)
  
 
 def f(x):                                                   #Anlytic solution from Schrodinger 
@@ -128,5 +141,4 @@ plt.legend()
 plt.savefig('Probability distribution Coulomb.png')
 plt.show()
 
-#Issue with this code a)i dont get reproducable results as my method of getting 1/0 means there statistical variance of how many paths are
-#rejected on average and b) it doesnt really behave how i want it to at all 
+print(Expected_position(q), error_Expected_position(q))
