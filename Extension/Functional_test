@@ -14,28 +14,22 @@ N_cf=5000     #Number that needs to big enough to ensure probabilities behave
 N=20          #Spatial Points
 a=1           #a is the time step, 4 temporal points, N spatial
 eps=1.43      #Range from which we will pick a random number. This is tuned so as to cause a 40%-60% acceptance rate. 
-alpha=0.2
+
 
 #Defining the Harmonic potential 
 def V(x):
-    if x>0:
-        denominator=(x**2+alpha**2)
-        V= -(denominator)**(-0.5)
-    if x <= 0:
-        V=(1/alpha)*(np.exp(-2*x/(alpha*2**0.5))-2*np.exp(-x/(alpha*2**0.5)))
+    V=1/2*(x**2)
     return V
 
 #Defining the action -NB-For my Metropolis, it is more useful to define the action per segment, and the count for the summation in the update step. 
 def S(x,j):   
-    S = (m/2*a)*(((x[j]-x[j-1]))**2)+a*V((x[j-1])) 
+    S = (m/2*a)*(((x[j]-x[j-1]))**2)+a*V((x[j-1])) #
     return S
 
 #Defining the updating algorithm. 
 x=np.zeros(shape=(1,N))               #Take this out see if i can make it so p i saved                                    
 x=x[0,:]
-for i in range(0,N):
-    x[i]=0.9
-    
+
 def update(p,I):                      #n is dimension of the path , i is the number of loops to complete , p is the inital path                                                       
     A=0
     n=len(p)
@@ -82,25 +76,12 @@ def update(p,I):                      #n is dimension of the path , i is the num
     return p                                                              #Change to A/N when you want to test vals of eps                             
 
  
-D=1/(alpha)
-alpha_prime=1/((2**0.5)*alpha)*1.25
-
-w=(1/alpha_prime)*(2*D)**0.5
-E_0=-D-(alpha_prime*(D/2)**0.5)-(1/8)*(alpha_prime**2)
-b=(1/alpha_prime)*(-2*E_0)**0.5
-Norm=(alpha_prime*(2*w-1))/(scipy.special.gamma(2*w))
-Norm=Norm**0.5
-
-def f(x): 
-    if x>0:                                                  #Anlytic solution from Schrodinger 
-        return 4*np.exp(-2*(x))*(x)**2 
-    if x<=0:
-        z=2*a*np.exp(-alpha_prime*x)
-        return (np.exp(-z/2)*z)**2  
 
 
-        
-Analytic_x_vals=np.arange(-5,12.1,0.001)
+def f(x):                                                   #Anlytic solution from Schrodinger 
+    return (np.exp((-x**2)/2)/((np.pi)**(1/4)))**2
+
+Analytic_x_vals=np.arange(-5,5.1,0.001)
 
 def MetroplisAv(x):                                      
     paths=np.zeros(shape=(N_cf,N))                            
@@ -112,12 +93,21 @@ def MetroplisAv(x):
 
     return(paths)
 
+def Expected_position(q):
+    avs=np.array([])
+    for i in range(0,len(q)):
+        av=np.average(q[i,:])
+        avs=np.append(avs,av)
+    
+    return (1/N_cf)*(np.average(avs))
+
 q=MetroplisAv(x)
-                                                                                        
-counts, bins= np.histogram(q.ravel(),bins=np.arange(-5,12.1,0.05),density=True)
-                                                              
+                                                                                       
+counts, bins= np.histogram(q.ravel(),bins=np.arange(-5,5,0.05),density=True)
+                                                         
+     
 def F(x_1,x_0):
-    return (np.exp(-2*x_0)*((2*x_0**2)+2*x_0+1)-np.exp(-2*x_1)*((-2*x_1**2)-2*x_0-1))
+    return (scipy.special.erf((x_1)/(2)**(1/2))-scipy.special.erf((x_0)/(2)**(1/2)))/((2)**(1/2))
 
 E_i=np.array([])
 
@@ -132,20 +122,18 @@ for i in range(0,len(E_i)):
 
 DoF=len(counts)-2               #calculated as no of bins = len(counts) constrianed to have same mean and number of measurements hence we take 2
 print(chi_squared/DoF)                                                                              
-
-y_vals=np.array([])
-for i in range(0,len(Analytic_x_vals)):
-    y_vals=np.append(y_vals,f(Analytic_x_vals[i]))
+print(np.sum(counts))
 
 #Plot code
 plt.figure()                                                                             
 plt.ylabel('$|\psi(x)|^{2}$', fontsize=13)
 plt.xlabel('x',fontsize=13)
-#plt.xlim([-3,3.1])
+plt.xlim([-3,3.1])
 plt.stairs(counts, bins, fill=True,color='royalblue', label='Numeric Solution')
 #plt.hist(q.ravel(),bins=np.arange(-2.5,2.5,0.05),density=True,color='royalblue', label='Numeric Solution')
-#plt.plot(Analytic_x_vals, y_vals, linestyle='dashed',color='red',label='Analytic Solution')
+plt.plot(Analytic_x_vals,f(Analytic_x_vals), linestyle='dashed',color='red',label='Analytic Solution')
 plt.legend() 
-plt.savefig('Probability distribution MSC.png')
+#plt.savefig('Probability distribution.png')
 plt.show()
 
+print(Expected_position(q))

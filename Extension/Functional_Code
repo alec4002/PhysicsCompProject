@@ -1,0 +1,20 @@
+import numpy as np                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+import matplotlib.pyplot as plt
+import scipy
+import vegas 
+from scipy.optimize import curve_fit
+import scipy.integrate as integrate
+import scipy.special as special 
+import scipy.stats
+
+#Fucntional must worrk on the array of paths, q, produced by metropolias code 
+
+def Expected_position(q):
+    avs=np.array([])
+    for i in range(0,len(q)):
+        av=np.average(q[i,:])
+        avs=np.append(avs,av)
+    
+    return (1/N_cf)*(np.average(avs))
+
+#seems to work, need to look at errors tho. 

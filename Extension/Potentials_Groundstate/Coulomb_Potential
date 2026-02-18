@@ -10,15 +10,15 @@ import scipy.stats
 #defining constants 
 m=1
 N_cor=20
-N_cf=5000     #Number that needs to big enough to ensure probabilities behave  
+N_cf=100000     #Number that needs to big enough to ensure probabilities behave  
 N=20          #Spatial Points
 a=1           #a is the time step, 4 temporal points, N spatial
-eps=0.000001    #Range from which we will pick a random number. This is tuned so as to cause a 40%-60% acceptance rate. 
+eps=0.452   #Range from which we will pick a random number. This is tuned so as to cause a 40%-60% acceptance rate. 
 
 
 #Defining the Harmonic potential. Please note we are in academic units. SHOULD COULOMB BE NEGATIVE??
 def V(x):
-    V=-1/(x) #+ (1/2)*(2/x**2)
+    V=-1/(x) + (1/2)*(2/x**2)
     return V
 
 #Defining the action -NB-For my Metropolis, it is more useful to define the action per segment, and the count for the summation in the update step. 
@@ -80,13 +80,13 @@ def update(p,I):                      #n is dimension of the path , i is the num
  
 
 def f(x):                                                   #Anlytic solution from Schrodinger 
-    return (4*np.exp(-2*x))#*x**2                            #DOUBLE CHECK AS THIS IS RADIAL PROBABILIY 
+    return (4*np.exp(-2*x))*x**2                            #DOUBLE CHECK AS THIS IS RADIAL PROBABILIY 
 
 Analytic_x_vals=np.arange(0,12.1,0.001)
 
 def MetroplisAv(x):                                      
     paths=np.zeros(shape=(N_cf,N))                            
-    p=update(x,20*N_cor)                                     #Thermalising 
+    p=update(x,10*N_cor)                                     #Thermalising 
        
     for l in range(0,N_cf-1):
         p=update(p,N_cor)
@@ -94,7 +94,8 @@ def MetroplisAv(x):
 
     return(paths)
 
-q=MetroplisAv(x)                                                                        
+q=MetroplisAv(x)    
+
 counts, bins= np.histogram(q.ravel(),bins=np.arange(0,12.1,0.05),density=True)
                                                          
      
