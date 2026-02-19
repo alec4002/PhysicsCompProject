@@ -10,7 +10,7 @@ import scipy.stats
 #defining constants 
 m=1
 N_cor=20
-N_cf=5000     #Number that needs to big enough to ensure probabilities behave  
+N_cf=10000     #Number that needs to big enough to ensure probabilities behave  
 N=20          #Spatial Points
 a=1           #a is the time step, 4 temporal points, N spatial
 eps=1.43      #Range from which we will pick a random number. This is tuned so as to cause a 40%-60% acceptance rate. 
@@ -101,7 +101,7 @@ def Expected_position(q):
         av=np.average(q[i,:])
         avs=np.append(avs,av)
     
-    return (1/N_cf)*(np.average(avs))
+    return (np.average(avs))
 
 def error_Expected_position(q):
     sigma=(Expected_position(np.square(q))-Expected_position(q)**2)/N_cf
@@ -113,9 +113,9 @@ def Expected_Energy(q):
         e=np.array([])
         for i in range(1,len(q[i,:])):
             S = (m/2*a)*(((q[i]-q[i-1]))**2)+a*V((q[i-1]))
-            e=np.append(e,S)
-        avs=np.append(avs,np.sum(e))
-    return (1/N_cf)*(np.average(avs))
+            e = np.append(e,S)
+        avs=np.append(avs,np.average(e))        
+    return  np.average(avs)
 
 def error_Expected_Energy(q):
     sigma=(Expected_Energy(np.square(q))-Expected_Energy(q)**2)/N_cf
@@ -156,6 +156,7 @@ plt.legend()
 #plt.savefig('Probability distribution.png')
 plt.show()
 
+print(Expected_position(q),error_Expected_position(q))
 print(Expected_Energy(q),error_Expected_Energy(q))
 
 #seems v.good get a very nice agreement with analytic. Now want to try energy

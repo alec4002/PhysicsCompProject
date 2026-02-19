@@ -78,13 +78,13 @@ def update(p,I):                      #n is dimension of the path , i is the num
     return p                                                              #Change to A/N when you want to test vals of eps                                    
 
 
-def Expected_position(q):                                                   #Functional code for expectatiojn values
+def Expected_position(q):                                                   #Functional code for expectation values
     avs=np.array([])
     for i in range(0,len(q)):
         av=np.average(q[i,:])
         avs=np.append(avs,av)
     
-    return (1/N_cf)*(np.average(avs))
+    return (np.average(avs))
 
 
 def error_Expected_position(q):
