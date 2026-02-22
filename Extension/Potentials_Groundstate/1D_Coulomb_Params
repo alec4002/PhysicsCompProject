@@ -1,0 +1,80 @@
+import numpy as np                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+import matplotlib.pyplot as plt
+import scipy
+import vegas 
+from scipy.optimize import curve_fit
+import scipy.integrate as integrate
+import scipy.special as special 
+import scipy.stats
+
+#defining constants 
+m=1
+N_cor=20
+N_cf=10000     #Number that needs to big enough to ensure probabilities behave  
+N=20          #Spatial Points
+a=1           #a is the time step, 4 temporal points, N spatial
+eps=0.0025    #Range from which we will pick a random number. This is tuned so as to cause a 40%-60% acceptance rate. 
+
+
+#Defining the Harmonic potential. Please note we are in academic units. SHOULD COULOMB BE NEGATIVE??
+def V(x):
+    V=-1/(x) 
+    return V
+
+#Defining the action -NB-For my Metropolis, it is more useful to define the action per segment, and the count for the summation in the update step. 
+def S(x,j):   
+    S = (m/2*a)*(((x[j]-x[j-1]))**2)+a*V((x[j-1])) 
+    return S
+
+#Defining the updating algorithm. 
+x=np.zeros(shape=(1,N))               #Take this out see if i can make it so p i saved                                    
+x=x[0,:]
+for i in range(0,N):
+    x[i]=0.1
+
+def update(p,I):                      #n is dimension of the path , i is the number of loops to complete , p is the inital path                                                       
+    A=0
+    n=len(p)
+    for i in range(0,I):
+        for j in range(0,n):
+            p_old=p[j] 
+        
+            if j==0:
+                Sj_old=S(p,j+1)
+                p[j]=p[j]+(np.random.uniform(-eps, eps))                     #This function form numpy generates random no between -eps and eps
+                dS1=S(p,j+1)-Sj_old
+                A = A+1
+                if dS1 > 0  and np.exp(-dS1) < np.random.uniform(0, 1):
+                    A = A-1
+                    p[j]=p_old
+
+            
+            if 0<j<n-1: 
+                Sj_old1=S(p,j+1)
+                Sj_old2=S(p,j)
+                p[j]=p[j]+(np.random.uniform(-eps, eps))                     #This function form numpy generates random no between -eps and eps
+                dS1=S(p,j+1)
+                dS2=S(p,j)
+                dS=(dS1+dS2)-(Sj_old1+Sj_old2)
+                A = A+1 
+                if dS > 0 and np.exp(-dS) < np.random.uniform(0, 1):
+                    A = A-1 
+                    p[j]=p_old
+            
+        
+            if j== n-1: 
+                Sj_old=S(p,j)
+                p[j]=p[j]+(np.random.uniform(-eps, eps))                     #This function form numpy generates random no between -eps and eps
+                dS2=S(p,j)-Sj_old
+                A = A+1
+                if dS2 > 0 and np.exp(-dS2) < np.random.uniform(0, 1):
+                    A = A - 0
+                    p[j]=p_old
+                    
+
+            if p[0] != p[n-1]:
+                p[0]= p[n-1]
+     
+    return A                                                             #Change to A/N when you want to test vals of eps                                    
+
+print(update(x,1000))
