@@ -11,10 +11,9 @@ import scipy.stats
 m=1
 N_cor=20
 N_cf=10000     #Number that needs to big enough to ensure probabilities behave  
-N=20          #Spatial Points
-a=1/2           #a is the time step, 4 temporal points, N spatial
-eps=1.65      #Range from which we will pick a random number. This is tuned so as to cause a 40%-60% acceptance rate. 
-
+N=20           #Spatial Points
+a=1            #a is the time step, 4 temporal points, N spatial
+eps=1.43       #Range from which we will pick a random number. This is tuned so as to cause a 40%-60% acceptance rate. 1.65 when a=2/3
 
 #Defining the Harmonic potential 
 def V(x):
@@ -158,5 +157,5 @@ plt.show()
 
 print(Expected_position(q),error_Expected_position(q))
 print(Expected_Energy(q),error_Expected_Energy(q))
-
+print(q[2,:])
 #seems v.good get a very nice agreement with analytic. Now want to try energy

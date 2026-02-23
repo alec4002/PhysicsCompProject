@@ -12,7 +12,7 @@ m=1
 N_cor=20
 N_cf=10000     #Number that needs to big enough to ensure probabilities behave  
 N=20          #Spatial Points
-a=1/2           #a is the time step, 4 temporal points, N spatial
+a=2/3           #a is the time step, 4 temporal points, N spatial
 eps=1.65      #Range from which we will pick a random number. This is tuned so as to cause a 40%-60% acceptance rate. 
 
 
