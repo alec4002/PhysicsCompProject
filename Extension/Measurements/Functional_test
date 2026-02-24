@@ -12,8 +12,8 @@ m=1
 N_cor=20
 N_cf=10000     #Number that needs to big enough to ensure probabilities behave  
 N=20           #Spatial Points
-a=3/5            #a is the time step, 4 temporal points, N spatial
-eps=1.65       #Range from which we will pick a random number. This is tuned so as to cause a 40%-60% acceptance rate. 1.65 when a=2/3
+a=0.89         #a is the time step, 4 temporal points, N spatial
+eps=1.43       #Range from which we will pick a random number. This is tuned so as to cause a 40%-60% acceptance rate. 1.65 when a=2/3. 1.43 when a=1
 
 #Defining the Harmonic potential 
 def V(x):
@@ -22,7 +22,7 @@ def V(x):
 
 #Defining the action -NB-For my Metropolis, it is more useful to define the action per segment, and the count for the summation in the update step. 
 def S(x,j):   
-    S = (m/(2*a))*(((x[j]-x[j-1]))**2)+a*V((x[j-1])) #
+    S = (m/(2*a))*(((x[j]-x[j-1]))**2)+a*V((x[j-1])) 
     return S
 
 #Defining the updating algorithm. 
@@ -123,12 +123,19 @@ def error_Expected_Energy(q):
 
 def bootstrap(x):
     bst=np.array([])
-    for i in range(0,len(x)-1):
+    for i in range(0,len(x)):
         m=np.random.randint(0, len(x))
         bst=np.append(bst,x[m])
     return bst 
 
-q=np.array([1,2,3,4,5,6,7,8,9,10])
+def binning(q,binsize):
+    ensemble=np.array([])
+    for j in np.arange(0,len(q),binsize):
+        g=0
+        for i in range(0,binsize):
+            g= g + q[i+j]
+        ensemble=np.append(ensemble, g/binsize)
+    return ensemble
 
 
 q=MetroplisAv(x)
@@ -153,7 +160,6 @@ for i in range(0,len(E_i)):
 DoF=len(counts)-2               #calculated as no of bins = len(counts) constrianed to have same mean and number of measurements hence we take 2
 print(chi_squared/DoF)                                                                              
 
-
 #Plot code
 #plt.figure()                                                                             
 #plt.ylabel('$|\psi(x)|^{2}$', fontsize=13)
@@ -167,12 +173,12 @@ print(chi_squared/DoF)
 #plt.show()
 
 Values=np.array([])
-Values=np.append(Values,Expected_Energy(q))
+Values=np.append(Values,Expected_position(q))
 
 for i in range(0,9):
-    Values=np.append(Values, bootstrap(Expected_Energy(q)))
+    Values=np.append(Values, bootstrap(Expected_position(q)))
 
-print(np.average(Values), np.std(Values)/(len(Values))**(0.5))   
+print(len(binning(Values,100)))
 
 
 #this is surprising. It is like every entry in the aveage array we are copying is identical. Need to check. The position functional proves that
