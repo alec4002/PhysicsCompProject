@@ -109,9 +109,10 @@ def error_Expected_position(q):
 def Expected_Energy(q):
     avs=np.array([])
     for i in range(0,len(q)):
+        k=q[i,:]
         e=np.array([])
-        for i in range(1,len(q[i,:])):
-            S = (m/2*a)*(((q[i]-q[i-1]))**2)+a*V((q[i-1]))
+        for j in range(1,len(k)):
+            S = (m/2*a)*(((k[j]-k[j-1]))**2)+a*V((k[j-1]))
             e = np.append(e,S)
         avs=np.append(avs,np.average(e))        
     return  avs
@@ -171,7 +172,12 @@ Values=np.append(Values,Expected_Energy(q))
 for i in range(0,9):
     Values=np.append(Values, bootstrap(Expected_Energy(q)))
 
-#print(np.average(Values), np.std(Values)/(len(Values))**(0.5))   
-print(Values)
+print(np.average(Values), np.std(Values)/(len(Values))**(0.5))   
+
+
 #this is surprising. It is like every entry in the aveage array we are copying is identical. Need to check. The position functional proves that
 #this should work. 
+
+#Exepected energy is equal for all configurations. Do i have some sort of constraint on the the total enegry of the system? How is this different from the calculation
+#of the expected posion;rather, why do I not see a constraint on the expected position? Do I just use the monte carlo approximation for the error. WORKING!! although
+#my value is wrong but i can sort out.
