@@ -1,0 +1,13 @@
+Measurements taken with the following constants.
+m=1           #Mass of particle   
+N_cor=20      #Number of sweeps before acceptance
+N_cf=10000    #Number that needs to big enough to ensure probabilities behave  
+N=20          #Spatial Points
+a=1/2         #a is the time step, 4 temporal points, N spatial
+
+alpha (softening parameter) is varied and expected position, energy and momentum is measured. Eps (step) has to be varied
+accordingly to ensure that the code has the correct path acceptance. 
+
+It should also be noted and discussed that the value of a has a large impact on expected energy measurement. A surface level
+investigation into if there is a limit in which we converge to an accurate value would be a good idea. 
+

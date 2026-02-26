@@ -7,74 +7,35 @@ import scipy.integrate as integrate
 import scipy.special as special 
 import scipy.stats
 
-#defining constants 
-m=1
-N_cor=20
-N_cf=10000    #Number that needs to big enough to ensure probabilities behave  
-N=20          #Spatial Points
-a=1           #a is the time step, 4 temporal points, N spatial
-eps=0.070     #Range from which we will pick a random number. This is tuned so as to cause a 40%-60% acceptance rate. 
+#Fucntional must worrk on the array of paths, q, produced by metropolias code 
+
+def Expected_position(q):
+    avs=np.array([])
+    for i in range(0,len(q)):
+        av=np.average(q[i,:])
+        avs=np.append(avs,av)
+    
+    return (1/N_cf)*(np.average(avs))
 
 
-#Defining the Harmonic potential 
-def V(x):
-    V=-1/x
-    return V
+def error_Expected_position(q):
+    sigma=(Expected_position(np.square(q))-Expected_position(q)**2)/N_cf
+    return sigma**(1/2)
 
-#Defining the action -NB-For my Metropolis, it is more useful to define the action per segment, and the count for the summation in the update step. 
-def S(x,j):   
-    S = (m/2*a)*(((x[j]-x[j-1]))**2)+a*V((x[j-1])) 
-    return S
+#This works, yay. 
 
-#Defining the updating algorithm. 
-x=np.zeros(shape=(1,N))               #Take this out see if i can make it so p i saved                                    
-x=x[0,:]
-for i in range(0,N):
-    x[i]=1
+#Now having a look at energy
+ 
+def Expected_Energy(q):
+    avs=np.array([])
+    for i in range(0,len(q)):
+        e=np.array([])
+        for i in range(1,len(q[i,:])):
+            S = (m/2*a)*(((q[i]-q[i-1]))**2)+a*V((q[i-1]))
+            e=np.append(e,S)
+        avs=np.append(avs,np.average(e))
+    return (1/N_cf)*(np.average(avs))
 
-def update(p,I):                      #n is dimension of the path , i is the number of loops to complete , p is the inital path                                                       
-    A=0
-    n=len(p)
-    for i in range(0,I):
-        for j in range(0,n):
-            p_old=p[j] 
-        
-            if j==0:
-                Sj_old=S(p,j+1)
-                p[j]=p[j]+(np.random.uniform(-eps, eps))                     #This function form numpy generates random no between -eps and eps
-                dS1=S(p,j+1)-Sj_old
-                A = A+1
-                if dS1 > 0  and np.exp(-dS1) < np.random.uniform(0, 1):
-                    A = A-1
-                    p[j]=p_old
-
-            
-            if 0<j<n-1: 
-                Sj_old1=S(p,j+1)
-                Sj_old2=S(p,j)
-                p[j]=p[j]+(np.random.uniform(-eps, eps))                     #This function form numpy generates random no between -eps and eps
-                dS1=S(p,j+1)
-                dS2=S(p,j)
-                dS=(dS1+dS2)-(Sj_old1+Sj_old2)
-                A = A+1 
-                if dS > 0 and np.exp(-dS) < np.random.uniform(0, 1):
-                    A = A-1 
-                    p[j]=p_old
-            
-        
-            if j== n-1: 
-                Sj_old=S(p,j)
-                p[j]=p[j]+(np.random.uniform(-eps, eps))                     #This function form numpy generates random no between -eps and eps
-                dS2=S(p,j)-Sj_old
-                A = A+1
-                if dS2 > 0 and np.exp(-dS2) < np.random.uniform(0, 1):
-                    A = A - 0
-                    p[j]=p_old
-                    
-
-            if p[0] != p[n-1]:
-                p[0]= p[n-1]
-     
-    return A                                                              #Change to A/N when you want to test vals of eps                                   
-
-print(update(x,1000))
+def error_Expected_Energy(q):
+    sigma=(Expected_Energy(np.square(q))-Expected_Energy(q)**2)/N_cf
+    return sigma**(1/2)

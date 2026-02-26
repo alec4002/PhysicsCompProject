@@ -8,27 +8,34 @@ import scipy.special as special
 import scipy.stats
 
 #defining constants 
-m=1
-N_cor=20
-N_cf=10000     #Number that needs to big enough to ensure probabilities behave  
-N=20           #Spatial Points
-a=0.89         #a is the time step, 4 temporal points, N spatial
-eps=1.43       #Range from which we will pick a random number. This is tuned so as to cause a 40%-60% acceptance rate. 1.65 when a=2/3. 1.43 when a=1
+m=1           #Mass of particle   
+N_cor=20      #Number of sweeps before acceptance
+N_cf=10000    #Number that needs to big enough to ensure probabilities behave  
+N=20          #Spatial Points
+a=1/2         #a is the time step, 4 temporal points, N spatial
+eps=1.40      #Range from which we will pick a random number. This is tuned so as to cause a 40%-60% acceptance rate. 
+alpha=0.2
 
 #Defining the Harmonic potential 
 def V(x):
-    V=1/2*(x**2)
+    if x>0:
+        denominator=(x**2+alpha**2)
+        V= -(denominator)**(-0.5)
+    if x <= 0:
+        V=(1/alpha)*(np.exp(-2*x/(alpha*2**0.5))-2*np.exp(-x/(alpha*2**0.5)))
     return V
 
 #Defining the action -NB-For my Metropolis, it is more useful to define the action per segment, and the count for the summation in the update step. 
 def S(x,j):   
-    S = (m/(2*a))*(((x[j]-x[j-1]))**2)+a*V((x[j-1])) 
+    S = (m/2*a)*(((x[j]-x[j-1]))**2)+a*V((x[j-1])) 
     return S
 
 #Defining the updating algorithm. 
 x=np.zeros(shape=(1,N))               #Take this out see if i can make it so p i saved                                    
 x=x[0,:]
-
+for i in range(0,N):
+    x[i]=0.9
+    
 def update(p,I):                      #n is dimension of the path , i is the number of loops to complete , p is the inital path                                                       
     A=0
     n=len(p)
@@ -72,113 +79,25 @@ def update(p,I):                      #n is dimension of the path , i is the num
             if p[0] != p[n-1]:
                 p[0]= p[n-1]
      
-    return p                                                              #Change to A/N when you want to test vals of eps                             
+    return A                                                              #Change to A/N when you want to test vals of eps  
 
- 
+#For this system we get N=20*No of times updated path 
 
+#Code cycles through values of eps until we get a value of acceptance of roughly 50%
 
-def f(x):                                                   #Anlytic solution from Schrodinger 
-    return (np.exp((-x**2)/2)/((np.pi)**(1/4)))**2
-
-Analytic_x_vals=np.arange(-5,5.1,0.001)
-
-def MetroplisAv(x):                                      
-    paths=np.zeros(shape=(N_cf,N))                            
-    p=update(x,10*N_cor)                                     #Thermalising 
-       
-    for l in range(0,N_cf-1):
-        p=update(p,N_cor)
-        paths[l,:]=p
-
-    return(paths)
-
-#Functional code 
-
-def Expected_position(q):
-    avs=np.array([])
-    for i in range(0,len(q)):
-        av=np.average(q[i,:])
-        avs=np.append(avs,av)
+def optimising(x):
+    global eps
     
-    return avs
-
-def error_Expected_position(q):
-    sigma=(Expected_position(np.square(q))-Expected_position(q)**2)/N_cf
-    return sigma**(1/2)
-
-def Expected_Energy(q):
-    avs=np.array([])
-    for i in range(0,len(q)):
-        k=q[i,:]
-        e=np.array([])
-        for j in range(1,len(k)):
-            S = (m/2*a)*(((k[j]-k[j-1]))**2)+a*V((k[j-1]))
-            e = np.append(e,S)
-        avs=np.append(avs,np.average(e))        
-    return  avs
-
-def error_Expected_Energy(q):
-    sigma=(Expected_Energy(np.square(q))-Expected_Energy(q)**2)/N_cf
-    return sigma**(1/2)
-
-def bootstrap(x):
-    bst=np.array([])
-    for i in range(0,len(x)):
-        m=np.random.randint(0, len(x))
-        bst=np.append(bst,x[m])
-    return bst 
-
-def binning(q,binsize):
-    ensemble=np.array([])
-    for j in np.arange(0,len(q),binsize):
-        g=0
-        for i in range(0,binsize):
-            g= g + q[i+j]
-        ensemble=np.append(ensemble, g/binsize)
-    return ensemble
-
-
-q=MetroplisAv(x)
-                                                                                       
-counts, bins= np.histogram(q.ravel(),bins=np.arange(-5,5,0.05),density=True)
-                                                         
-     
-def F(x_1,x_0):
-    return (scipy.special.erf((x_1)/(2)**(1/2))-scipy.special.erf((x_0)/(2)**(1/2)))/((2)**(1/2))
-
-E_i=np.array([])
-
-for i in range(1,len(bins)):
-    p=F(bins[i],bins[i-1])
-    E_i=np.append(E_i,p)
-
-chi_squared=0
-for i in range(0,len(E_i)):
-    chi_squared = chi_squared + (((counts[i]-E_i[i])**2)/(E_i[i]))
-
-
-DoF=len(counts)-2               #calculated as no of bins = len(counts) constrianed to have same mean and number of measurements hence we take 2
-print(chi_squared/DoF)                                                                              
-
-#Plot code
-#plt.figure()                                                                             
-#plt.ylabel('$|\psi(x)|^{2}$', fontsize=13)
-#plt.xlabel('x',fontsize=13)
-#plt.xlim([-3,3.1])
-#plt.stairs(counts, bins, fill=True,color='royalblue', label='Numeric Solution')
-#plt.hist(q.ravel(),bins=np.arange(-2.5,2.5,0.05),density=True,color='royalblue', label='Numeric Solution')
-#plt.plot(Analytic_x_vals,f(Analytic_x_vals), linestyle='dashed',color='red',label='Analytic Solution')
-#plt.legend() 
-#plt.savefig('Probability distribution.png')
-#plt.show()
-
-Values=np.array([])
-Values=np.append(Values,Expected_position(q))
-
-for i in range(0,9):
-    Values=np.append(Values, bootstrap(Expected_position(q)))
-
-binned_values=(binning(Values,50))
-
-print(np.std(Values)/len(Values)**0.5, np.std(binned_values)/len(binned_values)**0.5)
+    if x <0.60 and x>0.40:
+        return eps,x 
+    
+    if x>0.60:
+        eps=eps-0.1
+        optimising(x) 
+        
+    if x<0.40:
+        eps=eps+0.1
+        optimising(x)
+        
+print(optimising(update(x,1000)/(20*1000)))        
 

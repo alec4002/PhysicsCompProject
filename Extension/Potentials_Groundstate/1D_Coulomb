@@ -10,15 +10,15 @@ import scipy.stats
 #defining constants 
 m=1
 N_cor=20
-N_cf=10000     #Number that needs to big enough to ensure probabilities behave  
+N_cf=10000    #Number that needs to big enough to ensure probabilities behave  
 N=20          #Spatial Points
 a=1           #a is the time step, 4 temporal points, N spatial
-eps=0.0025     #Range from which we will pick a random number. This is tuned so as to cause a 40%-60% acceptance rate. 
+eps=0.070     #Range from which we will pick a random number. This is tuned so as to cause a 40%-60% acceptance rate. 
 
 
-#Defining the Harmonic potential. Please note we are in academic units. SHOULD COULOMB BE NEGATIVE??
+#Defining the Harmonic potential 
 def V(x):
-    V=-1/(x) 
+    V=-1/x
     return V
 
 #Defining the action -NB-For my Metropolis, it is more useful to define the action per segment, and the count for the summation in the update step. 
@@ -30,7 +30,7 @@ def S(x,j):
 x=np.zeros(shape=(1,N))               #Take this out see if i can make it so p i saved                                    
 x=x[0,:]
 for i in range(0,N):
-    x[i]=0.5
+    x[i]=1
 
 def update(p,I):                      #n is dimension of the path , i is the number of loops to complete , p is the inital path                                                       
     A=0
@@ -75,40 +75,15 @@ def update(p,I):                      #n is dimension of the path , i is the num
             if p[0] != p[n-1]:
                 p[0]= p[n-1]
      
-    return p                                                              #Change to A/N when you want to test vals of eps                                    
+    return p                                                              #Change to A/N when you want to test vals of eps                             
 
-#Functional code 
+ 
 
-def Expected_position(q):
-    avs=np.array([])
-    for i in range(0,len(q)):
-        av=np.average(q[i,:])
-        avs=np.append(avs,av)
-    
-    return (np.average(avs))
-
-def error_Expected_position(q):
-    sigma=(Expected_position(np.square(q))-Expected_position(q)**2)/N_cf
-    return sigma**(1/2)
-
-def Expected_Energy(q):
-    avs=np.array([])
-    for i in range(0,len(q)):
-        e=np.array([])
-        for i in range(1,len(q[i,:])):
-            S = (m/2*a)*(((q[i]-q[i-1]))**2)+a*V((q[i-1]))
-            e = np.append(e,S)
-        avs=np.append(avs,np.average(e))        
-    return  np.average(avs)
-
-def error_Expected_Energy(q):
-    sigma=(Expected_Energy(np.square(q))-Expected_Energy(q)**2)/N_cf
-    return sigma**(1/2)
 
 def f(x):                                                   #Anlytic solution from Schrodinger 
-    return (4*np.exp(-2*x))*x**2                            #DOUBLE CHECK AS THIS IS RADIAL PROBABILIY 
+    return (np.exp((-x**2)/2)/((np.pi)**(1/4)))**2
 
-Analytic_x_vals=np.arange(0,0.5,0.0001)
+Analytic_x_vals=np.arange(-5,5.1,0.001)
 
 def MetroplisAv(x):                                      
     paths=np.zeros(shape=(N_cf,N))                            
@@ -120,13 +95,13 @@ def MetroplisAv(x):
 
     return(paths)
 
-q=MetroplisAv(x)    
-
-counts, bins= np.histogram(q.ravel(),bins=np.arange(0,1,0.05),density=True)
+q=MetroplisAv(x)
+#q=q.ravel()                                                                                         #This gives my vals as a flat list (i think)
+counts, bins= np.histogram(q.ravel(),bins=np.arange(-5,5,0.05),density=True)
                                                          
      
 def F(x_1,x_0):
-    return (np.exp(-2*x_0)*((2*x_0**2)+2*x_0+1)+np.exp(-2*x_1)*((-2*x_1**2)-2*x_0-1))
+    return (scipy.special.erf((x_1)/(2)**(1/2))-scipy.special.erf((x_0)/(2)**(1/2)))/((2)**(1/2))
 
 E_i=np.array([])
 
@@ -140,18 +115,17 @@ for i in range(0,len(E_i)):
 
 
 DoF=len(counts)-2               #calculated as no of bins = len(counts) constrianed to have same mean and number of measurements hence we take 2
-print(chi_squared/DoF)                #calculated as no of bins = len(counts) constrianed to have same mean and number of measurements hence we take 2
-                                                                     
+#print(chi_squared/DoF)                                                                              
+
 #Plot code
 plt.figure()                                                                             
-plt.ylabel('$r^{2} |R(x)|^{2}$', fontsize=13)
-plt.xlabel('r',fontsize=13)
-#plt.xlim([-3,3.1])
+plt.ylabel('$|\psi(x)|^{2}$', fontsize=13)
+plt.xlabel('x',fontsize=13)
+plt.xlim([-3,3.1])
 plt.stairs(counts, bins, fill=True,color='royalblue', label='Numeric Solution')
+#plt.hist(q.ravel(),bins=np.arange(-2.5,2.5,0.05),density=True,color='royalblue', label='Numeric Solution')
 #plt.plot(Analytic_x_vals,f(Analytic_x_vals), linestyle='dashed',color='red',label='Analytic Solution')
-#plt.vlines(1,linestyles='dashed',ymin=0,ymax=0.54, colors='black')
 plt.legend() 
-plt.savefig('Probability distribution Coulomb.png')
+#plt.savefig('Probability distribution.png')
 plt.show()
-
 
