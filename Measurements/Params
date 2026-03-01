@@ -7,82 +7,78 @@ import scipy.integrate as integrate
 import scipy.special as special 
 import scipy.stats
 
-#Measurements taken with the following constants.
+#defining constants 
 m=1           #Mass of particle   
 N_cor=20      #Number of sweeps before acceptance
-N_cf=10000    #Number that needs to big enough to ensure probabilities behave  
+N_cf=5000     #Number that needs to big enough to ensure probabilities behave  
 N=20          #Spatial Points
 a=1/2         #a is the time step, 4 temporal points, N spatial
+eps=2.50      #Range from which we will pick a random number. This is tuned so as to cause a 40%-60% acceptance rate. 
+alpha=1
 
-#alpha (softening parameter) is varied and expected position, energy and momentum is measured. Eps (step) has to be varied
-#accordingly to ensure that the code has the correct path acceptance. 
+#Defining the Harmonic potential 
+def V(x):
+    if x>0:
+        denominator=(x**2+alpha**2)
+        V= -(denominator)**(-0.5)
+    if x <= 0:
+        V=(1/alpha)*(np.exp(-2*x/(alpha*2**0.5))-2*np.exp(-x/(alpha*2**0.5)))
+    return V
 
-#It should also be noted and discussed that the value of a has a large impact on expected energy measurement. A surface level
-#investigation into if there is a limit in which we converge to an accurate value would be a good idea. 
-#Functional code 
+#Defining the action -NB-For my Metropolis, it is more useful to define the action per segment, and the count for the summation in the update step. 
+def S(x,j):   
+    S = (m/2*a)*(((x[j]-x[j-1]))**2)+a*V((x[j-1])) 
+    return S
 
-def Expected_position(q):
-    avs=np.array([])
-    for i in range(0,len(q)):
-        av=np.average(q[i,:])
-        avs=np.append(avs,av)
+#Defining the updating algorithm. 
+x=np.zeros(shape=(1,N))               #Take this out see if i can make it so p i saved                                    
+x=x[0,:]
+for i in range(0,N):
+    x[i]=0.9
     
-    return avs
+def update(p,I):                      #n is dimension of the path , i is the number of loops to complete , p is the inital path                                                       
+    A=0
+    n=len(p)
+    for i in range(0,I):
+        for j in range(0,n):
+            p_old=p[j] 
+        
+            if j==0:
+                Sj_old=S(p,j+1)
+                p[j]=p[j]+(np.random.uniform(-eps, eps))                     #This function generates random no between -eps and eps
+                dS1=S(p,j+1)-Sj_old
+                A = A+1
+                if dS1 > 0  and np.exp(-dS1) < np.random.uniform(0, 1):
+                    A = A-1
+                    p[j]=p_old
 
-def Expected_Energy(q):
-    avs=np.array([])
-    for i in range(0,len(q)):
-        k=q[i,:]
-        e=np.array([])
-        for j in range(1,len(k)):
-            S = (m/2*a)*(((k[j]-k[j-1]))**2)+a*V((k[j-1]))
-            e = np.append(e,S)
-        avs=np.append(avs,np.average(e))        
-    return  avs
+            
+            if 0<j<n-1: 
+                Sj_old1=S(p,j+1)
+                Sj_old2=S(p,j)
+                p[j]=p[j]+(np.random.uniform(-eps, eps))                     #This function form numpy generates random no between -eps and eps
+                dS1=S(p,j+1)
+                dS2=S(p,j)
+                dS=(dS1+dS2)-(Sj_old1+Sj_old2)
+                A = A+1 
+                if dS > 0 and np.exp(-dS) < np.random.uniform(0, 1):
+                    A = A-1 
+                    p[j]=p_old
+            
+        
+            if j== n-1: 
+                Sj_old=S(p,j)
+                p[j]=p[j]+(np.random.uniform(-eps, eps))                     #This function form numpy generates random no between -eps and eps
+                dS2=S(p,j)-Sj_old
+                A = A+1
+                if dS2 > 0 and np.exp(-dS2) < np.random.uniform(0, 1):
+                    A = A - 0
+                    p[j]=p_old
+                    
 
-def bootstrap(x):
-    bst=np.array([])
-    for i in range(0,len(x)):
-        m=np.random.randint(0, len(x))
-        bst=np.append(bst,x[m])
-    return bst 
+            if p[0] != p[n-1]:
+                p[0]= p[n-1]
+     
+    return A                                                              #Change to A/N when you want to test vals of eps  
 
-def binning(q,binsize):
-    ensemble=np.array([])
-    for j in np.arange(0,len(q),binsize):
-        g=0
-        for i in range(0,binsize):
-            g= g + q[i+j]
-        ensemble=np.append(ensemble, g/binsize)
-    return ensemble
-                                                                                
-
-#Saving all my paths for each value of alpha
-
-#alpha = 1 eps= 2.50
-Paths_1=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_1_paths')
-x_coords_1=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_1_xcoords')
-
-#alpha = 0.8 eps=
-Paths_zero_8=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_8_paths')
-x_coords_zero_8=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_x_coords_zero_8')
-
-#alpha = 0.6 eps=
-Paths_zero_6=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_6_paths')
-x_coords_zero_6=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_x_coords_zero_6')
-
-#alpha = 0.4 eps=
-Paths_zero_4=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_4_paths')
-x_coords_zero_4=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_x_coords_zero_4')
-
-#alpha = 0.2 eps=
-Paths_zero_2=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_2_paths')
-x_coords_zero_2=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_x_coords_zero_2')
-
-#alpha = 0.1 eps=
-Paths_zero_1=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_1_paths')
-x_coords_zero_1=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_x_coords_zero_1')
-
-#alpha = 0.05 eps=  
-Paths_zero_zero_5=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_zero_5_paths')
-x_coords_zero_1=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_x_coords_zero_zero_5')
+print(update(x,1000)/20000)

@@ -13,7 +13,7 @@ N_cor=20      #Number of sweeps before acceptance
 N_cf=5000     #Number that needs to big enough to ensure probabilities behave  
 N=20          #Spatial Points
 a=1/2         #a is the time step, 4 temporal points, N spatial
-eps=1.43      #Range from which we will pick a random number. This is tuned so as to cause a 40%-60% acceptance rate. 
+eps=2.50      #Range from which we will pick a random number. This is tuned so as to cause a 40%-60% acceptance rate. 
 alpha=1
 
 #Defining the Harmonic potential 
@@ -193,3 +193,6 @@ binned_values=(binning(Expected_Energy_values,50))
 
 print(np.average(Expected_Energy_values),np.std(Expected_Energy_values)/(N_cf**0.5))
 print(np.average(Expected_position_values),np.std(Expected_position_values)/(N_cf**0.5))
+
+np.save('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_1_paths', q)
+np.save('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_1_xcoords', x_coords)
