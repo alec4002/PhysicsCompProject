@@ -11,3 +11,6 @@ accordingly to ensure that the code has the correct path acceptance.
 It should also be noted and discussed that the value of a has a large impact on expected energy measurement. A surface level
 investigation into if there is a limit in which we converge to an accurate value would be a good idea. 
 
+--alpha=0.2--
+Expected position 
+0.7584298398978702 +/- 0.0031868056570701782

@@ -1,0 +1,19 @@
+import numpy as np                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+import matplotlib.pyplot as plt
+import scipy
+import vegas 
+from scipy.optimize import curve_fit
+import scipy.integrate as integrate
+import scipy.special as special 
+import scipy.stats
+
+def Expected_Energy(q):
+    avs=np.array([])
+    for i in range(0,len(q)):
+        e=np.array([])
+        for i in range(0,len(q[i,:])):
+            S = V((q[i]))
+            e=np.append(e,S)
+        avs=np.append(avs,np.average(e)/2)
+    return avs     
+        
