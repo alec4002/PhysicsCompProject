@@ -60,29 +60,29 @@ def binning(q,binsize):
 #Saving all my paths for each value of alpha
 
 #alpha = 1 eps= 2.50
-Paths_1=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_1_paths')
-x_coords_1=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_1_xcoords')
+Paths_1=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_1_paths.npy')
+x_coords_1=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_1_xcoords.npy')
 
 #alpha = 0.8 eps=
-Paths_zero_8=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_8_paths')
-x_coords_zero_8=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_x_coords_zero_8')
+Paths_zero_8=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_8_paths.npy')
+x_coords_zero_8=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_x_coords_zero_8.npy')
 
 #alpha = 0.6 eps=
-Paths_zero_6=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_6_paths')
-x_coords_zero_6=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_x_coords_zero_6')
+Paths_zero_6=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_6_paths.npy')
+x_coords_zero_6=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_x_coords_zero_6.npy')
 
 #alpha = 0.4 eps=
-Paths_zero_4=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_4_paths')
-x_coords_zero_4=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_x_coords_zero_4')
+Paths_zero_4=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_4_paths.npy')
+x_coords_zero_4=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_x_coords_zero_4.npy')
 
 #alpha = 0.2 eps=
-Paths_zero_2=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_2_paths')
-x_coords_zero_2=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_x_coords_zero_2')
+Paths_zero_2=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_2_paths.npy')
+x_coords_zero_2=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_x_coords_zero_2.npy')
 
 #alpha = 0.1 eps=
-Paths_zero_1=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_1_paths')
-x_coords_zero_1=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_x_coords_zero_1')
+Paths_zero_1=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_1_paths.npy')
+x_coords_zero_1=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_x_coords_zero_1.npy')
 
 #alpha = 0.05 eps=  
-Paths_zero_zero_5=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_zero_5_paths')
-x_coords_zero_1=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_x_coords_zero_zero_5')
+Paths_zero_zero_5=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_zero_5_paths.npy')
+x_coords_zero_1=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_x_coords_zero_zero_5.npy')

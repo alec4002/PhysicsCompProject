@@ -10,11 +10,11 @@ import scipy.stats
 #defining constants 
 m=1           #Mass of particle   
 N_cor=20      #Number of sweeps before acceptance
-N_cf=5000     #Number that needs to big enough to ensure probabilities behave  
+N_cf=100000     #Number that needs to big enough to ensure probabilities behave  
 N=20          #Spatial Points
 a=1/2         #a is the time step, 4 temporal points, N spatial
-eps=2.50      #Range from which we will pick a random number. This is tuned so as to cause a 40%-60% acceptance rate. 
-alpha=1
+eps=1.25      #Range from which we will pick a random number. This is tuned so as to cause a 40%-60% acceptance rate. 
+alpha=0.2
 
 #Defining the Harmonic potential 
 def V(x):
@@ -161,17 +161,6 @@ for i in range(1,len(bins)):
     k= (bins[i]+bins[i-1])/2
     x_coords=np.append(x_coords,k)
 
-#Plot code
-plt.figure()                                                                             
-plt.ylabel('$|\psi(x)|^{2}$', fontsize=13)
-plt.xlabel('x',fontsize=13)
-plt.stairs(counts, bins, fill=True,color='royalblue', label='Numeric Solution')
-plt.plot(x_coords, counts, linestyle='dashed',color='red',label='Envelope')
-#plt.hist(q.ravel(),bins=np.arange(-2.5,2.5,0.05),density=True,color='royalblue', label='Numeric Solution')
-#plt.plot(Analytic_x_vals,f(Analytic_x_vals), linestyle='dashed',color='red',label='Analytic Solution')
-plt.legend() 
-plt.savefig('Probability distribution.png')
-plt.show()
 
 #Expected postion 
 Expected_position_values=np.array([])
@@ -194,5 +183,5 @@ binned_values=(binning(Expected_Energy_values,50))
 print(np.average(Expected_Energy_values),np.std(Expected_Energy_values)/(N_cf**0.5))
 print(np.average(Expected_position_values),np.std(Expected_position_values)/(N_cf**0.5))
 
-np.save('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_1_paths', q)
-np.save('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_1_xcoords', x_coords)
+np.save('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_2_paths.npy', q)
+np.save('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_x_coords_zero_2.npy', x_coords)
