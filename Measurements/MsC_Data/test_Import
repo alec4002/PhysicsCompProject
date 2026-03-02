@@ -1,4 +1,0 @@
-import numpy as np 
-
-k=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Data.npy')
-print(k)

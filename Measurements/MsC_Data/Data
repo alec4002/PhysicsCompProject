@@ -6,6 +6,7 @@ from scipy.optimize import curve_fit
 import scipy.integrate as integrate
 import scipy.special as special 
 import scipy.stats
+from mpl_toolkits.axes_grid1.inset_locator import mark_inset, zoomed_inset_axes
 
 #Measurements taken with the following constants.
 m=1           #Mass of particle   
@@ -63,26 +64,82 @@ def binning(q,binsize):
 Paths_1=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_1_paths.npy')
 x_coords_1=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_1_xcoords.npy')
 
-#alpha = 0.8 eps=
+#alpha = 0.8 eps= 2.50
 Paths_zero_8=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_8_paths.npy')
 x_coords_zero_8=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_x_coords_zero_8.npy')
 
-#alpha = 0.6 eps=
+#alpha = 0.6 eps= 2.50
 Paths_zero_6=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_6_paths.npy')
 x_coords_zero_6=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_x_coords_zero_6.npy')
 
-#alpha = 0.4 eps=
+#alpha = 0.4 eps= 2.50
 Paths_zero_4=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_4_paths.npy')
 x_coords_zero_4=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_x_coords_zero_4.npy')
 
-#alpha = 0.2 eps=
+#alpha = 0.2 eps= 1.25
 Paths_zero_2=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_2_paths.npy')
 x_coords_zero_2=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_x_coords_zero_2.npy')
 
-#alpha = 0.1 eps=
+#alpha = 0.1 eps= 0.25
 Paths_zero_1=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_1_paths.npy')
 x_coords_zero_1=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_x_coords_zero_1.npy')
 
-#alpha = 0.05 eps=  
+#alpha = 0.05 eps= 0.10  
 Paths_zero_zero_5=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_zero_5_paths.npy')
-x_coords_zero_1=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_x_coords_zero_zero_5.npy')
+x_coords_zero_zero_5=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_x_coords_zero_zero_5_paths.npy')
+
+def counts(q):
+    counts, bins= np.histogram(q.ravel(),bins=np.arange(-5,15.1,0.05),density=True)
+    return counts,bins 
+
+def x_coords(q):
+    n=np.array([])
+    p=(counts(q)[1])
+    for i in range(1,len(p)):
+        k=(p[i]+p[i-1])/2
+        n=np.append(n,k)
+    return n 
+
+#No Zoom 
+
+#plt.figure(1)
+#plt.ylabel('$|\\psi(x)|^{2}$', fontsize=13)
+#plt.xlabel('x',fontsize=13)
+#plt.plot(x_coords(Paths_1), counts(Paths_1)[0],label='$\\alpha=1.00$')
+#plt.plot(x_coords(Paths_zero_8), counts(Paths_zero_8)[0],label='$\\alpha=0.80$')
+#plt.plot(x_coords(Paths_zero_6), counts(Paths_zero_6)[0],label='$\\alpha=0.60$')
+#plt.plot(x_coords(Paths_zero_4), counts(Paths_zero_4)[0],label='$\\alpha=0.40$')
+#plt.plot(x_coords(Paths_zero_2), counts(Paths_zero_2)[0],label='$\\alpha=0.20$')
+#plt.plot(x_coords(Paths_zero_1), counts(Paths_zero_1)[0],label='$\\alpha=0.10$')
+#plt.plot(x_coords(Paths_zero_zero_5), counts(Paths_zero_zero_5)[0],label='$\\alpha=0.05$')
+#plt.legend(loc='upper left')
+#plt.show()
+
+#with zoom 
+
+fig, ax =plt.subplots()
+plt.ylabel('$|\\psi(x)|^{2}$', fontsize=13)
+plt.xlabel('x',fontsize=13)
+ax.plot(x_coords(Paths_1), counts(Paths_1)[0],label='$\\alpha=1.00$')
+ax.plot(x_coords(Paths_zero_8), counts(Paths_zero_8)[0],label='$\\alpha=0.80$')
+ax.plot(x_coords(Paths_zero_6), counts(Paths_zero_6)[0],label='$\\alpha=0.60$')
+ax.plot(x_coords(Paths_zero_4), counts(Paths_zero_4)[0],label='$\\alpha=0.40$')
+ax.plot(x_coords(Paths_zero_2), counts(Paths_zero_2)[0],label='$\\alpha=0.20$')
+ax.plot(x_coords(Paths_zero_1), counts(Paths_zero_1)[0],label='$\\alpha=0.10$')
+ax.plot(x_coords(Paths_zero_zero_5), counts(Paths_zero_zero_5)[0],label='$\\alpha=0.05$')
+plt.legend(loc='upper left')
+
+x1, x2, y1, y2 = -2.5, 5.0, 0, 1.70  # region to zoom in on 
+axins = ax.inset_axes([0.38, 0.3, 0.6, 0.6],xlim=(x1, x2), ylim=(y1, y2))# xticklabels=[], yticklabels=[])
+axins.plot(x_coords(Paths_1), counts(Paths_1)[0],label='$\\alpha=1.00$')
+axins.plot(x_coords(Paths_zero_8), counts(Paths_zero_8)[0],label='$\\alpha=0.80$')
+axins.plot(x_coords(Paths_zero_6), counts(Paths_zero_6)[0],label='$\\alpha=0.60$')
+axins.plot(x_coords(Paths_zero_4), counts(Paths_zero_4)[0],label='$\\alpha=0.40$')
+axins.plot(x_coords(Paths_zero_2), counts(Paths_zero_2)[0],label='$\\alpha=0.20$')
+#axins.plot(x_coords(Paths_zero_1), counts(Paths_zero_1)[0],label='$\\alpha=0.10$')
+#axins.plot(x_coords(Paths_zero_zero_5), counts(Paths_zero_zero_5)[0],label='$\\alpha=0.05$')
+ax.indicate_inset_zoom(axins, edgecolor="black").set_visible(False)
+mark_inset(ax, axins, loc1=4, loc2=3, fc="none", ec="0.5")
+plt.show() 
+
+#My connector lines are how i would like them mess about woth some params to make them behave 
