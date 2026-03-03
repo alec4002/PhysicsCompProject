@@ -22,6 +22,37 @@ a=1/2         #a is the time step, 4 temporal points, N spatial
 #investigation into if there is a limit in which we converge to an accurate value would be a good idea. 
 #Functional code 
 
+
+#Saving all my paths for each value of alpha
+
+#alpha = 1 eps= 2.50
+Paths_1=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_1_paths.npy')
+
+
+#alpha = 0.8 eps= 2.50
+Paths_zero_8=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_8_paths.npy')
+
+
+#alpha = 0.6 eps= 2.50
+Paths_zero_6=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_6_paths.npy')
+
+
+#alpha = 0.4 eps= 2.50
+Paths_zero_4=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_4_paths.npy')
+
+#alpha = 0.2 eps= 1.25
+Paths_zero_2=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_2_paths.npy')
+
+
+#alpha = 0.1 eps= 0.25
+Paths_zero_1=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_1_paths.npy')
+
+
+#alpha = 0.05 eps= 0.10  
+Paths_zero_zero_5=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_zero_5_paths.npy')
+
+#Functions!
+
 def Expected_position(q):
     avs=np.array([])
     for i in range(0,len(q)):
@@ -56,37 +87,7 @@ def binning(q,binsize):
             g= g + q[i+j]
         ensemble=np.append(ensemble, g/binsize)
     return ensemble
-                                                                                
 
-#Saving all my paths for each value of alpha
-
-#alpha = 1 eps= 2.50
-Paths_1=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_1_paths.npy')
-x_coords_1=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_1_xcoords.npy')
-
-#alpha = 0.8 eps= 2.50
-Paths_zero_8=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_8_paths.npy')
-x_coords_zero_8=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_x_coords_zero_8.npy')
-
-#alpha = 0.6 eps= 2.50
-Paths_zero_6=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_6_paths.npy')
-x_coords_zero_6=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_x_coords_zero_6.npy')
-
-#alpha = 0.4 eps= 2.50
-Paths_zero_4=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_4_paths.npy')
-x_coords_zero_4=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_x_coords_zero_4.npy')
-
-#alpha = 0.2 eps= 1.25
-Paths_zero_2=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_2_paths.npy')
-x_coords_zero_2=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_x_coords_zero_2.npy')
-
-#alpha = 0.1 eps= 0.25
-Paths_zero_1=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_1_paths.npy')
-x_coords_zero_1=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_x_coords_zero_1.npy')
-
-#alpha = 0.05 eps= 0.10  
-Paths_zero_zero_5=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_zero_5_paths.npy')
-x_coords_zero_zero_5=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_x_coords_zero_zero_5_paths.npy')
 
 def counts(q):
     counts, bins= np.histogram(q.ravel(),bins=np.arange(-5,15.1,0.05),density=True)
@@ -140,6 +141,9 @@ axins.plot(x_coords(Paths_zero_2), counts(Paths_zero_2)[0],label='$\\alpha=0.20$
 #axins.plot(x_coords(Paths_zero_zero_5), counts(Paths_zero_zero_5)[0],label='$\\alpha=0.05$')
 ax.indicate_inset_zoom(axins, edgecolor="black").set_visible(False)
 mark_inset(ax, axins, loc1=4, loc2=3, fc="none", ec="0.5")
-plt.show() 
+#plt.show() 
 
 #My connector lines are how i would like them mess about woth some params to make them behave 
+
+#for expectation values. 1) calc expextation values 2)Bootstrap 3)Bin 4)Calculate average 
+Position_expectation=np.array([])

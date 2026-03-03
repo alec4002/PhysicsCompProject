@@ -1,0 +1,56 @@
+import numpy as np                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+import matplotlib.pyplot as plt
+import scipy
+import vegas 
+from scipy.optimize import curve_fit
+import scipy.integrate as integrate
+import scipy.special as special 
+import scipy.stats
+
+#defining constants 
+m=1           #Mass of particle   
+N_cor=20      #Number of sweeps before acceptance
+N_cf=100000   #Number that needs to big enough to ensure probabilities behave  
+N=20          #Spatial Points
+a=1/2         #a is the time step, 4 temporal points, N spatial
+
+
+#Defining the potential 
+def V(x):
+    if x>0:
+        denominator=(x**2+alpha**2)
+        V= -(denominator)**(-0.5)
+    if x <= 0:
+        V=(1/alpha)*(np.exp(-2*x/(alpha*2**0.5))-2*np.exp(-x/(alpha*2**0.5)))
+    return V
+
+#Defining the action -NB-For my Metropolis, it is more useful to define the action per segment, and the count for the summation in the update step. 
+def S(x,j):   
+    S = (m/2*a)*(((x[j]-x[j-1]))**2)+a*V((x[j-1])) 
+    return S
+
+def Expected_position(q):
+    avs=np.array([])
+    for i in range(0,len(q)):
+        av=np.average(q[i,:])
+        avs=np.append(avs,av)
+    
+    return avs
+
+def bootstrap(x):
+    bst=np.array([])
+    for i in range(0,len(x)):
+        m=np.random.randint(0, len(x))
+        bst=np.append(bst,x[m])
+    return bst 
+
+def binning(q,binsize):
+    ensemble=np.array([])
+    for j in np.arange(0,len(q),binsize):
+        g=0
+        for i in range(0,binsize):
+            g= g + q[i+j]
+        ensemble=np.append(ensemble, g/binsize)
+    return ensemble
+
+#Q) How am i going to make it cycle through values of alpha?

@@ -16,7 +16,7 @@ a=1/2         #a is the time step, 4 temporal points, N spatial
 eps=0.10      #Range from which we will pick a random number. This is tuned so as to cause a 40%-60% acceptance rate. 
 alpha=0.05
 
-#Defining the Harmonic potential 
+#Defining the potential 
 def V(x):
     if x>0:
         denominator=(x**2+alpha**2)
@@ -184,4 +184,3 @@ print(np.average(Expected_Energy_values),np.std(Expected_Energy_values)/(N_cf**0
 print(np.average(Expected_position_values),np.std(Expected_position_values)/(N_cf**0.5))
 
 np.save('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_zero_5_paths.npy', q)
-np.save('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_x_coords_zero_zero_5_paths.npy', x_coords)
