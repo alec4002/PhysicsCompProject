@@ -54,6 +54,16 @@ def binning(q,binsize):
     return ensemble
 
 #Q) How am i going to make it cycle through values of alpha?
-Paths=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_1_paths.npy')
+Paths=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_1_paths_test.npy')
 
-print(Paths[700,:])
+Expected_position_Values=np.array([])
+Expected_position_Values=np.append(Expected_position_Values,Expected_position(Paths))
+
+for i in range(0,9):
+    k=bootstrap(Expected_position_Values)
+    Expected_position_Values=np.append(Expected_position_Values,k)
+
+binned_Expected_position_Values=binning(Expected_position_Values,5000)
+
+print(np.average(Expected_position_Values), np.std(Expected_position_Values))
+print(np.average(binned_Expected_position_Values), np.std(binned_Expected_position_Values))
