@@ -13,7 +13,7 @@ N_cor=20      #Number of sweeps before acceptance
 N_cf=100000   #Number that needs to big enough to ensure probabilities behave  
 N=20          #Spatial Points
 a=1/2         #a is the time step, 4 temporal points, N spatial
-
+alpha=1.00
 
 #Defining the potential 
 def V(x):
@@ -54,3 +54,6 @@ def binning(q,binsize):
     return ensemble
 
 #Q) How am i going to make it cycle through values of alpha?
+Paths=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_1_paths.npy')
+
+print(Paths[700,:])
