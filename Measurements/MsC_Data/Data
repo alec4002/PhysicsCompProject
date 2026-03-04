@@ -26,7 +26,8 @@ a=1/2         #a is the time step, 4 temporal points, N spatial
 #Saving all my paths for each value of alpha
 
 #alpha = 1 eps= 2.50
-Paths_1=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_1_paths.npy')
+Paths_1=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_1_paths.npy')
+Paths_1_test=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_1_paths_test.npy')
 
 
 #alpha = 0.8 eps= 2.50
@@ -90,7 +91,7 @@ def binning(q,binsize):
 
 
 def counts(q):
-    counts, bins= np.histogram(q.ravel(),bins=np.arange(-5,15.1,0.05),density=True)
+    counts, bins= np.histogram(q.ravel(),bins=np.arange(-5,500,1),density=True)
     return counts,bins 
 
 def x_coords(q):
@@ -122,27 +123,31 @@ fig, ax =plt.subplots()
 plt.ylabel('$|\\psi(x)|^{2}$', fontsize=13)
 plt.xlabel('x',fontsize=13)
 ax.plot(x_coords(Paths_1), counts(Paths_1)[0],label='$\\alpha=1.00$')
-ax.plot(x_coords(Paths_zero_8), counts(Paths_zero_8)[0],label='$\\alpha=0.80$')
-ax.plot(x_coords(Paths_zero_6), counts(Paths_zero_6)[0],label='$\\alpha=0.60$')
-ax.plot(x_coords(Paths_zero_4), counts(Paths_zero_4)[0],label='$\\alpha=0.40$')
-ax.plot(x_coords(Paths_zero_2), counts(Paths_zero_2)[0],label='$\\alpha=0.20$')
-ax.plot(x_coords(Paths_zero_1), counts(Paths_zero_1)[0],label='$\\alpha=0.10$')
-ax.plot(x_coords(Paths_zero_zero_5), counts(Paths_zero_zero_5)[0],label='$\\alpha=0.05$')
-plt.legend(loc='upper left')
+ax.plot(x_coords(Paths_1_test), counts(Paths_1_test)[0],label='$\\alpha=1.00 Test$')
+#ax.plot(x_coords(Paths_zero_8), counts(Paths_zero_8)[0],label='$\\alpha=0.80$')
+#ax.plot(x_coords(Paths_zero_6), counts(Paths_zero_6)[0],label='$\\alpha=0.60$')
+#ax.plot(x_coords(Paths_zero_4), counts(Paths_zero_4)[0],label='$\\alpha=0.40$')
+#ax.plot(x_coords(Paths_zero_2), counts(Paths_zero_2)[0],label='$\\alpha=0.20$')
+#ax.plot(x_coords(Paths_zero_1), counts(Paths_zero_1)[0],label='$\\alpha=0.10$')
+#ax.plot(x_coords(Paths_zero_zero_5), counts(Paths_zero_zero_5)[0],label='$\\alpha=0.05$')
+#plt.legend(loc='upper left')
 
 x1, x2, y1, y2 = -2.5, 5.0, 0, 1.70  # region to zoom in on 
-axins = ax.inset_axes([0.38, 0.3, 0.6, 0.6],xlim=(x1, x2), ylim=(y1, y2))# xticklabels=[], yticklabels=[])
-axins.plot(x_coords(Paths_1), counts(Paths_1)[0],label='$\\alpha=1.00$')
-axins.plot(x_coords(Paths_zero_8), counts(Paths_zero_8)[0],label='$\\alpha=0.80$')
-axins.plot(x_coords(Paths_zero_6), counts(Paths_zero_6)[0],label='$\\alpha=0.60$')
-axins.plot(x_coords(Paths_zero_4), counts(Paths_zero_4)[0],label='$\\alpha=0.40$')
-axins.plot(x_coords(Paths_zero_2), counts(Paths_zero_2)[0],label='$\\alpha=0.20$')
+#axins = ax.inset_axes([0.38, 0.3, 0.6, 0.6],xlim=(x1, x2), ylim=(y1, y2))# xticklabels=[], yticklabels=[])
+#axins.plot(x_coords(Paths_1), counts(Paths_1)[0],label='$\\alpha=1.00$')
+#axins.plot(x_coords(Paths_zero_8), counts(Paths_zero_8)[0],label='$\\alpha=0.80$')
+#axins.plot(x_coords(Paths_zero_6), counts(Paths_zero_6)[0],label='$\\alpha=0.60$')
+#axins.plot(x_coords(Paths_zero_4), counts(Paths_zero_4)[0],label='$\\alpha=0.40$')
+#axins.plot(x_coords(Paths_zero_2), counts(Paths_zero_2)[0],label='$\\alpha=0.20$')
 #axins.plot(x_coords(Paths_zero_1), counts(Paths_zero_1)[0],label='$\\alpha=0.10$')
 #axins.plot(x_coords(Paths_zero_zero_5), counts(Paths_zero_zero_5)[0],label='$\\alpha=0.05$')
-ax.indicate_inset_zoom(axins, edgecolor="black").set_visible(False)
-mark_inset(ax, axins, loc1=4, loc2=3, fc="none", ec="0.5")
+#ax.indicate_inset_zoom(axins, edgecolor="black").set_visible(False)
+#mark_inset(ax, axins, loc1=4, loc2=3, fc="none", ec="0.5")
 plt.show() 
 
 #My connector lines are how i would like them mess about woth some params to make them behave 
 
 #for expectation values. 1) calc expextation values 2)Bootstrap 3)Bin 4)Calculate average 
+
+#By the looks of things i need to do a weighted average, as a normal average causes the large entries to dominate 
+print(np.ma.average((Paths_1_test).ravel(),(counts(Paths_1_test))[0]))
