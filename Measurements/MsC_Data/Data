@@ -62,6 +62,11 @@ def Expected_position(q):
     
     return avs
 
+def Expected_position_New(q):
+    k=x_coords(q)*(counts(q)[0])
+    return np.average(k)
+
+
 def Expected_Energy(q):
     avs=np.array([])
     for i in range(0,len(q)):
@@ -91,7 +96,7 @@ def binning(q,binsize):
 
 
 def counts(q):
-    counts, bins= np.histogram(q.ravel(),bins=np.arange(-5,500,1),density=True)
+    counts, bins= np.histogram(q.ravel(),bins=np.arange(-2,5.1,0.05),density=True)
     return counts,bins 
 
 def x_coords(q):
@@ -123,31 +128,43 @@ fig, ax =plt.subplots()
 plt.ylabel('$|\\psi(x)|^{2}$', fontsize=13)
 plt.xlabel('x',fontsize=13)
 ax.plot(x_coords(Paths_1), counts(Paths_1)[0],label='$\\alpha=1.00$')
-ax.plot(x_coords(Paths_1_test), counts(Paths_1_test)[0],label='$\\alpha=1.00 Test$')
-#ax.plot(x_coords(Paths_zero_8), counts(Paths_zero_8)[0],label='$\\alpha=0.80$')
-#ax.plot(x_coords(Paths_zero_6), counts(Paths_zero_6)[0],label='$\\alpha=0.60$')
-#ax.plot(x_coords(Paths_zero_4), counts(Paths_zero_4)[0],label='$\\alpha=0.40$')
-#ax.plot(x_coords(Paths_zero_2), counts(Paths_zero_2)[0],label='$\\alpha=0.20$')
-#ax.plot(x_coords(Paths_zero_1), counts(Paths_zero_1)[0],label='$\\alpha=0.10$')
-#ax.plot(x_coords(Paths_zero_zero_5), counts(Paths_zero_zero_5)[0],label='$\\alpha=0.05$')
-#plt.legend(loc='upper left')
+#ax.plot(x_coords(Paths_1_test), counts(Paths_1_test)[0],label='$\\alpha=1.00 Test$')
+ax.plot(x_coords(Paths_zero_8), counts(Paths_zero_8)[0],label='$\\alpha=0.80$')
+ax.plot(x_coords(Paths_zero_6), counts(Paths_zero_6)[0],label='$\\alpha=0.60$')
+ax.plot(x_coords(Paths_zero_4), counts(Paths_zero_4)[0],label='$\\alpha=0.40$')
+ax.plot(x_coords(Paths_zero_2), counts(Paths_zero_2)[0],label='$\\alpha=0.20$')
+ax.plot(x_coords(Paths_zero_1), counts(Paths_zero_1)[0],label='$\\alpha=0.10$')
+ax.plot(x_coords(Paths_zero_zero_5), counts(Paths_zero_zero_5)[0],label='$\\alpha=0.05$')
+plt.legend(loc='upper left')
 
-x1, x2, y1, y2 = -2.5, 5.0, 0, 1.70  # region to zoom in on 
-#axins = ax.inset_axes([0.38, 0.3, 0.6, 0.6],xlim=(x1, x2), ylim=(y1, y2))# xticklabels=[], yticklabels=[])
-#axins.plot(x_coords(Paths_1), counts(Paths_1)[0],label='$\\alpha=1.00$')
-#axins.plot(x_coords(Paths_zero_8), counts(Paths_zero_8)[0],label='$\\alpha=0.80$')
-#axins.plot(x_coords(Paths_zero_6), counts(Paths_zero_6)[0],label='$\\alpha=0.60$')
-#axins.plot(x_coords(Paths_zero_4), counts(Paths_zero_4)[0],label='$\\alpha=0.40$')
-#axins.plot(x_coords(Paths_zero_2), counts(Paths_zero_2)[0],label='$\\alpha=0.20$')
+x1, x2, y1, y2 = -2, 5.0, 0, 1.70  # region to zoom in on 
+axins = ax.inset_axes([0.4, 0.3, 0.6, 0.6],xlim=(x1, x2), ylim=(y1, y2), xticklabels=[-2,-1,0,1,2,3,4])
+axins.plot(x_coords(Paths_1), counts(Paths_1)[0],label='$\\alpha=1.00$')
+axins.plot(x_coords(Paths_zero_8), counts(Paths_zero_8)[0],label='$\\alpha=0.80$')
+axins.plot(x_coords(Paths_zero_6), counts(Paths_zero_6)[0],label='$\\alpha=0.60$')
+axins.plot(x_coords(Paths_zero_4), counts(Paths_zero_4)[0],label='$\\alpha=0.40$')
+axins.plot(x_coords(Paths_zero_2), counts(Paths_zero_2)[0],label='$\\alpha=0.20$')
 #axins.plot(x_coords(Paths_zero_1), counts(Paths_zero_1)[0],label='$\\alpha=0.10$')
 #axins.plot(x_coords(Paths_zero_zero_5), counts(Paths_zero_zero_5)[0],label='$\\alpha=0.05$')
-#ax.indicate_inset_zoom(axins, edgecolor="black").set_visible(False)
+ax.indicate_inset_zoom(axins, edgecolor="black").set_visible(True)
 #mark_inset(ax, axins, loc1=4, loc2=3, fc="none", ec="0.5")
 plt.show() 
+
+alpha_values=np.array([0.05,0.1,0.2,0.4,0.6,0.8,1.0])
+Y_values=np.array([Expected_position_New(Paths_zero_zero_5),Expected_position_New(Paths_zero_1),Expected_position_New(Paths_zero_2),Expected_position_New(Paths_zero_4),Expected_position_New(Paths_zero_6),Expected_position_New(Paths_zero_8),Expected_position_New(Paths_1)])
+
+fig, ax =plt.subplots()
+plt.ylabel('$<x>$', fontsize=13)
+plt.xlabel('$\\alpha$',fontsize=13)
+ax.scatter(alpha_values, Y_values)
+plt.show()
 
 #My connector lines are how i would like them mess about woth some params to make them behave 
 
 #for expectation values. 1) calc expextation values 2)Bootstrap 3)Bin 4)Calculate average 
 
 #By the looks of things i need to do a weighted average, as a normal average causes the large entries to dominate 
-print(np.ma.average((Paths_1_test).ravel(),(counts(Paths_1_test))[0]))
+
+#Idea. Define function that first checks which bin a value is in, and then multiply the values by that 
+#test 
+
