@@ -27,32 +27,42 @@ a=1/2         #a is the time step, 4 temporal points, N spatial
 
 #alpha = 1 eps= 2.50
 Paths_1=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_1_paths.npy')
-Paths_1_test=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_1_paths_test.npy')
-
+Energy_Paths_1=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_1_Energy.npy')
+Energy_Paths_1_err=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_1_Energy.npy')
 
 #alpha = 0.8 eps= 2.50
-Paths_zero_8=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_8_paths.npy')
-
+Paths_zero_8=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_8_paths.npy')
+Energy_Paths_zero_8=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_8_Energy.npy')
+Energy_Paths_zero_8_err=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_8_Energy.npy')
 
 #alpha = 0.6 eps= 2.50
-Paths_zero_6=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_6_paths.npy')
-
+Paths_zero_6=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_6_paths.npy')
+Energy_Paths_zero_6=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_6_Energy.npy')
+Energy_Paths_zero_6_err=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_6_Energy.npy')
 
 #alpha = 0.4 eps= 2.50
-Paths_zero_4=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_4_paths.npy')
+Paths_zero_4=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_4_paths.npy')
+Energy_Paths_zero_4=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_4_Energy.npy')
+Energy_Paths_zero_4_err=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_4_Energy.npy')
 
 #alpha = 0.2 eps= 1.25
-Paths_zero_2=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_2_paths.npy')
-
+Paths_zero_2=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_2_paths.npy')
+Energy_Paths_zero_2=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_2_Energy.npy')
+Energy_Paths_zero_2_err=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_2_Energy.npy')
 
 #alpha = 0.1 eps= 0.25
-Paths_zero_1=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_1_paths.npy')
+Paths_zero_1=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_1_paths.npy')
+Energy_Paths_zero_1=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_1_Energy.npy')
+Energy_Paths_zero_1_err=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_1_Energy.npy')
 
 
 #alpha = 0.05 eps= 0.10  
-Paths_zero_zero_5=np.fromfile('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_zero_5_paths.npy')
+Paths_zero_zero_5=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_zero_5_paths.npy')
+Energy_Paths_zero_zero_5=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_zero_5_Energy.npy')
+Energy_Paths_zero_zero_5_err=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_zero_5_Energy.npy')
 
 #Functions!
+#Defining the potential 
 
 def Expected_position(q):
     avs=np.array([])
@@ -96,7 +106,7 @@ def binning(q,binsize):
 
 
 def counts(q):
-    counts, bins= np.histogram(q.ravel(),bins=np.arange(-2,5.1,0.05),density=True)
+    counts, bins= np.histogram(q.ravel(),bins=np.arange(-5,10.1,0.05),density=True)
     return counts,bins 
 
 def x_coords(q):
@@ -107,6 +117,17 @@ def x_coords(q):
         n=np.append(n,k)
     return n 
 
+def f(x):                                   #1D Coulomb potential Prob distribution 
+    Vals=np.array([])
+    for i in range(0,len(x)):
+        if x[i]<0:
+            Vals=np.append(Vals,0)
+        if x[i] >= 0:
+            W=4*np.exp(-x[i])
+            Vals=np.append(Vals,W**2)
+    return Vals
+
+x_vals=np.arange(-3,8,0.05)       
 #No Zoom 
 
 #plt.figure(1)
@@ -133,8 +154,9 @@ ax.plot(x_coords(Paths_zero_8), counts(Paths_zero_8)[0],label='$\\alpha=0.80$')
 ax.plot(x_coords(Paths_zero_6), counts(Paths_zero_6)[0],label='$\\alpha=0.60$')
 ax.plot(x_coords(Paths_zero_4), counts(Paths_zero_4)[0],label='$\\alpha=0.40$')
 ax.plot(x_coords(Paths_zero_2), counts(Paths_zero_2)[0],label='$\\alpha=0.20$')
-ax.plot(x_coords(Paths_zero_1), counts(Paths_zero_1)[0],label='$\\alpha=0.10$')
+#ax.plot(x_coords(Paths_zero_1), counts(Paths_zero_1)[0],label='$\\alpha=0.10$')
 ax.plot(x_coords(Paths_zero_zero_5), counts(Paths_zero_zero_5)[0],label='$\\alpha=0.05$')
+ax.plot(x_vals,f(x_vals), label='1D Coulomb')
 plt.legend(loc='upper left')
 
 x1, x2, y1, y2 = -2, 5.0, 0, 1.70  # region to zoom in on 
@@ -146,18 +168,28 @@ axins.plot(x_coords(Paths_zero_4), counts(Paths_zero_4)[0],label='$\\alpha=0.40$
 axins.plot(x_coords(Paths_zero_2), counts(Paths_zero_2)[0],label='$\\alpha=0.20$')
 #axins.plot(x_coords(Paths_zero_1), counts(Paths_zero_1)[0],label='$\\alpha=0.10$')
 #axins.plot(x_coords(Paths_zero_zero_5), counts(Paths_zero_zero_5)[0],label='$\\alpha=0.05$')
-ax.indicate_inset_zoom(axins, edgecolor="black").set_visible(True)
-mark_inset(ax, axins, loc1=2, loc2=4, fc="none", ec="0.5")
-plt.show() 
+#ax.indicate_inset_zoom(axins, edgecolor="black").set_visible(True)
+mark_inset(ax, axins, loc1=3, loc2=1, fc="none", ec="0.5")
+#plt.show() 
 
 alpha_values=np.array([0.05,0.1,0.2,0.4,0.6,0.8,1.0])
-Y_values=np.array([Expected_position_New(Paths_zero_zero_5),Expected_position_New(Paths_zero_1),Expected_position_New(Paths_zero_2),Expected_position_New(Paths_zero_4),Expected_position_New(Paths_zero_6),Expected_position_New(Paths_zero_8),Expected_position_New(Paths_1)])
-
+Y_values_pos=np.array([Expected_position_New(Paths_zero_zero_5),Expected_position_New(Paths_zero_1),Expected_position_New(Paths_zero_2),Expected_position_New(Paths_zero_4),Expected_position_New(Paths_zero_6),Expected_position_New(Paths_zero_8),Expected_position_New(Paths_1)])
 fig, ax =plt.subplots()
 plt.ylabel('$<x>$', fontsize=13)
 plt.xlabel('$\\alpha$',fontsize=13)
-ax.scatter(alpha_values, Y_values)
-plt.show()
+ax.scatter(alpha_values, Y_values_pos)
+#plt.show()
+
+Y_values_Energy=np.array([Energy_Paths_zero_zero_5,Energy_Paths_zero_1,Energy_Paths_zero_2,Energy_Paths_zero_4,Energy_Paths_zero_6,Energy_Paths_zero_8,Energy_Paths_1])
+Y_err=np.array([Energy_Paths_zero_zero_5_err,Energy_Paths_zero_1_err,Energy_Paths_zero_2_err,Energy_Paths_zero_4_err,Energy_Paths_zero_6_err,Energy_Paths_zero_8_err,Energy_Paths_1_err])
+fig, ax =plt.subplots()
+plt.ylabel('$<E>$', fontsize=13)
+plt.xlabel('$\\alpha$',fontsize=13)
+ax.scatter(alpha_values, Y_values_Energy)#,Y_err,fmt='o')
+#plt.show()
+
+
+
 
 #My connector lines are how i would like them mess about woth some params to make them behave 
 

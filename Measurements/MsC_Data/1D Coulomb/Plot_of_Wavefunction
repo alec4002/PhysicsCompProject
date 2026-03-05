@@ -1,0 +1,18 @@
+import numpy as np 
+import matplotlib.pyplot as plt
+
+def f(x):
+    Vals=np.array([])
+    for i in range(0,len(x)):
+        if x[i]<0:
+            Vals=np.append(Vals,0)
+        if x[i] >= 0:
+            W=4*np.exp(-x[i])
+            Vals=np.append(Vals,W**2)
+    return Vals
+    
+x_vals=np.arange(-2,5,0.05)    
+
+plt.figure()
+plt.plot(x_vals,f(x_vals))
+plt.show()
