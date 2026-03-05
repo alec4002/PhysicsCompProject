@@ -147,7 +147,7 @@ axins.plot(x_coords(Paths_zero_2), counts(Paths_zero_2)[0],label='$\\alpha=0.20$
 #axins.plot(x_coords(Paths_zero_1), counts(Paths_zero_1)[0],label='$\\alpha=0.10$')
 #axins.plot(x_coords(Paths_zero_zero_5), counts(Paths_zero_zero_5)[0],label='$\\alpha=0.05$')
 ax.indicate_inset_zoom(axins, edgecolor="black").set_visible(True)
-#mark_inset(ax, axins, loc1=4, loc2=3, fc="none", ec="0.5")
+mark_inset(ax, axins, loc1=2, loc2=4, fc="none", ec="0.5")
 plt.show() 
 
 alpha_values=np.array([0.05,0.1,0.2,0.4,0.6,0.8,1.0])
