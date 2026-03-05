@@ -180,7 +180,8 @@ for i in range(0,9):
 
 binned_values=(binning(Expected_Energy_values,50))
 
-print(np.average(Expected_Energy_values),np.std(Expected_Energy_values)/(N_cf**0.5))
-print(np.average(Expected_position_values),np.std(Expected_position_values)/(N_cf**0.5))
+print((Expected_Energy_values))
 
-np.save('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_1_paths_test.npy', q)
+#print(np.average(Expected_position_values),np.std(Expected_position_values)/(N_cf**0.5))
+
+#np.save('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_1_paths_test.npy', q)
