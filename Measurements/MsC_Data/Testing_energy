@@ -22,62 +22,21 @@ def V(x):
         denominator=(x**2+alpha**2)
         V= -(denominator)**(-0.5)
     if x <= 0:
+        x=abs(x)
         V=(1/alpha)*(np.exp(-2*x/(alpha*2**0.5))-2*np.exp(-x/(alpha*2**0.5)))
     return V
 
 #Defining the action -NB-For my Metropolis, it is more useful to define the action per segment, and the count for the summation in the update step. 
-def S(x,j):   
-    S = (m/2*a)*(((x[j]-x[j-1]))**2)+a*V((x[j-1])) 
-    return S
-
-def Expected_position(q):
-    avs=np.array([])
-    for i in range(0,len(q)):
-        av=np.average(q[i,:])
-        avs=np.append(avs,av)
-    
-    return avs
-
-def Expected_Energy(q):
-    avs=np.array([])
-    for i in range(0,len(q)):
-        k=q[i,:]
-        e=np.array([])
-        for j in range(1,len(k)):
-            S = (m/2*a)*(((k[j]-k[j-1]))**2)+a*V((k[j-1]))
-            e = np.append(e,S)
-        avs=np.append(avs,np.average(e))        
-    return  avs
-
-def bootstrap(x):
-    bst=np.array([])
-    for i in range(0,len(x)):
-        m=np.random.randint(0, len(x))
-        bst=np.append(bst,x[m])
-    return bst 
-
-def binning(q,binsize):
-    ensemble=np.array([])
-    for j in np.arange(0,len(q),binsize):
-        g=0
-        for i in range(0,binsize):
-            g= g + q[i+j]
-        ensemble=np.append(ensemble, g/binsize)
-    return ensemble
-
-#Q) How am i going to make it cycle through values of alpha? A)Manually!
-Paths=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_2_paths.npy')
-
-Expected_Energy_Vals=np.array([])   
-Expected_Energy_Vals=np.append(Expected_Energy_Vals,Expected_Energy(Paths))
-
-for i in range(0,9):
-    Expected_Energy_Vals=np.append(Expected_Energy_Vals,bootstrap(Expected_Energy(Paths)))
-
-print(np.max(Expected_Energy_Vals))
-#np.save('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_zero_5_Energy.npy',np.average(Expected_Energy_Vals))
-#np.save('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_zero_5_Energy_err.npy', np.std(Expected_Energy_Vals)/((len(Expected_Energy_Vals))**(0.5)))
+def S(x):
+    s=np.array([])
+    for j in range(1,len(x)):   
+        S = (m/2*a)*(((x[j]-x[j-1]))**2)+a*V((x[j-1])) 
+        s=np.append(s,S)
+    return s
 
 
-#Had a look at my definition for the energy. Whenever i go to negativ values of x, my energy values seem to explode for my 
-#problematic alphas 
+xs=np.arange(-5,5,0.01)
+plt.figure()
+plt.plot(xs,np.insert(S(xs),0,0))
+plt.show()
+

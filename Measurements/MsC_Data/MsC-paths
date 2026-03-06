@@ -22,6 +22,7 @@ def V(x):
         denominator=(x**2+alpha**2)
         V= -(denominator)**(-0.5)
     if x <= 0:
+        x=abs(x)
         V=(1/alpha)*(np.exp(-2*x/(alpha*2**0.5))-2*np.exp(-x/(alpha*2**0.5)))
     return V
 
@@ -181,6 +182,8 @@ for i in range(0,9):
 binned_values=(binning(Expected_Energy_values,50))
 
 print((Expected_Energy_values))
+
+#Run this code in the library to see if i get better energy results i think i think i probs will 
 
 #print(np.average(Expected_position_values),np.std(Expected_position_values)/(N_cf**0.5))
 
