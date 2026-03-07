@@ -31,50 +31,31 @@ def S(x,j):
     return S
 
 def Expected_position(q):
-    avs=np.array([])
-    for i in range(0,len(q)):
-        av=np.average(q[i,:])
-        avs=np.append(avs,av)
-    
-    return avs
+    k=x_coords(q)*(counts(q)[0])
+    return np.average(k)
 
-def Expected_Energy(q):
-    avs=np.array([])
-    for i in range(0,len(q)):
-        k=q[i,:]
-        e=np.array([])
-        for j in range(1,len(k)):
-            S = (m/2*a)*(((k[j]-k[j-1]))**2)+a*V((k[j-1]))
-            e = np.append(e,S)
-        avs=np.append(avs,np.average(e))        
-    return  avs
 
-def bootstrap(x):
-    bst=np.array([])
-    for i in range(0,len(x)):
-        m=np.random.randint(0, len(x))
-        bst=np.append(bst,x[m])
-    return bst 
+def counts(q):
+    counts, bins= np.histogram(q.ravel(),bins=np.arange(-5,10.1,0.05),density=True)
+    return counts,bins 
 
-def binning(q,binsize):
-    ensemble=np.array([])
-    for j in np.arange(0,len(q),binsize):
-        g=0
-        for i in range(0,binsize):
-            g= g + q[i+j]
-        ensemble=np.append(ensemble, g/binsize)
-    return ensemble
+def x_coords(q):
+    n=np.array([])
+    p=(counts(q)[1])
+    for i in range(1,len(p)):
+        k=(p[i]+p[i-1])/2
+        n=np.append(n,k)
+    return n 
+
 
 #Q) How am i going to make it cycle through values of alpha? A)Manually!
-Paths=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_2_paths.npy')
+Paths=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_0_0_5_Data\Alpha_zero_zero_5_paths.npy')
 
-Expected_Energy_Vals=np.array([])   
-Expected_Energy_Vals=np.append(Expected_Energy_Vals,Expected_Energy(Paths))
+Expected_Position_Val=Expected_position(Paths) 
 
-for i in range(0,9):
-    Expected_Energy_Vals=np.append(Expected_Energy_Vals,bootstrap(Expected_Energy(Paths)))
+np.save('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_0_0_5_Data\Energy.npy',Expected_Position_Val)
 
-print(np.max(Expected_Energy_Vals))
+
 #np.save('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_zero_5_Energy.npy',np.average(Expected_Energy_Vals))
 #np.save('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_zero_5_Energy_err.npy', np.std(Expected_Energy_Vals)/((len(Expected_Energy_Vals))**(0.5)))
 
