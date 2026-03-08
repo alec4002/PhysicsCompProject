@@ -54,9 +54,16 @@ def Expected_Energy(q):
 
 
 
-#Q) How am i going to make it cycle through values of alpha? A)Manually!
-Paths=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_0_0_5_Data\Alpha_zero_zero_5_paths_1.npy')
+#Loading Paths
+Paths_1=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_0_0_5_Data\Alpha_zero_zero_5_paths_1.npy')
+Paths_2=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_0_0_5_Data\Alpha_zero_zero_5_paths_2.npy')
+Paths_3=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_0_0_5_Data\Alpha_zero_zero_5_paths_2.npy')
 
-Expected_Energy_Val=Expected_Energy(Paths) 
+#Calculating average positions 
+Expected_Energy_Vals=np.array([])
+Expected_Energy_Vals=np.append(Expected_Energy_Vals,Expected_Energy(Paths_1))
+Expected_Energy_Vals=np.append(Expected_Energy_Vals,Expected_Energy(Paths_2))
+Expected_Energy_Vals=np.append(Expected_Energy_Vals,Expected_Energy(Paths_3))
 
-np.save('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_0_0_5_Data\Position_1.npy',Expected_Energy_Val)
+
+np.save('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_0_0_5_Data\Energy_1.npy',Expected_Energy_Vals)

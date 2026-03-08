@@ -27,31 +27,55 @@ a=1/2         #a is the time step, 4 temporal points, N spatial
 #Saving all my paths for each value of alpha
 
 #alpha = 1 eps= 2.50
-Paths_1=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_1_paths.npy')
+Paths_1_1=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_1_Data\Alpha_1_paths_1.npy')
+Paths_1_2=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_1_Data\Alpha_1_paths_2.npy')
+Paths_1_3=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_1_Data\Alpha_1_paths_3.npy')
+Energy_1=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_1_Data\Energy_1.npy')
+Position_1=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_1_Data\Position_1.npy')
 
 #alpha = 0.8 eps= 2.50
-Paths_zero_8=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_8_paths.npy')
+Paths_zero_8_1=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_0_8_Data\Alpha_zero_8_paths_1.npy')
+Paths_zero_8_2=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_0_8_Data\Alpha_zero_8_paths_2.npy')
+Paths_zero_8_3=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_0_8_Data\Alpha_zero_8_paths_3.npy')
+Energy_zero_8=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_0_8_Data\Energy_1.npy')
+Position_zero_8=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_0_8_Data\Position_1.npy')
 
 #alpha = 0.6 eps= 2.50
-Paths_zero_6=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_6_paths.npy')
-
+Paths_zero_6_1=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_0_6_Data\Alpha_zero_6_paths_1.npy')
+Paths_zero_6_2=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_0_6_Data\Alpha_zero_6_paths_2.npy')
+Paths_zero_6_3=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_0_6_Data\Alpha_zero_6_paths_3.npy')
+Energy_zero_6=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_0_6_Data\Energy_1.npy')
+Position_zero_6=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_0_6_Data\Position_1.npy')
 
 #alpha = 0.4 eps= 2.50
-Paths_zero_4=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_4_paths.npy')
-
+Paths_zero_4_1=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_0_4_Data\Alpha_zero_4_paths_1.npy')
+Paths_zero_4_2=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_0_4_Data\Alpha_zero_4_paths_2.npy')
+Paths_zero_4_3=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_0_4_Data\Alpha_zero_4_paths_3.npy')
+Energy_zero_4=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_0_4_Data\Energy_1.npy')
+Position_zero_4=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_0_4_Data\Position_1.npy')
 
 #alpha = 0.2 eps= 1.25
-Paths_zero_2=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_2_paths.npy')
+Paths_zero_2_1=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_0_2_Data\Alpha_zero_2_paths_1.npy')
+Paths_zero_2_2=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_0_2_Data\Alpha_zero_2_paths_2.npy')
+Paths_zero_2_3=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_0_2_Data\Alpha_zero_2_paths_3.npy')
+Energy_zero_2=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_0_2_Data\Energy_1.npy')
+Position_zero_2=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_0_2_Data\Position_1.npy')
 
 
 #alpha = 0.1 eps= 0.25
-Paths_zero_1=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_1_paths.npy')
-
+Paths_zero_1_1=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_0_1_Data\Alpha_zero_1_paths_1.npy')
+Paths_zero_1_2=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_0_1_Data\Alpha_zero_1_paths_2.npy')
+Paths_zero_1_3=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_0_1_Data\Alpha_zero_1_paths_3.npy')
+Energy_zero_1=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_0_1_Data\Energy_1.npy')
+Position_zero_1=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_0_1_Data\Position_1.npy')
 
 
 #alpha = 0.05 eps= 0.10  
-Paths_zero_zero_5=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_zero_zero_5_paths.npy')
-
+Paths_zero_zero_5_1=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_0_0_5_Data\Alpha_zero_zero_5_paths_1.npy')
+Paths_zero_zero_5_2=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_0_0_5_Data\Alpha_zero_zero_5_paths_2.npy')
+Paths_zero_zero_5_3=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_0_0_5_Data\Alpha_zero_zero_5_paths_3.npy')
+Energy_zero_zero_5=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_0_0_5_Data\Energy_1.npy')
+Position_zero_zero_5=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_0_0_5_Data\Position_1.npy')
 
 #Functions!
 #Defining the potential 
@@ -125,63 +149,48 @@ x_vals=np.arange(-3,8,0.05)
 
 
 #Plots
+#Probability Distributions
 fig, ax =plt.subplots()
 plt.ylabel('$|\\psi(x)|^{2}$', fontsize=13)
 plt.xlabel('x',fontsize=13)
-ax.plot(x_coords(Paths_1), counts(Paths_1)[0],label='$\\alpha=1.00$')
-#ax.plot(x_coords(Paths_1_test), counts(Paths_1_test)[0],label='$\\alpha=1.00 Test$')
-ax.plot(x_coords(Paths_zero_8), counts(Paths_zero_8)[0],label='$\\alpha=0.80$')
-ax.plot(x_coords(Paths_zero_6), counts(Paths_zero_6)[0],label='$\\alpha=0.60$')
-ax.plot(x_coords(Paths_zero_4), counts(Paths_zero_4)[0],label='$\\alpha=0.40$')
-ax.plot(x_coords(Paths_zero_2), counts(Paths_zero_2)[0],label='$\\alpha=0.20$')
-ax.plot(x_coords(Paths_zero_1), counts(Paths_zero_1)[0],label='$\\alpha=0.10$')
-ax.plot(x_coords(Paths_zero_zero_5), counts(Paths_zero_zero_5)[0],label='$\\alpha=0.05$')
+ax.plot(x_coords(Paths_1_1), counts(Paths_1_1)[0],label='$\\alpha=1.00$')
+ax.plot(x_coords(Paths_zero_8_1), counts(Paths_zero_8_1)[0],label='$\\alpha=0.80$')
+ax.plot(x_coords(Paths_zero_6_1), counts(Paths_zero_6_1)[0],label='$\\alpha=0.60$')
+ax.plot(x_coords(Paths_zero_4_1), counts(Paths_zero_4_1)[0],label='$\\alpha=0.40$')
+ax.plot(x_coords(Paths_zero_2_1), counts(Paths_zero_2_1)[0],label='$\\alpha=0.20$')
+ax.plot(x_coords(Paths_zero_1_1), counts(Paths_zero_1_1)[0],label='$\\alpha=0.10$')
+ax.plot(x_coords(Paths_zero_zero_5_1), counts(Paths_zero_zero_5_1)[0],label='$\\alpha=0.05$')
 ax.plot(x_vals,f(x_vals), label='1D Coulomb')
 plt.legend(loc='upper left')
 
 x1, x2, y1, y2 = -2, 5.0, 0, 1.70  # region to zoom in on 
 axins = ax.inset_axes([0.4, 0.3, 0.6, 0.6],xlim=(x1, x2), ylim=(y1, y2), xticklabels=[-2,-1,0,1,2,3,4])
 axins.yaxis.tick_right()
-axins.plot(x_coords(Paths_1), counts(Paths_1)[0],label='$\\alpha=1.00$')
-axins.plot(x_coords(Paths_zero_8), counts(Paths_zero_8)[0],label='$\\alpha=0.80$')
-axins.plot(x_coords(Paths_zero_6), counts(Paths_zero_6)[0],label='$\\alpha=0.60$')
-axins.plot(x_coords(Paths_zero_4), counts(Paths_zero_4)[0],label='$\\alpha=0.40$')
-axins.plot(x_coords(Paths_zero_2), counts(Paths_zero_2)[0],label='$\\alpha=0.20$')
-#axins.plot(x_coords(Paths_zero_1), counts(Paths_zero_1)[0],label='$\\alpha=0.10$')
-#axins.plot(x_coords(Paths_zero_zero_5), counts(Paths_zero_zero_5)[0],label='$\\alpha=0.05$')
-ax.indicate_inset_zoom(axins, edgecolor="black").set_visible(True)
+axins.plot(x_coords(Paths_1_1), counts(Paths_1_1)[0],label='$\\alpha=1.00$')
+axins.plot(x_coords(Paths_zero_8_1), counts(Paths_zero_8_1)[0],label='$\\alpha=0.80$')
+axins.plot(x_coords(Paths_zero_6_1), counts(Paths_zero_6_1)[0],label='$\\alpha=0.60$')
+axins.plot(x_coords(Paths_zero_4_1), counts(Paths_zero_4_1)[0],label='$\\alpha=0.40$')
+axins.plot(x_coords(Paths_zero_2_1), counts(Paths_zero_2_1)[0],label='$\\alpha=0.20$')
 mark_inset(ax, axins, loc1=3, loc2=1, fc="none", ec="0.5")
 plt.show() 
 
+#Expected Energy
 alpha_values=np.array([0.05,0.1,0.2,0.4,0.6,0.8,1.0])
-Y_values_pos=np.array([Expected_position_New(Paths_zero_zero_5),Expected_position_New(Paths_zero_1),Expected_position_New(Paths_zero_2),Expected_position_New(Paths_zero_4),Expected_position_New(Paths_zero_6),Expected_position_New(Paths_zero_8),Expected_position_New(Paths_1)])
+Y_values_Energy=np.array([np.average(Energy_zero_zero_5),np.average(Energy_zero_1),np.average(Energy_zero_2),np.average(Energy_zero_4),np.average(Energy_zero_6),np.average(Energy_zero_8),np.average(Energy_1)])
+Y_values_Energy_Err=np.array([np.std(Energy_zero_zero_5),np.std(Energy_zero_1),np.std(Energy_zero_2),np.std(Energy_zero_4),np.std(Energy_zero_6),np.std(Energy_zero_8),np.std(Energy_1)])*(1/(3**0.5))
+fig, ax =plt.subplots()
+plt.ylabel('$<E>$', fontsize=13)
+plt.xlabel('$\\alpha$',fontsize=13)
+ax.errorbar(alpha_values, Y_values_Energy, Y_values_Energy_Err, fmt='o')
+plt.show()
+
+#Expected Position
+Y_values_Position=np.array([np.average(Position_zero_zero_5),np.average(Position_zero_1),np.average(Position_zero_2),np.average(Position_zero_4),np.average(Position_zero_6),np.average(Position_zero_8),np.average(Position_1)])
+Y_values_Position_Err=np.array([np.std(Position_zero_zero_5),np.std(Position_zero_1),np.std(Position_zero_2),np.std(Position_zero_4),np.std(Position_zero_6),np.std(Position_zero_8),np.std(Position_1)])*(1/(3**0.5))
 fig, ax =plt.subplots()
 plt.ylabel('$<x>$', fontsize=13)
 plt.xlabel('$\\alpha$',fontsize=13)
-ax.scatter(alpha_values, Y_values_pos)
-#plt.show()
-
-Y_values_Energy=([Energy_Paths_zero_zero_5,Energy_Paths_zero_1,Energy_Paths_zero_2,Energy_Paths_zero_4,Energy_Paths_zero_6,Energy_Paths_zero_8,Energy_Paths_1])
-Y_err=np.array([Energy_Paths_zero_zero_5_err,Energy_Paths_zero_1_err,Energy_Paths_zero_2_err,Energy_Paths_zero_4_err,Energy_Paths_zero_6_err,Energy_Paths_zero_8_err,Energy_Paths_1_err])
-fig, ax =plt.subplots()
-ax.yaxis.set_minor_locator(tck.AutoMinorLocator())
-#ax.minorticks_on()
-ax.set_yscale('log')
-#ax.yaxis.set_minor_locator(tck.AutoMinorLocator())
-plt.ylabel('$<E>$', fontsize=13)
-plt.xlabel('$\\alpha$',fontsize=13)
-ax.scatter(alpha_values, Y_values_Energy)#,Y_err,fmt='o')
+ax.errorbar(alpha_values, Y_values_Position,Y_values_Position_Err, fmt='o')
 plt.show()
 
 
-
-#My connector lines are how i would like them mess about woth some params to make them behave 
-
-#for expectation values. 1) calc expextation values 2)Bootstrap 3)Bin 4)Calculate average 
-
-#By the looks of things i need to do a weighted average, as a normal average causes the large entries to dominate 
-
-#Idea. Define function that first checks which bin a value is in, and then multiply the values by that 
-#test 
-
-#In lit is is expected we go to a delta function in energy
