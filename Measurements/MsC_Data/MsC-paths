@@ -18,7 +18,7 @@ N_cf=100000     #Number that needs to big enough to ensure probabilities behave
 N=20            #Spatial Points
 a=1/2           #a is the time step, 4 temporal points, N spatial
 eps=2.50        #Range from which we will pick a random number. This is tuned so as to cause a 40%-60% acceptance rate. 
-alpha=0.8
+alpha=1.00
 
 #Defining the potential 
 def V(x):
@@ -142,7 +142,7 @@ def binning(q,binsize):
 
 q=MetroplisAv(x)
 
-np.save('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_0_8_Data\Alpha_zero_8_paths_3.npy', q)
+np.save('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_1_Data\Alpha_1_paths_3.npy', q)
 print('Done!')
 
 end = time.time()
