@@ -13,8 +13,8 @@ N_cor=20      #Number of sweeps before acceptance
 N_cf=100000   #Number that needs to big enough to ensure probabilities behave  
 N=20          #Spatial Points
 a=1/2         #a is the time step, 4 temporal points, N spatial
-eps=0.10
-alpha=0.05
+eps=0.25
+alpha=0.10
 
 #Defining the potential 
 def V(x):
@@ -55,9 +55,9 @@ def Expected_Energy(q):
 
 
 #Loading Paths
-Paths_1=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_0_0_5_Data\Alpha_zero_zero_5_paths_1.npy')
-Paths_2=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_0_0_5_Data\Alpha_zero_zero_5_paths_2.npy')
-Paths_3=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_0_0_5_Data\Alpha_zero_zero_5_paths_2.npy')
+Paths_1=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_0_1_Data\Alpha_zero_1_paths_1.npy')
+Paths_2=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_0_1_Data\Alpha_zero_1_paths_2.npy')
+Paths_3=np.load('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_0_1_Data\Alpha_zero_1_paths_3.npy')
 
 #Calculating average positions 
 Expected_Energy_Vals=np.array([])
@@ -66,4 +66,4 @@ Expected_Energy_Vals=np.append(Expected_Energy_Vals,Expected_Energy(Paths_2))
 Expected_Energy_Vals=np.append(Expected_Energy_Vals,Expected_Energy(Paths_3))
 
 
-np.save('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_0_0_5_Data\Energy_1.npy',Expected_Energy_Vals)
+np.save('C:\PhysicsCompProject\Measurements\MsC_Data\Alpha_0_1_Data\Energy_1.npy',Expected_Energy_Vals)
