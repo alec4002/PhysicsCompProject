@@ -160,6 +160,7 @@ ax.plot(x_coords(Paths_zero_4_1), counts(Paths_zero_4_1)[0],label='$\\alpha=0.40
 ax.plot(x_coords(Paths_zero_2_1), counts(Paths_zero_2_1)[0],label='$\\alpha=0.20$')
 ax.plot(x_coords(Paths_zero_1_1), counts(Paths_zero_1_1)[0],label='$\\alpha=0.10$')
 ax.plot(x_coords(Paths_zero_zero_5_1), counts(Paths_zero_zero_5_1)[0],label='$\\alpha=0.05$')
+ax.minorticks_on()
 #ax.plot(x_vals,f(x_vals), label='1D Coulomb')
 plt.xlim([-2,5.1])
 plt.legend(loc='upper left')
@@ -172,8 +173,9 @@ axins.plot(x_coords(Paths_zero_8_1), counts(Paths_zero_8_1)[0],label='$\\alpha=0
 axins.plot(x_coords(Paths_zero_6_1), counts(Paths_zero_6_1)[0],label='$\\alpha=0.60$')
 axins.plot(x_coords(Paths_zero_4_1), counts(Paths_zero_4_1)[0],label='$\\alpha=0.40$')
 axins.plot(x_coords(Paths_zero_2_1), counts(Paths_zero_2_1)[0],label='$\\alpha=0.20$')
+axins.minorticks_on()
 mark_inset(ax, axins, loc1=3, loc2=1, fc="none", ec="0.5")
-plt.savefig('Probability Distributions.png')
+#plt.savefig('Probability Distributions.png')
 plt.show() 
 
 
@@ -193,7 +195,8 @@ fig, ax =plt.subplots()
 plt.ylabel('$\\langle E \\rangle$', fontsize=13)
 plt.xlabel('$\\alpha$',fontsize=13)
 ax.errorbar(alpha_values, Y_values_Energy, Y_values_Energy_Err, color='black', fmt='o', markersize=4, capsize=7)
-plt.savefig('Expectation Energies.png')
+ax.minorticks_on()
+#plt.savefig('Expectation Energies.png')
 plt.show()
 
 #Expected Position
@@ -203,7 +206,8 @@ fig, ax =plt.subplots()
 plt.ylabel('$\\langle x \\rangle$', fontsize=13)
 plt.xlabel('$\\alpha$',fontsize=13)
 ax.errorbar(alpha_values, Y_values_Position,Y_values_Position_Err, fmt='o', color='black', markersize=4, capsize=7)
-plt.savefig('Expectation Positions.png')
+ax.minorticks_on()
+#plt.savefig('Expectation Positions.png')
 plt.show()
 
 
